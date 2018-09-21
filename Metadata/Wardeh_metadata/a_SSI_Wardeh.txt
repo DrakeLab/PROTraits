@@ -1,0 +1,135 @@
+Sample Name	Protocol REF	Assay Name	Raw Data File	Comment [Data Repository]	Comment [Data Record Accession]	Comment [Data Record URI]
+nucleotide sequences	Species-Species Interactions	nucleotide sequences_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+literature sources	Species-Species Interactions	literature sources_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Amphibia	Species-Species Interactions	Amphibia_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Annelida	Species-Species Interactions	Annelida_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Arthropoda	Species-Species Interactions	Arthropoda_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Aves	Species-Species Interactions	Aves_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bacillariophyta	Species-Species Interactions	Bacillariophyta_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bacteria	Species-Species Interactions	Bacteria_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bryozoa	Species-Species Interactions	Bryozoa_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chlorophyta	Species-Species Interactions	Chlorophyta_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chrysophyceae	Species-Species Interactions	Chrysophyceae_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Cnidaria	Species-Species Interactions	Cnidaria_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Embryophyta	Species-Species Interactions	Embryophyta_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Fungi	Species-Species Interactions	Fungi_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Homo sapiens	Species-Species Interactions	Homo sapiens_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Mammalia	Species-Species Interactions	Mammalia_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Methanothermobacter	Species-Species Interactions	Methanothermobacter_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Mollusca	Species-Species Interactions	Mollusca_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Phaeophyceae	Species-Species Interactions	Phaeophyceae_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Porifera	Species-Species Interactions	Porifera_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Primates	Species-Species Interactions	Primates_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Rodentia	Species-Species Interactions	Rodentia_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Viroids	Species-Species Interactions	Viroids_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Viruses	Species-Species Interactions	Viruses_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chondrichthyes	Species-Species Interactions	Chondrichthyes_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Dipnoi	Species-Species Interactions	Dipnoi_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Actinopterygii 	Species-Species Interactions	Actinopterygii _SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Hyperotreti	Species-Species Interactions	Hyperotreti_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Hyperoartia	Species-Species Interactions	Hyperoartia_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Coelacanthimorpha	Species-Species Interactions	Coelacanthimorpha_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Parabasalia	Species-Species Interactions	Parabasalia_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Heterolobosea	Species-Species Interactions	Heterolobosea_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Platyhelminthes	Species-Species Interactions	Platyhelminthes_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Nematode	Species-Species Interactions	Nematode_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Acanthocephala	Species-Species Interactions	Acanthocephala_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Testudines	Species-Species Interactions	Testudines_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Archosauria	Species-Species Interactions	Archosauria_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Lepidosauria	Species-Species Interactions	Lepidosauria_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Alveolata	Species-Species Interactions	Alveolata_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Euglenozoa	Species-Species Interactions	Euglenozoa_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Fornicate	Species-Species Interactions	Fornicate_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Katablepharidophyta	Species-Species Interactions	Katablepharidophyta_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Rhizaria	Species-Species Interactions	Rhizaria_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Apusozoa	Species-Species Interactions	Apusozoa_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Amoebozoa	Species-Species Interactions	Amoebozoa_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Jakobida	Species-Species Interactions	Jakobida_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Oomycetes	Species-Species Interactions	Oomycetes_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Felis catus	Species-Species Interactions	Felis catus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Equus caballus	Species-Species Interactions	Equus caballus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Lama glama	Species-Species Interactions	Lama glama_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Equus asinus	Species-Species Interactions	Equus asinus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Cricetus cricetus	Species-Species Interactions	Cricetus cricetus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Cervus elaphus	Species-Species Interactions	Cervus elaphus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Cavia porcellus	Species-Species Interactions	Cavia porcellus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Capreolus capreolus	Species-Species Interactions	Capreolus capreolus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Canis lupus familiaris	Species-Species Interactions	Canis lupus familiaris_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Camelus dromedarius	Species-Species Interactions	Camelus dromedarius_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Camelus bactrianus	Species-Species Interactions	Camelus bactrianus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bos taurus	Species-Species Interactions	Bos taurus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bos indicus	Species-Species Interactions	Bos indicus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bison bonasus	Species-Species Interactions	Bison bonasus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bison bison	Species-Species Interactions	Bison bison_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Lama pacos	Species-Species Interactions	Lama pacos_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Meleagris gallopavo	Species-Species Interactions	Meleagris gallopavo_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Sus scrofa domesticus	Species-Species Interactions	Sus scrofa domesticus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Meriones unguiculatus	Species-Species Interactions	Meriones unguiculatus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Mesocricetus auratus	Species-Species Interactions	Mesocricetus auratus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Mus musculus	Species-Species Interactions	Mus musculus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Mus musculus domesticus	Species-Species Interactions	Mus musculus domesticus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Mustela putorius furo	Species-Species Interactions	Mustela putorius furo_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Numida meleagris	Species-Species Interactions	Numida meleagris_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Capra hircus	Species-Species Interactions	Capra hircus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Oryctolagus cuniculus	Species-Species Interactions	Oryctolagus cuniculus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Ovis aries	Species-Species Interactions	Ovis aries_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Pavo cristatus	Species-Species Interactions	Pavo cristatus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Bubalus bubalis	Species-Species Interactions	Bubalus bubalis_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Phasianus colchicus	Species-Species Interactions	Phasianus colchicus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Rangifer tarandus	Species-Species Interactions	Rangifer tarandus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Anser anser	Species-Species Interactions	Anser anser_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Anas platyrhynchos	Species-Species Interactions	Anas platyrhynchos_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Serinus canaria	Species-Species Interactions	Serinus canaria_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Struthio camelus	Species-Species Interactions	Struthio camelus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Rattus norvegicus	Species-Species Interactions	Rattus norvegicus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Rattus rattus	Species-Species Interactions	Rattus rattus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Sus scrofa	Species-Species Interactions	Sus scrofa_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Lagopus lagopus scotica	Species-Species Interactions	Lagopus lagopus scotica_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Rhombomys opimus	Species-Species Interactions	Rhombomys opimus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Gallus gallus	Species-Species Interactions	Gallus gallus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chinchilla lanigera	Species-Species Interactions	Chinchilla lanigera_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Columba livia	Species-Species Interactions	Columba livia_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Dama dama	Species-Species Interactions	Dama dama_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Agapornis personata	Species-Species Interactions	Agapornis personata_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Agapornis roseicollis	Species-Species Interactions	Agapornis roseicollis_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Nymphicus hollandicus	Species-Species Interactions	Nymphicus hollandicus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Melopsittacus undulatus	Species-Species Interactions	Melopsittacus undulatus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Equus asinus africanus	Species-Species Interactions	Equus asinus africanus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Paramyxea	Species-Species Interactions	Paramyxea_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Kappaphycus alvarezii	Species-Species Interactions	Kappaphycus alvarezii_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Petalonia fascia	Species-Species Interactions	Petalonia fascia_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Grateloupia filicina	Species-Species Interactions	Grateloupia filicina_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Gelidium amansii	Species-Species Interactions	Gelidium amansii_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Emiliania huxleyi	Species-Species Interactions	Emiliania huxleyi_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Corallina officinalis	Species-Species Interactions	Corallina officinalis_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Palmaria palmata	Species-Species Interactions	Palmaria palmata_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Plocamium telfairiae	Species-Species Interactions	Plocamium telfairiae_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Gelidium pulchellum	Species-Species Interactions	Gelidium pulchellum_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Gracilaria corticata	Species-Species Interactions	Gracilaria corticata_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Grateloupia lanceolata	Species-Species Interactions	Grateloupia lanceolata_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Grateloupia turuturu	Species-Species Interactions	Grateloupia turuturu_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Hypnea musciformis	Species-Species Interactions	Hypnea musciformis_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Isochrysis galbana	Species-Species Interactions	Isochrysis galbana_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Laminaria digitata	Species-Species Interactions	Laminaria digitata_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Lomentaria catenata	Species-Species Interactions	Lomentaria catenata_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Fucus vesiculosus	Species-Species Interactions	Fucus vesiculosus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Saccharina latissima	Species-Species Interactions	Saccharina latissima_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Porphyra yezoensis	Species-Species Interactions	Porphyra yezoensis_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Padina pavonica	Species-Species Interactions	Padina pavonica_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Padina arborescens	Species-Species Interactions	Padina arborescens_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Mastocarpus stellatus	Species-Species Interactions	Mastocarpus stellatus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chaetoceros compressus	Species-Species Interactions	Chaetoceros compressus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chaetoceros muellerii	Species-Species Interactions	Chaetoceros muellerii_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chondrus crispus	Species-Species Interactions	Chondrus crispus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Chondrus ocellatus	Species-Species Interactions	Chondrus ocellatus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Colpomenia sinuosa	Species-Species Interactions	Colpomenia sinuosa_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Devaleraea ramentacea	Species-Species Interactions	Devaleraea ramentacea_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Durvillaea antarctica	Species-Species Interactions	Durvillaea antarctica_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Ecklonia cava	Species-Species Interactions	Ecklonia cava_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Ectocarpus fasciculatus	Species-Species Interactions	Ectocarpus fasciculatus_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Enhalus acoroides	Species-Species Interactions	Enhalus acoroides_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Fucus spiralis	Species-Species Interactions	Fucus spiralis_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Sargassum fusiforme	Species-Species Interactions	Sargassum fusiforme_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Sargassum serratifolium	Species-Species Interactions	Sargassum serratifolium_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Scytosiphon lomentaria	Species-Species Interactions	Scytosiphon lomentaria_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853
+Undaria pinnatifida	Species-Species Interactions	Undaria pinnatifida_SSI	SpeciesInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381853	http://dx.doi.org/10.6084/m9.figshare.1381853

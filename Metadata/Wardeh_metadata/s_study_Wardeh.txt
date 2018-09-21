@@ -1,0 +1,381 @@
+Source Name	Characteristics[organism]	Term Source REF	Term Accession Number	Characteristics[geographical location]	Term Source REF	Term Accession Number	Protocol REF	Sample Name
+NCBI Nucleotide Sequences database							Data Repositories	nucleotide sequences
+PubMed database							Data Repositories	literature sources
+NCBI Taxonomy database	Amphibia	NCBITAXON	8292				Data Repositories	Amphibia
+NCBI Taxonomy database	Annelida	NCBITAXON	6340				Data Repositories	Annelida
+NCBI Taxonomy database	Arthropoda	NCBITAXON	6656				Data Repositories	Arthropoda
+NCBI Taxonomy database	Aves	NCBITAXON	8782				Data Repositories	Aves
+NCBI Taxonomy database	Bacillariophyta	NCBITAXON	2836				Data Repositories	Bacillariophyta
+NCBI Taxonomy database	Bacteria	NCBITAXON	2				Data Repositories	Bacteria
+NCBI Taxonomy database	Bryozoa	NCBITAXON	10205				Data Repositories	Bryozoa
+NCBI Taxonomy database	Chlorophyta	NCBITAXON	3041				Data Repositories	Chlorophyta
+NCBI Taxonomy database	Chrysophyceae	NCBITAXON	2825				Data Repositories	Chrysophyceae
+NCBI Taxonomy database	Cnidaria	NCBITAXON	6073				Data Repositories	Cnidaria
+NCBI Taxonomy database	Embryophyta	NCBITAXON	3193				Data Repositories	Embryophyta
+NCBI Taxonomy database	Fungi	NCBITAXON	4751				Data Repositories	Fungi
+NCBI Taxonomy database	Homo sapiens	NCBITAXON	9606				Data Repositories	Homo sapiens
+NCBI Taxonomy database	Mammalia	NCBITAXON	40674				Data Repositories	Mammalia
+NCBI Taxonomy database	Methanothermobacter	NCBITAXON	145260				Data Repositories	Methanothermobacter
+NCBI Taxonomy database	Mollusca	NCBITAXON	6447				Data Repositories	Mollusca
+NCBI Taxonomy database	Phaeophyceae	NCBITAXON	2870				Data Repositories	Phaeophyceae
+NCBI Taxonomy database	Porifera	NCBITAXON	6040				Data Repositories	Porifera
+NCBI Taxonomy database	Primates	NCBITAXON	9443				Data Repositories	Primates
+NCBI Taxonomy database	Rodentia	NCBITAXON	9989				Data Repositories	Rodentia
+NCBI Taxonomy database	Viroids	NCBITAXON	12884				Data Repositories	Viroids
+NCBI Taxonomy database	Viruses	NCBITAXON	10239				Data Repositories	Viruses
+NCBI Taxonomy database	Chondrichthyes	NCBITAXON	7777				Data Repositories	Chondrichthyes
+NCBI Taxonomy database	Dipnoi	NCBITAXON	7878				Data Repositories	Dipnoi
+NCBI Taxonomy database	Actinopterygii 	NCBITAXON	7898				Data Repositories	Actinopterygii 
+NCBI Taxonomy database	Hyperotreti	NCBITAXON	117565				Data Repositories	Hyperotreti
+NCBI Taxonomy database	Hyperoartia	NCBITAXON	117569				Data Repositories	Hyperoartia
+NCBI Taxonomy database	Coelacanthimorpha	NCBITAXON	118072				Data Repositories	Coelacanthimorpha
+NCBI Taxonomy database	Parabasalia	NCBITAXON	5719				Data Repositories	Parabasalia
+NCBI Taxonomy database	Heterolobosea	NCBITAXON	5752				Data Repositories	Heterolobosea
+NCBI Taxonomy database	Platyhelminthes	NCBITAXON	6157				Data Repositories	Platyhelminthes
+NCBI Taxonomy database	Nematode	NCBITAXON	6231				Data Repositories	Nematode
+NCBI Taxonomy database	Acanthocephala	NCBITAXON	10232				Data Repositories	Acanthocephala
+NCBI Taxonomy database	Testudines	NCBITAXON	8459				Data Repositories	Testudines
+NCBI Taxonomy database	Archosauria	NCBITAXON	8492				Data Repositories	Archosauria
+NCBI Taxonomy database	Lepidosauria	NCBITAXON	8504				Data Repositories	Lepidosauria
+NCBI Taxonomy database	Alveolata	NCBITAXON	33630				Data Repositories	Alveolata
+NCBI Taxonomy database	Euglenozoa	NCBITAXON	33682				Data Repositories	Euglenozoa
+NCBI Taxonomy database	Fornicate	NCBITAXON	207245				Data Repositories	Fornicate
+NCBI Taxonomy database	Katablepharidophyta	NCBITAXON	339960				Data Repositories	Katablepharidophyta
+NCBI Taxonomy database	Rhizaria	NCBITAXON	543769				Data Repositories	Rhizaria
+NCBI Taxonomy database	Apusozoa	NCBITAXON	554296				Data Repositories	Apusozoa
+NCBI Taxonomy database	Amoebozoa	NCBITAXON	554915				Data Repositories	Amoebozoa
+NCBI Taxonomy database	Jakobida	NCBITAXON	556282				Data Repositories	Jakobida
+NCBI Taxonomy database	Oomycetes	NCBITAXON	4762				Data Repositories	Oomycetes
+NCBI Taxonomy database	Felis catus	NCBITAXON	9685				Data Repositories	Felis catus
+NCBI Taxonomy database	Equus caballus	NCBITAXON	9796				Data Repositories	Equus caballus
+NCBI Taxonomy database	Lama glama	NCBITAXON	9844				Data Repositories	Lama glama
+NCBI Taxonomy database	Equus asinus	NCBITAXON	9793				Data Repositories	Equus asinus
+NCBI Taxonomy database	Cricetus cricetus	NCBITAXON	10034				Data Repositories	Cricetus cricetus
+NCBI Taxonomy database	Cervus elaphus	NCBITAXON	9860				Data Repositories	Cervus elaphus
+NCBI Taxonomy database	Cavia porcellus	NCBITAXON	10141				Data Repositories	Cavia porcellus
+NCBI Taxonomy database	Capreolus capreolus	NCBITAXON	9858				Data Repositories	Capreolus capreolus
+NCBI Taxonomy database	Canis lupus familiaris	NCBITAXON	9615				Data Repositories	Canis lupus familiaris
+NCBI Taxonomy database	Camelus dromedarius	NCBITAXON	9838				Data Repositories	Camelus dromedarius
+NCBI Taxonomy database	Camelus bactrianus	NCBITAXON	9837				Data Repositories	Camelus bactrianus
+NCBI Taxonomy database	Bos taurus	NCBITAXON	9913				Data Repositories	Bos taurus
+NCBI Taxonomy database	Bos indicus	NCBITAXON	9915				Data Repositories	Bos indicus
+NCBI Taxonomy database	Bison bonasus	NCBITAXON	9902				Data Repositories	Bison bonasus
+NCBI Taxonomy database	Bison bison	NCBITAXON	9901				Data Repositories	Bison bison
+NCBI Taxonomy database	Lama pacos	NCBITAXON	30538				Data Repositories	Lama pacos
+NCBI Taxonomy database	Meleagris gallopavo	NCBITAXON	9103				Data Repositories	Meleagris gallopavo
+NCBI Taxonomy database	Sus scrofa domesticus	NCBITAXON	9825				Data Repositories	Sus scrofa domesticus
+NCBI Taxonomy database	Meriones unguiculatus	NCBITAXON	10047				Data Repositories	Meriones unguiculatus
+NCBI Taxonomy database	Mesocricetus auratus	NCBITAXON	10036				Data Repositories	Mesocricetus auratus
+NCBI Taxonomy database	Mus musculus	NCBITAXON	10090				Data Repositories	Mus musculus
+NCBI Taxonomy database	Mus musculus domesticus	NCBITAXON	10092				Data Repositories	Mus musculus domesticus
+NCBI Taxonomy database	Mustela putorius furo	NCBITAXON	9669				Data Repositories	Mustela putorius furo
+NCBI Taxonomy database	Numida meleagris	NCBITAXON	8996				Data Repositories	Numida meleagris
+NCBI Taxonomy database	Capra hircus	NCBITAXON	9925				Data Repositories	Capra hircus
+NCBI Taxonomy database	Oryctolagus cuniculus	NCBITAXON	9986				Data Repositories	Oryctolagus cuniculus
+NCBI Taxonomy database	Ovis aries	NCBITAXON	9940				Data Repositories	Ovis aries
+NCBI Taxonomy database	Pavo cristatus	NCBITAXON	9049				Data Repositories	Pavo cristatus
+NCBI Taxonomy database	Bubalus bubalis	NCBITAXON	89462				Data Repositories	Bubalus bubalis
+NCBI Taxonomy database	Phasianus colchicus	NCBITAXON	9054				Data Repositories	Phasianus colchicus
+NCBI Taxonomy database	Rangifer tarandus	NCBITAXON	9870				Data Repositories	Rangifer tarandus
+NCBI Taxonomy database	Anser anser	NCBITAXON	8843				Data Repositories	Anser anser
+NCBI Taxonomy database	Anas platyrhynchos	NCBITAXON	8839				Data Repositories	Anas platyrhynchos
+NCBI Taxonomy database	Serinus canaria	NCBITAXON	9135				Data Repositories	Serinus canaria
+NCBI Taxonomy database	Struthio camelus	NCBITAXON	8801				Data Repositories	Struthio camelus
+NCBI Taxonomy database	Rattus norvegicus	NCBITAXON	10116				Data Repositories	Rattus norvegicus
+NCBI Taxonomy database	Rattus rattus	NCBITAXON	10117				Data Repositories	Rattus rattus
+NCBI Taxonomy database	Sus scrofa	NCBITAXON	9823				Data Repositories	Sus scrofa
+NCBI Taxonomy database	Lagopus lagopus scotica	NCBITAXON	359986				Data Repositories	Lagopus lagopus scotica
+NCBI Taxonomy database	Rhombomys opimus	NCBITAXON	186474				Data Repositories	Rhombomys opimus
+NCBI Taxonomy database	Gallus gallus	NCBITAXON	9031				Data Repositories	Gallus gallus
+NCBI Taxonomy database	Chinchilla lanigera	NCBITAXON	34839				Data Repositories	Chinchilla lanigera
+NCBI Taxonomy database	Columba livia	NCBITAXON	8932				Data Repositories	Columba livia
+NCBI Taxonomy database	Dama dama	NCBITAXON	30532				Data Repositories	Dama dama
+NCBI Taxonomy database	Agapornis personata	NCBITAXON	60466				Data Repositories	Agapornis personata
+NCBI Taxonomy database	Agapornis roseicollis	NCBITAXON	60468				Data Repositories	Agapornis roseicollis
+NCBI Taxonomy database	Nymphicus hollandicus	NCBITAXON	13180				Data Repositories	Nymphicus hollandicus
+NCBI Taxonomy database	Melopsittacus undulatus	NCBITAXON	13146				Data Repositories	Melopsittacus undulatus
+NCBI Taxonomy database	Equus asinus africanus	NCBITAXON	582580				Data Repositories	Equus asinus africanus
+NCBI Taxonomy database	Chlorophyta	NCBITAXON	3041				Data Repositories	Chlorophyta
+NCBI Taxonomy database	Embryophyta	NCBITAXON	3193				Data Repositories	Embryophyta
+NCBI Taxonomy database	Oomycetes	NCBITAXON	4762				Data Repositories	Oomycetes
+NCBI Taxonomy database	Paramyxea	NCBITAXON	98369				Data Repositories	Paramyxea
+NCBI Taxonomy database	Kappaphycus alvarezii	NCBITAXON	38544				Data Repositories	Kappaphycus alvarezii
+NCBI Taxonomy database	Petalonia fascia	NCBITAXON	2893				Data Repositories	Petalonia fascia
+NCBI Taxonomy database	Grateloupia filicina	NCBITAXON	31455				Data Repositories	Grateloupia filicina
+NCBI Taxonomy database	Gelidium amansii	NCBITAXON	2812				Data Repositories	Gelidium amansii
+NCBI Taxonomy database	Emiliania huxleyi	NCBITAXON	2903				Data Repositories	Emiliania huxleyi
+NCBI Taxonomy database	Corallina officinalis	NCBITAXON	35170				Data Repositories	Corallina officinalis
+NCBI Taxonomy database	Palmaria palmata	NCBITAXON	2822				Data Repositories	Palmaria palmata
+NCBI Taxonomy database	Plocamium telfairiae	NCBITAXON	38522				Data Repositories	Plocamium telfairiae
+NCBI Taxonomy database	Gelidium pulchellum	NCBITAXON	28852				Data Repositories	Gelidium pulchellum
+NCBI Taxonomy database	Gracilaria corticata	NCBITAXON	223959				Data Repositories	Gracilaria corticata
+NCBI Taxonomy database	Grateloupia lanceolata	NCBITAXON	151733				Data Repositories	Grateloupia lanceolata
+NCBI Taxonomy database	Grateloupia turuturu	NCBITAXON	118375				Data Repositories	Grateloupia turuturu
+NCBI Taxonomy database	Hypnea musciformis	NCBITAXON	31429				Data Repositories	Hypnea musciformis
+NCBI Taxonomy database	Isochrysis galbana	NCBITAXON	37099				Data Repositories	Isochrysis galbana
+NCBI Taxonomy database	Laminaria digitata	NCBITAXON	80365				Data Repositories	Laminaria digitata
+NCBI Taxonomy database	Lomentaria catenata	NCBITAXON	38336				Data Repositories	Lomentaria catenata
+NCBI Taxonomy database	Fucus vesiculosus	NCBITAXON	49266				Data Repositories	Fucus vesiculosus
+NCBI Taxonomy database	Saccharina latissima	NCBITAXON	309358				Data Repositories	Saccharina latissima
+NCBI Taxonomy database	Porphyra yezoensis	NCBITAXON	2788				Data Repositories	Porphyra yezoensis
+NCBI Taxonomy database	Padina pavonica	NCBITAXON	531984				Data Repositories	Padina pavonica
+NCBI Taxonomy database	Padina arborescens	NCBITAXON	200423				Data Repositories	Padina arborescens
+NCBI Taxonomy database	Mastocarpus stellatus	NCBITAXON	29227				Data Repositories	Mastocarpus stellatus
+NCBI Taxonomy database	Chaetoceros compressus	NCBITAXON	426629				Data Repositories	Chaetoceros compressus
+NCBI Taxonomy database	Chaetoceros muellerii	NCBITAXON	265525				Data Repositories	Chaetoceros muellerii
+NCBI Taxonomy database	Chondrus crispus	NCBITAXON	2769				Data Repositories	Chondrus crispus
+NCBI Taxonomy database	Chondrus ocellatus	NCBITAXON	29222				Data Repositories	Chondrus ocellatus
+NCBI Taxonomy database	Colpomenia sinuosa	NCBITAXON	87236				Data Repositories	Colpomenia sinuosa
+NCBI Taxonomy database	Devaleraea ramentacea	NCBITAXON	35202				Data Repositories	Devaleraea ramentacea
+NCBI Taxonomy database	Durvillaea antarctica	NCBITAXON	112057				Data Repositories	Durvillaea antarctica
+NCBI Taxonomy database	Ecklonia cava	NCBITAXON	105407				Data Repositories	Ecklonia cava
+NCBI Taxonomy database	Ectocarpus fasciculatus	NCBITAXON	43935				Data Repositories	Ectocarpus fasciculatus
+NCBI Taxonomy database	Enhalus acoroides	NCBITAXON	55455				Data Repositories	Enhalus acoroides
+NCBI Taxonomy database	Fucus spiralis	NCBITAXON	87149				Data Repositories	Fucus spiralis
+NCBI Taxonomy database	Sargassum fusiforme	NCBITAXON	590727				Data Repositories	Sargassum fusiforme
+NCBI Taxonomy database	Sargassum serratifolium	NCBITAXON	127450				Data Repositories	Sargassum serratifolium
+NCBI Taxonomy database	Scytosiphon lomentaria	NCBITAXON	27967				Data Repositories	Scytosiphon lomentaria
+NCBI Taxonomy database	Undaria pinnatifida	NCBITAXON	74381				Data Repositories	Undaria pinnatifida
+GeoNames or MESH database				Saudi Arabia	GAZ	GAZ:00005279	Data Repositories	saudi arabia
+GeoNames or MESH database				Iran	GAZ	GAZ:00004474	Data Repositories	iran
+GeoNames or MESH database				Republic of Cyprus	GAZ	GAZ:00004007	Data Repositories	cyprus
+GeoNames or MESH database				Tanzania	GAZ	GAZ:00001103	Data Repositories	tanzania
+GeoNames or MESH database				Armenia	GAZ	GAZ:00004094	Data Repositories	armenia
+GeoNames or MESH database				Kenya	GAZ	GAZ:00001101	Data Repositories	kenya
+GeoNames or MESH database				Uganda	GAZ	GAZ:00001102	Data Repositories	uganda
+GeoNames or MESH database				Rwanda	GAZ	GAZ:00001087	Data Repositories	rwanda
+GeoNames or MESH database				Somalia	GAZ	GAZ:00001104	Data Repositories	somalia
+GeoNames or MESH database				Syria	GAZ	GAZ:00002474	Data Repositories	syria
+GeoNames or MESH database				Democratic Republic of the Congo	GAZ	GAZ:00001086	Data Repositories	democratic republic of the congo
+GeoNames or MESH database				Central African Republic	GAZ	GAZ:00001089	Data Repositories	central african republic
+GeoNames or MESH database				Seychelles	GAZ	GAZ:00005821	Data Repositories	seychelles
+GeoNames or MESH database				Israel	GAZ	GAZ:00002476	Data Repositories	israel
+GeoNames or MESH database				Turkey	GAZ	GAZ:00000558	Data Repositories	turkey
+GeoNames or MESH database				Ethiopia	GAZ	GAZ:00000567	Data Repositories	ethiopia
+GeoNames or MESH database				Egypt	GAZ	GAZ:00003934	Data Repositories	egypt
+GeoNames or MESH database				Sudan	GAZ	GAZ:00000560	Data Repositories	sudan
+GeoNames or MESH database				Greece	GAZ	GAZ:00002945	Data Repositories	greece
+GeoNames or MESH database				Burundi	GAZ	GAZ:00001090	Data Repositories	burundi
+GeoNames or MESH database				Estonia	GAZ	GAZ:00002959	Data Repositories	estonia
+GeoNames or MESH database				Georgia	GAZ	GAZ:00004942	Data Repositories	georgia
+GeoNames or MESH database				Belarus	GAZ	GAZ:00006886	Data Repositories	belarus
+GeoNames or MESH database				Finland	GAZ	GAZ:00002937	Data Repositories	finland
+GeoNames or MESH database				Macedonia	GAZ	GAZ:00006895	Data Repositories	macedonia
+GeoNames or MESH database				Hungary	GAZ	GAZ:00002952	Data Repositories	hungary
+GeoNames or MESH database				Bulgaria	GAZ	GAZ:00002950	Data Repositories	bulgaria
+GeoNames or MESH database				Poland	GAZ	GAZ:00002939	Data Repositories	poland
+GeoNames or MESH database				Zimbabwe	GAZ	GAZ:00001106	Data Repositories	zimbabwe
+GeoNames or MESH database				Jordan	GAZ	GAZ:00002473	Data Repositories	jordan
+GeoNames or MESH database				Moldova	GAZ	GAZ:00003897	Data Repositories	moldova
+GeoNames or MESH database				Mauritius	GAZ	GAZ:00003745	Data Repositories	mauritius
+GeoNames or MESH database				Swaziland	GAZ	GAZ:00001099	Data Repositories	swaziland
+GeoNames or MESH database				South Africa	GAZ	GAZ:00000553	Data Repositories	south africa
+GeoNames or MESH database				Botswana	GAZ	GAZ:00001097	Data Repositories	botswana
+GeoNames or MESH database				Ukraine	GAZ	GAZ:00002724	Data Repositories	ukraine
+GeoNames or MESH database				Mozambique	GAZ	GAZ:00001100	Data Repositories	mozambique
+GeoNames or MESH database				Madagascar	GAZ	GAZ:00001108	Data Repositories	madagascar
+GeoNames or MESH database				Pakistan	GAZ	GAZ:00005246	Data Repositories	pakistan
+GeoNames or MESH database				Bangladesh	GAZ	GAZ:00003750	Data Repositories	bangladesh
+GeoNames or MESH database				Turkmenistan	GAZ	GAZ:00005018	Data Repositories	turkmenistan
+GeoNames or MESH database				Tajikistan	GAZ	GAZ:00006912	Data Repositories	tajikistan
+GeoNames or MESH database				India	GAZ	GAZ:00002839	Data Repositories	india
+GeoNames or MESH database				Viet Nam	GAZ	GAZ:00003756	Data Repositories	vietnam
+GeoNames or MESH database				Thailand	GAZ	GAZ:00003744	Data Repositories	thailand
+GeoNames or MESH database				China	GAZ	GAZ:00002845	Data Repositories	china
+GeoNames or MESH database				Afghanistan	GAZ	GAZ:00006882	Data Repositories	afghanistan
+GeoNames or MESH database				Myanmar	GAZ	GAZ:00006899	Data Repositories	myanmar
+GeoNames or MESH database				Aland Province	GAZ	GAZ:00003609	Data Repositories	aland islands
+GeoNames or MESH database				Albania	GAZ	GAZ:00002953	Data Repositories	albania
+GeoNames or MESH database				Sri Lanka	GAZ	GAZ:00003924	Data Repositories	sri lanka
+GeoNames or MESH database				Romania	GAZ	GAZ:00002951	Data Repositories	romania
+GeoNames or MESH database				Zambia	GAZ	GAZ:00001107	Data Repositories	zambia
+GeoNames or MESH database				Comoros	GAZ	GAZ:00005820	Data Repositories	comoros
+GeoNames or MESH database				Malawi	GAZ	GAZ:00001105	Data Repositories	malawi
+GeoNames or MESH database				Hong Kong	GAZ	GAZ:00003203	Data Repositories	hong kong
+GeoNames or MESH database				South Korea	GAZ	GAZ:00002802	Data Repositories	south korea
+GeoNames or MESH database				Japan	GAZ	GAZ:00002747	Data Repositories	japan
+GeoNames or MESH database				Russia	GAZ	GAZ:00002721	Data Repositories	russia
+GeoNames or MESH database				Australia	GAZ	GAZ:00000463	Data Repositories	australia
+GeoNames or MESH database				Papua New Guinea	GAZ	GAZ:00003922	Data Repositories	papua new guinea
+GeoNames or MESH database				New Zealand	GAZ	GAZ:00000469	Data Repositories	new zealand
+GeoNames or MESH database				Cameroon	GAZ	GAZ:00001093	Data Repositories	cameroon
+GeoNames or MESH database				Senegal	GAZ	GAZ:00000913	Data Repositories	senegal
+GeoNames or MESH database				Portuguese Republic 	GAZ	GAZ:00002944	Data Repositories	portugal
+GeoNames or MESH database				Liberia	GAZ	GAZ:00000911	Data Repositories	liberia
+GeoNames or MESH database				Cote d'Ivoire	GAZ	GAZ:00000906	Data Repositories	ivory coast
+GeoNames or MESH database				Nigeria	GAZ	GAZ:00000912	Data Repositories	nigeria
+GeoNames or MESH database				Burkina Faso	GAZ	GAZ:00000905	Data Repositories	burkina faso
+GeoNames or MESH database				Gambia	GAZ	GAZ:00000907	Data Repositories	gambia
+GeoNames or MESH database				Guinea	GAZ	GAZ:00000909	Data Repositories	guinea
+GeoNames or MESH database				Chad	GAZ	GAZ:00000586	Data Repositories	chad
+GeoNames or MESH database				Tunisia	GAZ	GAZ:00000562	Data Repositories	tunisia
+GeoNames or MESH database				Spain	GAZ	GAZ:00000591	Data Repositories	spain
+GeoNames or MESH database				Morocco	GAZ	GAZ:00000565	Data Repositories	morocco
+GeoNames or MESH database				Denmark	GAZ	GAZ:00002635	Data Repositories	denmark
+GeoNames or MESH database				Iceland	GAZ	GAZ:00000843	Data Repositories	iceland
+GeoNames or MESH database				United Kingdom	GAZ	GAZ:00002637	Data Repositories	united kingdom
+GeoNames or MESH database				Switzerland	GAZ	GAZ:00002941	Data Repositories	switzerland
+GeoNames or MESH database				Sweden	GAZ	GAZ:00002729	Data Repositories	sweden
+GeoNames or MESH database				Netherlands	GAZ	GAZ:00001549	Data Repositories	netherlands
+GeoNames or MESH database				Austria	GAZ	GAZ:00002942	Data Repositories	austria
+GeoNames or MESH database				Belgium	GAZ	GAZ:00002938	Data Repositories	belgium
+GeoNames or MESH database				Germany	GAZ	GAZ:00002646	Data Repositories	germany
+GeoNames or MESH database				Italy	GAZ	GAZ:00002650	Data Repositories	italy
+GeoNames or MESH database				Angola	GAZ	GAZ:00001095	Data Repositories	angola
+GeoNames or MESH database				Namibia	GAZ	GAZ:00001096	Data Repositories	namibia
+GeoNames or MESH database				Suriname	GAZ	GAZ:00002525	Data Repositories	suriname
+GeoNames or MESH database				Greenland	GAZ	GAZ:00001507	Data Repositories	greenland
+GeoNames or MESH database				Brazil	GAZ	GAZ:00002828	Data Repositories	brazil
+GeoNames or MESH database				Cuba	GAZ	GAZ:00003762	Data Repositories	cuba
+GeoNames or MESH database				Republic of Ireland	GAZ	GAZ:00002943	Data Repositories	ireland
+GeoNames or MESH database				French Republic	GAZ	GAZ:00002940	Data Repositories	france
+GeoNames or MESH database				Bosnia and Herzegovina	GAZ	GAZ:00006887	Data Repositories	bosnia and herzegovina
+GeoNames or MESH database				Antigua and Barbuda	GAZ	GAZ:00006883	Data Repositories	antigua and barbuda
+GeoNames or MESH database				Saint Lucia	GAZ	GAZ:00006909	Data Repositories	saint lucia
+GeoNames or MESH database				Aruba	GAZ	GAZ:00004025	Data Repositories	aruba
+GeoNames or MESH database				Saint Vincent and the Grenadines	GAZ	GAZ:02000565	Data Repositories	saint vincent and the grenadines
+GeoNames or MESH database				Guatemala	GAZ	GAZ:00002936	Data Repositories	guatemala
+GeoNames or MESH database				Costa Rica	GAZ	GAZ:00002901	Data Repositories	costa rica
+GeoNames or MESH database				Venezuela	GAZ	GAZ:00002931	Data Repositories	venezuela
+GeoNames or MESH database				Ecuador	GAZ	GAZ:00002912	Data Repositories	ecuador
+GeoNames or MESH database				Colombia	GAZ	GAZ:00002929	Data Repositories	colombia
+GeoNames or MESH database				Argentina	GAZ	GAZ:00002928	Data Repositories	argentina
+GeoNames or MESH database				Chile	GAZ	GAZ:00002825	Data Repositories	chile
+GeoNames or MESH database				Bolivia	GAZ	GAZ:00002511	Data Repositories	bolivia
+GeoNames or MESH database				British Virgin Islands	GAZ	GAZ:00003961	Data Repositories	british virgin islands
+GeoNames or MESH database				Peru	GAZ	GAZ:00002932	Data Repositories	peru
+GeoNames or MESH database				Turks and Caicos Islands	GAZ	GAZ:00003955	Data Repositories	turks and caicos islands
+GeoNames or MESH database				Panama	GAZ	GAZ:00002892	Data Repositories	panama
+GeoNames or MESH database				Mexico	GAZ	GAZ:00002852	Data Repositories	mexico
+GeoNames or MESH database				Samoa	GAZ	GAZ:00006910	Data Repositories	samoa
+GeoNames or MESH database				Northern Marianas	GAZ	GAZ:00007109	Data Repositories	northern mariana islands
+GeoNames or MESH database				Guam	GAZ	GAZ:00006933	Data Repositories	guam
+GeoNames or MESH database				Canada	GAZ	GAZ:00002560	Data Repositories	canada
+GeoNames or MESH database				United States of America	GAZ	GAZ:00002459	Data Repositories	united states
+GeoNames or MESH database				Wallis and Futuna Islands	GAZ	GAZ:00007191	Data Repositories	wallis and futuna
+GeoNames or MESH database				Niue	GAZ	GAZ:00006902	Data Repositories	niue
+GeoNames or MESH database				Dominica	GAZ	GAZ:00006890	Data Repositories	dominica
+GeoNames or MESH database				Antarctica	GAZ	GAZ:00000462	Data Repositories	antarctica
+GeoNames or MESH database				Country of Curacao	GAZ	GAZ:00012582	Data Repositories	curacao
+GeoNames or MESH database				South Sudan	GAZ	GAZ:00233439	Data Repositories	south sudan
+GeoNames or MESH database				Kingdom of Norway	GAZ	GAZ:00002699	Data Repositories	norway
+GeoNames or MESH database				Tonga	GAZ	GAZ:00006916	Data Repositories	tonga
+GeoNames or MESH database				Kuwait	GAZ	GAZ:00005285	Data Repositories	kuwait
+GeoNames or MESH database				Oman	GAZ	GAZ:00005283	Data Repositories	oman
+GeoNames or MESH database				Bahrain	GAZ	GAZ:00005281	Data Repositories	bahrain
+GeoNames or MESH database				Eritrea	GAZ	GAZ:00000581	Data Repositories	eritrea
+GeoNames or MESH database				Azerbaijan	GAZ	GAZ:00004941	Data Repositories	azerbaijan
+GeoNames or MESH database				Lithuania	GAZ	GAZ:00002960	Data Repositories	lithuania
+GeoNames or MESH database				Bhutan	GAZ	GAZ:00003920	Data Repositories	bhutan
+GeoNames or MESH database				Kyrgyzstan	GAZ	GAZ:00006893	Data Repositories	kyrgyzstan
+GeoNames or MESH database				Heard Island and McDonald Islands Territory	GAZ	GAZ:00005918	Data Repositories	heard island and mcdonald islands
+GeoNames or MESH database				Palau	GAZ	GAZ:00006905	Data Repositories	palau
+GeoNames or MESH database				Indonesia	GAZ	GAZ:00003727	Data Repositories	indonesia
+GeoNames or MESH database				Qatar	GAZ	GAZ:00005286	Data Repositories	qatar
+GeoNames or MESH database				Territoire des Terres australes et antarctiques francaises	GAZ	GAZ:00003753	Data Repositories	french southern territories
+GeoNames or MESH database				Territory of the Cocos (Keeling) Islands	GAZ	GAZ:00005916	Data Repositories	cocos islands
+GeoNames or MESH database				Taiwan Province	GAZ	GAZ:00005344	Data Repositories	taiwan
+GeoNames or MESH database				The Philippines	GAZ	GAZ:00004525	Data Repositories	philippines
+GeoNames or MESH database				Malaysia	GAZ	GAZ:00003902	Data Repositories	malaysia
+GeoNames or MESH database				Cambodia	GAZ	GAZ:00006888	Data Repositories	cambodia
+GeoNames or MESH database				Timor-Leste	GAZ	GAZ:00006913	Data Repositories	east timor
+GeoNames or MESH database				New Caledonia	GAZ	GAZ:00005206	Data Repositories	new caledonia
+GeoNames or MESH database				Fiji	GAZ	GAZ:00006891	Data Repositories	fiji
+GeoNames or MESH database				Libya	GAZ	GAZ:00000566	Data Repositories	libya
+GeoNames or MESH database				Ghana	GAZ	GAZ:00000908	Data Repositories	ghana
+GeoNames or MESH database				Benin	GAZ	GAZ:00000904	Data Repositories	benin
+GeoNames or MESH database				Gabon	GAZ	GAZ:00001092	Data Repositories	gabon
+GeoNames or MESH database				Algeria	GAZ	GAZ:00000563	Data Repositories	algeria
+GeoNames or MESH database				Territory of Norfolk Island	GAZ	GAZ:00005908	Data Repositories	norfolk island
+GeoNames or MESH database				Czech Republic	GAZ	GAZ:00002954	Data Repositories	czech republic
+GeoNames or MESH database				Haiti	GAZ	GAZ:00003953	Data Repositories	haiti
+GeoNames or MESH database				Croatia	GAZ	GAZ:00002719	Data Repositories	croatia
+GeoNames or MESH database				American Samoa	GAZ	GAZ:00003957	Data Repositories	american samoa
+GeoNames or MESH database				The Republic of the Maldives	GAZ	GAZ:00006896	Data Repositories	maldives
+GeoNames or MESH database				Nepal	GAZ	GAZ:00004399	Data Repositories	nepal
+GeoNames or MESH database				Niger	GAZ	GAZ:00000585	Data Repositories	niger
+GeoNames or MESH database				Mali	GAZ	GAZ:00000584	Data Repositories	mali
+GeoNames or MESH database				Mauritania	GAZ	GAZ:00000583	Data Repositories	mauritania
+GeoNames or MESH database				Bermuda	GAZ	GAZ:00001264	Data Repositories	bermuda
+GeoNames or MESH database				Trinidad and Tobago	GAZ	GAZ:00003767	Data Repositories	trinidad and tobago
+GeoNames or MESH database				Federated States of Micronesia	GAZ	GAZ:00006897	Data Repositories	micronesia
+GeoNames or MESH database				Lebanon	GAZ	GAZ:00002478	Data Repositories	lebanon
+GeoNames or MESH database				The Bahamas	GAZ	GAZ:00002733	Data Repositories	bahamas
+GeoNames or MESH database				Anguilla	GAZ	GAZ:00009159	Data Repositories	anguilla
+GeoNames or MESH database				Togo	GAZ	GAZ:00000915	Data Repositories	togo
+GeoNames or MESH database				Guinea-Bissau	GAZ	GAZ:00000910	Data Repositories	guinea-bissau
+GeoNames or MESH database				Dominican Republic	GAZ	GAZ:00003952	Data Repositories	dominican republic
+GeoNames or MESH database				Lesotho	GAZ	GAZ:00001098	Data Repositories	lesotho
+GeoNames or MESH database				Kazakhstan	GAZ	GAZ:00004999	Data Repositories	kazakhstan
+GeoNames or MESH database				Singapore	GAZ	GAZ:00003923	Data Repositories	singapore
+GeoNames or MESH database				Vanuatu	GAZ	GAZ:00006918	Data Repositories	vanuatu
+GeoNames or MESH database				Honduras	GAZ	GAZ:00002894	Data Repositories	honduras
+GeoNames or MESH database				Nicaragua	GAZ	GAZ:00002978	Data Repositories	nicaragua
+GeoNames or MESH database				Isle of Man	GAZ	GAZ:00052477	Data Repositories	isle of man
+GeoNames or MESH database				Saint Helena Territory	GAZ	GAZ:00003991	Data Repositories	saint helena
+GeoNames or MESH database				Barbados	GAZ	GAZ:00001251	Data Repositories	barbados
+GeoNames or MESH database				Cape Verde	GAZ	GAZ:00001227	Data Repositories	cape verde
+GeoNames or MESH database				Slovakia	GAZ	GAZ:00002956	Data Repositories	slovakia
+GeoNames or MESH database				Equatorial Guinea	GAZ	GAZ:00001091	Data Repositories	equatorial guinea
+GeoNames or MESH database				Svalbard and Jan Mayen			Data Repositories	svalbard and jan mayen
+GeoNames or MESH database				Commonwealth of Puerto Rico	GAZ	GAZ:00006935	Data Repositories	puerto rico
+GeoNames or MESH database				Montserrat	GAZ	GAZ:00003988	Data Repositories	montserrat
+GeoNames or MESH database				Guadeloupe Region	GAZ	GAZ:00067142	Data Repositories	guadeloupe
+GeoNames or MESH database				Grenada	GAZ	GAZ:02000573	Data Repositories	grenada
+GeoNames or MESH database				Cayman islands	GAZ	GAZ:00003986	Data Repositories	cayman islands
+GeoNames or MESH database				Belize	GAZ	GAZ:00002934	Data Repositories	belize
+GeoNames or MESH database				US Virgin Islands	GAZ	GAZ:00003959	Data Repositories	u.s. virgin islands
+GeoNames or MESH database				Faroe Islands	GAZ	GAZ:00059206	Data Repositories	faroe islands
+GeoNames or MESH database				Mongolia	GAZ	GAZ:00008744	Data Repositories	mongolia
+GeoNames or MESH database				Latvia	GAZ	GAZ:00002958	Data Repositories	latvia
+GeoNames or MESH database				Paraguay	GAZ	GAZ:00002933	Data Repositories	paraguay
+GeoNames or MESH database				Department of French Guiana	GAZ	GAZ:00002516	Data Repositories	french guiana
+GeoNames or MESH database				Uruguay	GAZ	GAZ:00002930	Data Repositories	uruguay
+GeoNames or MESH database				united states minor outlying islands	GAZ	GAZ:00007113	Data Repositories	united states minor outlying islands
+GeoNames or MESH database				Guyana	GAZ	GAZ:00002522	Data Repositories	guyana
+GeoNames or MESH database				Department of Martinique	GAZ	GAZ:00003947	Data Repositories	martinique
+GeoNames or MESH database				El Salvador	GAZ	GAZ:00002935	Data Repositories	el salvador
+GeoNames or MESH database				Slovenia	GAZ	GAZ:00002955	Data Repositories	slovenia
+GeoNames or MESH database				Montenegro	GAZ	GAZ:00006898	Data Repositories	montenegro
+GeoNames or MESH database				Laos	GAZ	GAZ:00006889	Data Repositories	laos
+GeoNames or MESH database				Uzbekistan	GAZ	GAZ:00004979	Data Repositories	uzbekistan
+GeoNames or MESH database				Saint Kitts-Nevis	GAZ	GAZ:00006906	Data Repositories	saint kitts and nevis
+GeoNames or MESH database				French Polynesia	GAZ	GAZ:00002918	Data Repositories	french polynesia
+GeoNames or MESH database				Iraq	GAZ	GAZ:00004483	Data Repositories	iraq
+GeoNames or MESH database				Yemen	GAZ	GAZ:00005284	Data Repositories	yemen
+GeoNames or MESH database				Kiribati	GAZ	GAZ:00006894	Data Repositories	kiribati
+GeoNames or MESH database				Reunion Island	GAZ	GAZ:00003945	Data Repositories	reunion
+GeoNames or MESH database				Pitcairn	GAZ	GAZ:00007187	Data Repositories	pitcairn
+GeoNames or MESH database				Luxembourg	GAZ	GAZ:00002947	Data Repositories	luxembourg
+GeoNames or MESH database				Sierra Leone	GAZ	GAZ:00000914	Data Repositories	sierra leone
+GeoNames or MESH database				Sao Tome and Principe	GAZ	GAZ:00006927	Data Repositories	sao tome and principe
+GeoNames or MESH database				Gibraltar	GAZ	GAZ:00003987	Data Repositories	gibraltar
+GeoNames or MESH database				Jamaica	GAZ	GAZ:00003781	Data Repositories	jamaica
+GeoNames or MESH database				Solomon islands	GAZ	GAZ:00005275	Data Repositories	solomon islands
+GeoNames or MESH database				Nauru	GAZ	GAZ:00006900	Data Repositories	nauru
+GeoNames or MESH database				Andorra	GAZ	GAZ:00002948	Data Repositories	andorra
+GeoNames or MESH database				Djibouti	GAZ	GAZ:00000582	Data Repositories	djibouti
+GeoNames or MESH database				Liechtenstein	GAZ	GAZ:00003858	Data Repositories	liechtenstein
+GeoNames or MESH database				Republic of Congo	GAZ	GAZ:00001088	Data Repositories	republic of the congo
+GeoNames or MESH database				Serbia	GAZ	GAZ:00002957	Data Repositories	serbia
+GeoNames or MESH database				United Arab Emirates	GAZ	GAZ:00005282	Data Repositories	united arab emirates
+GeoNames or MESH database				North Korea	GAZ	GAZ:00002801	Data Repositories	north korea
+GeoNames or MESH database				Republic of Malta	GAZ	GAZ:00004017	Data Repositories	malta
+GeoNames or MESH database				Falkland Islands	GAZ	GAZ:00001412	Data Repositories	falkland islands
+GeoNames or MESH database				Mayotte	GAZ	GAZ:00003943	Data Repositories	mayotte
+GeoNames or MESH database				Cook Archipelago	GAZ	GAZ:00006953	Data Repositories	cook islands
+GeoNames or MESH database				Brunei Darussalam	GAZ	GAZ:00003901	Data Repositories	brunei
+GeoNames or MESH database				South Georgia and South Sandwich Islands	GAZ	GAZ:00003990	Data Repositories	south georgia and the south sandwich islands
+GeoNames or MESH database				Kosovo	GAZ	GAZ:00011337	Data Repositories	kosovo
+GeoNames or MESH database				Territory of Christmas Island	GAZ	GAZ:00005914	Data Repositories	christmas island
+GeoNames or MESH database				Republic of the Marshall Islands	GAZ	GAZ:00006470	Data Repositories	marshall islands
+GeoNames or MESH database				Western Sahara	GAZ	GAZ:00000564	Data Repositories	western sahara
+GeoNames or MESH database				Saint-Pierre and Miquelon	GAZ	GAZ:00003942	Data Repositories	saint pierre and miquelon
+GeoNames or MESH database				Palestinian Territory			Data Repositories	palestinian territory
+GeoNames or MESH database				Saint Martin	GAZ	GAZ:00005841	Data Repositories	saint martin
+GeoNames or MESH database				San Marino	GAZ	GAZ:00003102	Data Repositories	san marino
+GeoNames or MESH database				Guernsey	GAZ	GAZ:00001550	Data Repositories	guernsey
+GeoNames or MESH database				Bonaire Island	GAZ	GAZ:00004020	Data Repositories	bonaire, saint eustatius and saba 
+GeoNames or MESH database				Tokelau	GAZ	GAZ:00006914	Data Repositories	tokelau
+GeoNames or MESH database				Macao	GAZ	GAZ:00003202	Data Repositories	macao
+GeoNames or MESH database				Tuvalu	GAZ	GAZ:00009715	Data Repositories	tuvalu

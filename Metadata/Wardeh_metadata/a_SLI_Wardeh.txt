@@ -1,0 +1,378 @@
+Sample Name	Protocol REF	Assay Name	Raw Data File	Comment [Data Repository]	Comment [Data Record Accession]	Comment [Data Record URI]
+nucleotide sequences	Species-Location Interactions	nucleotide sequences_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+literature sources	Species-Location Interactions	literature sources_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+saudi arabia	Species-Location Interactions	saudi arabia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+iran	Species-Location Interactions	iran_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cyprus	Species-Location Interactions	cyprus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+tanzania	Species-Location Interactions	tanzania_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+armenia	Species-Location Interactions	armenia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+kenya	Species-Location Interactions	kenya_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+uganda	Species-Location Interactions	uganda_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+rwanda	Species-Location Interactions	rwanda_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+somalia	Species-Location Interactions	somalia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+syria	Species-Location Interactions	syria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+democratic republic of the congo	Species-Location Interactions	democratic republic of the congo_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+central african republic	Species-Location Interactions	central african republic_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+seychelles	Species-Location Interactions	seychelles_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+israel	Species-Location Interactions	israel_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+turkey	Species-Location Interactions	turkey_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+ethiopia	Species-Location Interactions	ethiopia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+egypt	Species-Location Interactions	egypt_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+sudan	Species-Location Interactions	sudan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+greece	Species-Location Interactions	greece_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+burundi	Species-Location Interactions	burundi_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+estonia	Species-Location Interactions	estonia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+georgia	Species-Location Interactions	georgia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+belarus	Species-Location Interactions	belarus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+finland	Species-Location Interactions	finland_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+macedonia	Species-Location Interactions	macedonia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+hungary	Species-Location Interactions	hungary_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bulgaria	Species-Location Interactions	bulgaria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+poland	Species-Location Interactions	poland_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+zimbabwe	Species-Location Interactions	zimbabwe_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+jordan	Species-Location Interactions	jordan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+moldova	Species-Location Interactions	moldova_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+mauritius	Species-Location Interactions	mauritius_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+swaziland	Species-Location Interactions	swaziland_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+south africa	Species-Location Interactions	south africa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+botswana	Species-Location Interactions	botswana_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+ukraine	Species-Location Interactions	ukraine_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+mozambique	Species-Location Interactions	mozambique_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+madagascar	Species-Location Interactions	madagascar_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+pakistan	Species-Location Interactions	pakistan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bangladesh	Species-Location Interactions	bangladesh_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+turkmenistan	Species-Location Interactions	turkmenistan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+tajikistan	Species-Location Interactions	tajikistan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+india	Species-Location Interactions	india_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+vietnam	Species-Location Interactions	vietnam_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+thailand	Species-Location Interactions	thailand_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+china	Species-Location Interactions	china_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+afghanistan	Species-Location Interactions	afghanistan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+myanmar	Species-Location Interactions	myanmar_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+aland islands	Species-Location Interactions	aland islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+albania	Species-Location Interactions	albania_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+sri lanka	Species-Location Interactions	sri lanka_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+romania	Species-Location Interactions	romania_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+zambia	Species-Location Interactions	zambia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+comoros	Species-Location Interactions	comoros_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+malawi	Species-Location Interactions	malawi_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+hong kong	Species-Location Interactions	hong kong_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+south korea	Species-Location Interactions	south korea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+japan	Species-Location Interactions	japan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+russia	Species-Location Interactions	russia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+australia	Species-Location Interactions	australia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+papua new guinea	Species-Location Interactions	papua new guinea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+new zealand	Species-Location Interactions	new zealand_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cameroon	Species-Location Interactions	cameroon_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+senegal	Species-Location Interactions	senegal_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+portugal	Species-Location Interactions	portugal_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+liberia	Species-Location Interactions	liberia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+ivory coast	Species-Location Interactions	ivory coast_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+nigeria	Species-Location Interactions	nigeria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+burkina faso	Species-Location Interactions	burkina faso_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+gambia	Species-Location Interactions	gambia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+guinea	Species-Location Interactions	guinea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+chad	Species-Location Interactions	chad_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+tunisia	Species-Location Interactions	tunisia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+spain	Species-Location Interactions	spain_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+morocco	Species-Location Interactions	morocco_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+denmark	Species-Location Interactions	denmark_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+iceland	Species-Location Interactions	iceland_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+united kingdom	Species-Location Interactions	united kingdom_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+switzerland	Species-Location Interactions	switzerland_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+sweden	Species-Location Interactions	sweden_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+netherlands	Species-Location Interactions	netherlands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+austria	Species-Location Interactions	austria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+belgium	Species-Location Interactions	belgium_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+germany	Species-Location Interactions	germany_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+italy	Species-Location Interactions	italy_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+angola	Species-Location Interactions	angola_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+namibia	Species-Location Interactions	namibia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+suriname	Species-Location Interactions	suriname_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+greenland	Species-Location Interactions	greenland_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+brazil	Species-Location Interactions	brazil_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cuba	Species-Location Interactions	cuba_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+ireland	Species-Location Interactions	ireland_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+france	Species-Location Interactions	france_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bosnia and herzegovina	Species-Location Interactions	bosnia and herzegovina_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+antigua and barbuda	Species-Location Interactions	antigua and barbuda_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+saint lucia	Species-Location Interactions	saint lucia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+aruba	Species-Location Interactions	aruba_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+saint vincent and the grenadines	Species-Location Interactions	saint vincent and the grenadines_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+guatemala	Species-Location Interactions	guatemala_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+costa rica	Species-Location Interactions	costa rica_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+venezuela	Species-Location Interactions	venezuela_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+ecuador	Species-Location Interactions	ecuador_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+colombia	Species-Location Interactions	colombia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+argentina	Species-Location Interactions	argentina_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+chile	Species-Location Interactions	chile_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bolivia	Species-Location Interactions	bolivia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+british virgin islands	Species-Location Interactions	british virgin islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+peru	Species-Location Interactions	peru_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+turks and caicos islands	Species-Location Interactions	turks and caicos islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+panama	Species-Location Interactions	panama_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+mexico	Species-Location Interactions	mexico_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+samoa	Species-Location Interactions	samoa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+northern mariana islands	Species-Location Interactions	northern mariana islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+guam	Species-Location Interactions	guam_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+canada	Species-Location Interactions	canada_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+united states	Species-Location Interactions	united states_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+wallis and futuna	Species-Location Interactions	wallis and futuna_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+niue	Species-Location Interactions	niue_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+dominica	Species-Location Interactions	dominica_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+antarctica	Species-Location Interactions	antarctica_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+curacao	Species-Location Interactions	curacao_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+south sudan	Species-Location Interactions	south sudan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+norway	Species-Location Interactions	norway_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+tonga	Species-Location Interactions	tonga_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+kuwait	Species-Location Interactions	kuwait_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+oman	Species-Location Interactions	oman_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bahrain	Species-Location Interactions	bahrain_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+eritrea	Species-Location Interactions	eritrea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+azerbaijan	Species-Location Interactions	azerbaijan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+lithuania	Species-Location Interactions	lithuania_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bhutan	Species-Location Interactions	bhutan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+kyrgyzstan	Species-Location Interactions	kyrgyzstan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+heard island and mcdonald islands	Species-Location Interactions	heard island and mcdonald islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+palau	Species-Location Interactions	palau_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+indonesia	Species-Location Interactions	indonesia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+qatar	Species-Location Interactions	qatar_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+french southern territories	Species-Location Interactions	french southern territories_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cocos islands	Species-Location Interactions	cocos islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+taiwan	Species-Location Interactions	taiwan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+philippines	Species-Location Interactions	philippines_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+malaysia	Species-Location Interactions	malaysia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cambodia	Species-Location Interactions	cambodia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+east timor	Species-Location Interactions	east timor_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+new caledonia	Species-Location Interactions	new caledonia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+fiji	Species-Location Interactions	fiji_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+libya	Species-Location Interactions	libya_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+ghana	Species-Location Interactions	ghana_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+benin	Species-Location Interactions	benin_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+gabon	Species-Location Interactions	gabon_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+algeria	Species-Location Interactions	algeria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+norfolk island	Species-Location Interactions	norfolk island_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+czech republic	Species-Location Interactions	czech republic_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+haiti	Species-Location Interactions	haiti_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+croatia	Species-Location Interactions	croatia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+american samoa	Species-Location Interactions	american samoa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+maldives	Species-Location Interactions	maldives_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+nepal	Species-Location Interactions	nepal_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+niger	Species-Location Interactions	niger_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+mali	Species-Location Interactions	mali_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+mauritania	Species-Location Interactions	mauritania_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bermuda	Species-Location Interactions	bermuda_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+trinidad and tobago	Species-Location Interactions	trinidad and tobago_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+micronesia	Species-Location Interactions	micronesia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+lebanon	Species-Location Interactions	lebanon_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bahamas	Species-Location Interactions	bahamas_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+anguilla	Species-Location Interactions	anguilla_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+togo	Species-Location Interactions	togo_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+guinea-bissau	Species-Location Interactions	guinea-bissau_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+dominican republic	Species-Location Interactions	dominican republic_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+lesotho	Species-Location Interactions	lesotho_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+kazakhstan	Species-Location Interactions	kazakhstan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+singapore	Species-Location Interactions	singapore_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+vanuatu	Species-Location Interactions	vanuatu_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+honduras	Species-Location Interactions	honduras_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+nicaragua	Species-Location Interactions	nicaragua_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+isle of man	Species-Location Interactions	isle of man_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+saint helena	Species-Location Interactions	saint helena_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+barbados	Species-Location Interactions	barbados_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cape verde	Species-Location Interactions	cape verde_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+slovakia	Species-Location Interactions	slovakia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+equatorial guinea	Species-Location Interactions	equatorial guinea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+svalbard and jan mayen	Species-Location Interactions	svalbard and jan mayen_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+puerto rico	Species-Location Interactions	puerto rico_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+montserrat	Species-Location Interactions	montserrat_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+guadeloupe	Species-Location Interactions	guadeloupe_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+grenada	Species-Location Interactions	grenada_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cayman islands	Species-Location Interactions	cayman islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+belize	Species-Location Interactions	belize_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+u.s. virgin islands	Species-Location Interactions	u.s. virgin islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+faroe islands	Species-Location Interactions	faroe islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+mongolia	Species-Location Interactions	mongolia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+latvia	Species-Location Interactions	latvia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+paraguay	Species-Location Interactions	paraguay_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+french guiana	Species-Location Interactions	french guiana_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+uruguay	Species-Location Interactions	uruguay_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+united states minor outlying islands	Species-Location Interactions	united states minor outlying islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+guyana	Species-Location Interactions	guyana_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+martinique	Species-Location Interactions	martinique_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+el salvador	Species-Location Interactions	el salvador_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+slovenia	Species-Location Interactions	slovenia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+montenegro	Species-Location Interactions	montenegro_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+laos	Species-Location Interactions	laos_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+uzbekistan	Species-Location Interactions	uzbekistan_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+saint kitts and nevis	Species-Location Interactions	saint kitts and nevis_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+french polynesia	Species-Location Interactions	french polynesia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+iraq	Species-Location Interactions	iraq_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+yemen	Species-Location Interactions	yemen_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+kiribati	Species-Location Interactions	kiribati_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+reunion	Species-Location Interactions	reunion_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+pitcairn	Species-Location Interactions	pitcairn_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+luxembourg	Species-Location Interactions	luxembourg_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+sierra leone	Species-Location Interactions	sierra leone_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+sao tome and principe	Species-Location Interactions	sao tome and principe_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+gibraltar	Species-Location Interactions	gibraltar_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+jamaica	Species-Location Interactions	jamaica_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+solomon islands	Species-Location Interactions	solomon islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+nauru	Species-Location Interactions	nauru_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+andorra	Species-Location Interactions	andorra_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+djibouti	Species-Location Interactions	djibouti_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+liechtenstein	Species-Location Interactions	liechtenstein_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+republic of the congo	Species-Location Interactions	republic of the congo_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+serbia	Species-Location Interactions	serbia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+united arab emirates	Species-Location Interactions	united arab emirates_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+north korea	Species-Location Interactions	north korea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+malta	Species-Location Interactions	malta_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+falkland islands	Species-Location Interactions	falkland islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+mayotte	Species-Location Interactions	mayotte_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+cook islands	Species-Location Interactions	cook islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+brunei	Species-Location Interactions	brunei_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+south georgia and the south sandwich islands	Species-Location Interactions	south georgia and the south sandwich islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+kosovo	Species-Location Interactions	kosovo_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+christmas island	Species-Location Interactions	christmas island_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+marshall islands	Species-Location Interactions	marshall islands_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+western sahara	Species-Location Interactions	western sahara_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+saint pierre and miquelon	Species-Location Interactions	saint pierre and miquelon_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+palestinian territory	Species-Location Interactions	palestinian territory_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+saint martin	Species-Location Interactions	saint martin_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+san marino	Species-Location Interactions	san marino_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+guernsey	Species-Location Interactions	guernsey_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+bonaire, saint eustatius and saba 	Species-Location Interactions	bonaire, saint eustatius and saba _SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+tokelau	Species-Location Interactions	tokelau_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+macao	Species-Location Interactions	macao_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+tuvalu	Species-Location Interactions	tuvalu_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Amphibia	Species-Location Interactions	Amphibia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Annelida	Species-Location Interactions	Annelida_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Arthropoda	Species-Location Interactions	Arthropoda_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Aves	Species-Location Interactions	Aves_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bacillariophyta	Species-Location Interactions	Bacillariophyta_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bacteria	Species-Location Interactions	Bacteria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bryozoa	Species-Location Interactions	Bryozoa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chlorophyta	Species-Location Interactions	Chlorophyta_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chrysophyceae	Species-Location Interactions	Chrysophyceae_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Cnidaria	Species-Location Interactions	Cnidaria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Embryophyta	Species-Location Interactions	Embryophyta_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Fungi	Species-Location Interactions	Fungi_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Homo sapiens	Species-Location Interactions	Homo sapiens_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Mammalia	Species-Location Interactions	Mammalia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Methanothermobacter	Species-Location Interactions	Methanothermobacter_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Mollusca	Species-Location Interactions	Mollusca_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Phaeophyceae	Species-Location Interactions	Phaeophyceae_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Porifera	Species-Location Interactions	Porifera_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Primates	Species-Location Interactions	Primates_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Rodentia	Species-Location Interactions	Rodentia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Viroids	Species-Location Interactions	Viroids_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Viruses	Species-Location Interactions	Viruses_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chondrichthyes	Species-Location Interactions	Chondrichthyes_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Dipnoi	Species-Location Interactions	Dipnoi_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Actinopterygii 	Species-Location Interactions	Actinopterygii _SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Hyperotreti	Species-Location Interactions	Hyperotreti_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Hyperoartia	Species-Location Interactions	Hyperoartia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Coelacanthimorpha	Species-Location Interactions	Coelacanthimorpha_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Parabasalia	Species-Location Interactions	Parabasalia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Heterolobosea	Species-Location Interactions	Heterolobosea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Platyhelminthes	Species-Location Interactions	Platyhelminthes_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Nematode	Species-Location Interactions	Nematode_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Acanthocephala	Species-Location Interactions	Acanthocephala_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Testudines	Species-Location Interactions	Testudines_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Archosauria	Species-Location Interactions	Archosauria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Lepidosauria	Species-Location Interactions	Lepidosauria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Alveolata	Species-Location Interactions	Alveolata_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Euglenozoa	Species-Location Interactions	Euglenozoa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Fornicate	Species-Location Interactions	Fornicate_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Katablepharidophyta	Species-Location Interactions	Katablepharidophyta_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Rhizaria	Species-Location Interactions	Rhizaria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Apusozoa	Species-Location Interactions	Apusozoa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Amoebozoa	Species-Location Interactions	Amoebozoa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Jakobida	Species-Location Interactions	Jakobida_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Oomycetes	Species-Location Interactions	Oomycetes_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Felis catus	Species-Location Interactions	Felis catus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Equus caballus	Species-Location Interactions	Equus caballus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Lama glama	Species-Location Interactions	Lama glama_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Equus asinus	Species-Location Interactions	Equus asinus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Cricetus cricetus	Species-Location Interactions	Cricetus cricetus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Cervus elaphus	Species-Location Interactions	Cervus elaphus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Cavia porcellus	Species-Location Interactions	Cavia porcellus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Capreolus capreolus	Species-Location Interactions	Capreolus capreolus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Canis lupus familiaris	Species-Location Interactions	Canis lupus familiaris_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Camelus dromedarius	Species-Location Interactions	Camelus dromedarius_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Camelus bactrianus	Species-Location Interactions	Camelus bactrianus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bos taurus	Species-Location Interactions	Bos taurus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bos indicus	Species-Location Interactions	Bos indicus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bison bonasus	Species-Location Interactions	Bison bonasus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bison bison	Species-Location Interactions	Bison bison_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Lama pacos	Species-Location Interactions	Lama pacos_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Meleagris gallopavo	Species-Location Interactions	Meleagris gallopavo_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Sus scrofa domesticus	Species-Location Interactions	Sus scrofa domesticus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Meriones unguiculatus	Species-Location Interactions	Meriones unguiculatus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Mesocricetus auratus	Species-Location Interactions	Mesocricetus auratus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Mus musculus	Species-Location Interactions	Mus musculus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Mus musculus domesticus	Species-Location Interactions	Mus musculus domesticus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Mustela putorius furo	Species-Location Interactions	Mustela putorius furo_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Numida meleagris	Species-Location Interactions	Numida meleagris_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Capra hircus	Species-Location Interactions	Capra hircus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Oryctolagus cuniculus	Species-Location Interactions	Oryctolagus cuniculus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Ovis aries	Species-Location Interactions	Ovis aries_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Pavo cristatus	Species-Location Interactions	Pavo cristatus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Bubalus bubalis	Species-Location Interactions	Bubalus bubalis_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Phasianus colchicus	Species-Location Interactions	Phasianus colchicus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Rangifer tarandus	Species-Location Interactions	Rangifer tarandus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Anser anser	Species-Location Interactions	Anser anser_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Anas platyrhynchos	Species-Location Interactions	Anas platyrhynchos_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Serinus canaria	Species-Location Interactions	Serinus canaria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Struthio camelus	Species-Location Interactions	Struthio camelus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Rattus norvegicus	Species-Location Interactions	Rattus norvegicus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Rattus rattus	Species-Location Interactions	Rattus rattus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Sus scrofa	Species-Location Interactions	Sus scrofa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Lagopus lagopus scotica	Species-Location Interactions	Lagopus lagopus scotica_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Rhombomys opimus	Species-Location Interactions	Rhombomys opimus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Gallus gallus	Species-Location Interactions	Gallus gallus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chinchilla lanigera	Species-Location Interactions	Chinchilla lanigera_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Columba livia	Species-Location Interactions	Columba livia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Dama dama	Species-Location Interactions	Dama dama_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Agapornis personata	Species-Location Interactions	Agapornis personata_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Agapornis roseicollis	Species-Location Interactions	Agapornis roseicollis_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Nymphicus hollandicus	Species-Location Interactions	Nymphicus hollandicus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Melopsittacus undulatus	Species-Location Interactions	Melopsittacus undulatus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Equus asinus africanus	Species-Location Interactions	Equus asinus africanus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Paramyxea	Species-Location Interactions	Paramyxea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Kappaphycus alvarezii	Species-Location Interactions	Kappaphycus alvarezii_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Petalonia fascia	Species-Location Interactions	Petalonia fascia_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Grateloupia filicina	Species-Location Interactions	Grateloupia filicina_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Gelidium amansii	Species-Location Interactions	Gelidium amansii_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Emiliania huxleyi	Species-Location Interactions	Emiliania huxleyi_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Corallina officinalis	Species-Location Interactions	Corallina officinalis_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Palmaria palmata	Species-Location Interactions	Palmaria palmata_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Plocamium telfairiae	Species-Location Interactions	Plocamium telfairiae_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Gelidium pulchellum	Species-Location Interactions	Gelidium pulchellum_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Gracilaria corticata	Species-Location Interactions	Gracilaria corticata_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Grateloupia lanceolata	Species-Location Interactions	Grateloupia lanceolata_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Grateloupia turuturu	Species-Location Interactions	Grateloupia turuturu_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Hypnea musciformis	Species-Location Interactions	Hypnea musciformis_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Isochrysis galbana	Species-Location Interactions	Isochrysis galbana_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Laminaria digitata	Species-Location Interactions	Laminaria digitata_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Lomentaria catenata	Species-Location Interactions	Lomentaria catenata_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Fucus vesiculosus	Species-Location Interactions	Fucus vesiculosus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Saccharina latissima	Species-Location Interactions	Saccharina latissima_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Porphyra yezoensis	Species-Location Interactions	Porphyra yezoensis_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Padina pavonica	Species-Location Interactions	Padina pavonica_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Padina arborescens	Species-Location Interactions	Padina arborescens_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Mastocarpus stellatus	Species-Location Interactions	Mastocarpus stellatus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chaetoceros compressus	Species-Location Interactions	Chaetoceros compressus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chaetoceros muellerii	Species-Location Interactions	Chaetoceros muellerii_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chondrus crispus	Species-Location Interactions	Chondrus crispus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Chondrus ocellatus	Species-Location Interactions	Chondrus ocellatus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Colpomenia sinuosa	Species-Location Interactions	Colpomenia sinuosa_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Devaleraea ramentacea	Species-Location Interactions	Devaleraea ramentacea_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Durvillaea antarctica	Species-Location Interactions	Durvillaea antarctica_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Ecklonia cava	Species-Location Interactions	Ecklonia cava_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Ectocarpus fasciculatus	Species-Location Interactions	Ectocarpus fasciculatus_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Enhalus acoroides	Species-Location Interactions	Enhalus acoroides_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Fucus spiralis	Species-Location Interactions	Fucus spiralis_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Sargassum fusiforme	Species-Location Interactions	Sargassum fusiforme_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Sargassum serratifolium	Species-Location Interactions	Sargassum serratifolium_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Scytosiphon lomentaria	Species-Location Interactions	Scytosiphon lomentaria_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854
+Undaria pinnatifida	Species-Location Interactions	Undaria pinnatifida_SLI	LocationInteractions_EID2.csv	figshare	doi:10.6084/m9.figshare.1381854	http://dx.doi.org/10.6084/m9.figshare.1381854

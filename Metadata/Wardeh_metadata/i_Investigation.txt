@@ -1,0 +1,106 @@
+# Investigation File generated for Scientific Data with Investigation File Authoring Tool version 0.1.0 on 11/08/2015 - This metadata file is CC0
+ONTOLOGY SOURCE REFERENCE
+Term Source Name	NCBITAXON	GAZ	ERO	OBI	GO	SBO	MS
+Term Source File	http://data.bioontology.org/ontologies/NCBITAXON	http://data.bioontology.org/ontologies/GAZ	http://data.bioontology.org/ontologies/ERO	http://data.bioontology.org/ontologies/OBI	http://data.bioontology.org/ontologies/GO	http://data.bioontology.org/ontologies/SBO	http://data.bioontology.org/ontologies/MS
+Term Source Version	2015AA	$Revision: 1.512 $	2013-08-02	2014-08-18	releases/2014-08-30	13:05:2015	3.76.0_rc1
+Term Source Description	National Center for Biotechnology Information (NCBI) Organismal Classification	Gazetteer	Eagle-I Research Resource Ontology	Ontology for Biomedical Investigations	Gene Ontology	Systems Biology Ontology	Mass Spectrometry Ontology
+INVESTIGATION
+Investigation Identifier
+Investigation Title
+Investigation Description
+Investigation Submission Date
+Investigation Public Release Date
+INVESTIGATION PUBLICATIONS
+Investigation PubMed ID
+Investigation Publication DOI
+Investigation Publication Author List
+Investigation Publication Title
+Investigation Publication Status
+Investigation Publication Status Term Accession Number
+Investigation Publication Status Term Source REF
+INVESTIGATION CONTACTS
+Investigation Person Last Name
+Investigation Person Mid Initials
+Investigation Person First Name
+Investigation Person Address
+Investigation Person Phone
+Investigation Person Fax
+Investigation Person Email
+Investigation Person Affiliation
+Investigation Person Roles
+Investigation Person Roles Term Accession Number
+Investigation Person Roles Term Source REF
+STUDY
+Study Identifier	10.1038/sdata.2015.49
+Study Title	Database of host-pathogen and related species interactions, and their global distribution
+Study Submission Date	29/05/2015
+Study Public Release Date	15/09/2015
+Study Description	http://www.nature.com/articles/sdata201549#abstract
+Study File Name	s_study_Wardeh.txt
+Comment[Subject Keywords]	//;//;///;///
+Comment[Manuscript Licence]	CC BY-4.0
+Comment[Experimental Metadata Licence]	CC0
+Comment[Supplementary Information File Name]	
+Comment[Supplementary Information File Type]	x-zip-compressed
+Comment[Supplementary Information File URL]	http://www.nature.com/articles/sdata201549#supplementary-information
+Comment[Data Repository]	figshare;figshare
+Comment[Data Record Accession]	doi:10.6084/m9.figshare.1381853;doi:10.6084/m9.figshare.1381854
+Comment[Data Record URI]	http://dx.doi.org/10.6084/m9.figshare.1381853;http://dx.doi.org/10.6084/m9.figshare.1381854
+STUDY DESIGN DESCRIPTORS
+Study Design Type	data integration objective	database creation objective	digital curation
+Study Design Type Term Accession Number	ERO:0100092	http://www.ebi.ac.uk/efo/swo/SWO_0000509	OBI:0302914
+Study Design Type Term Source REF	ERO	ERO	OBI
+STUDY PUBLICATIONS
+Study PubMed ID
+Study Publication DOI
+Study Publication Author List
+Study Publication Title
+Study Publication Status
+Study Publication Status Term Accession Number
+Study Publication Status Term Source REF
+STUDY FACTORS
+Study Factor Name
+Study Factor Type
+Study Factor Type Term Accession Number
+Study Factor Type Term Source REF
+STUDY ASSAYS
+Study Assay Measurement Type	interspecies interaction between organisms	geographic location
+Study Assay Measurement Type Term Accession Number	GO:0044419	GAZ:00000448
+Study Assay Measurement Type Term Source REF	GO	OBI
+Study Assay Technology Type	database cross reference	database cross reference
+Study Assay Technology Type Term Accession Number	SBO:0000554	SBO:0000554
+Study Assay Technology Type Term Source REF	SBO	SBO
+Study Assay Technology Platform	manual search of databases and peer reviewed literature	manual search of databases and peer reviewed literature
+Study Assay File Name	a_SSI_Wardeh.txt	a_SLI_Wardeh.txt
+STUDY PROTOCOLS
+Study Protocol Name	Data Repositories	Species-Species Interactions	Species-Location Interactions
+Study Protocol Type	search database details	data item extraction from journal article	data item extraction from journal article
+Study Protocol Type Term Accession Number	MS:1001011	IAO:0000443	IAO:0000443
+Study Protocol Type Term Source REF	MS	OBI	OBI
+Study Protocol Description			
+Study Protocol URI	""	""	""
+Study Protocol Version			
+Study Protocol Parameters Name	""	""	""
+Study Protocol Parameters Name Term Accession Number	""	""	""
+Study Protocol Parameters Name Term Source REF	""	""	""
+Study Protocol Components Name	""	""	""
+Study Protocol Components Type	""	""	""
+Study Protocol Components Type Term Accession Number	""	""	""
+Study Protocol Components Type Term Source REF	""	""	""
+STUDY CONTACTS
+Study Person Last Name	Wardeh	Risley	McIntyre	Setzkorn	Baylis
+Study Person First Name	Maya	Claire	Marie Kirsty	Christian	Matthew
+Study Person Mid Initials					
+Study Person Email	maya.wardeh@liverpool.ac.uk	""	""	""	baylism@liverpool.ac.uk
+Study Person Phone					
+Study Person Fax					
+Study Person Address					
+Study Person Affiliation	Department of Epidemiology and Population Health, Institute of Infection and Global Health, University of Liverpool, Leahurst Campus, Chester High Road, Neston, Cheshire CH64 7TE, UK	Department of Epidemiology and Population Health, Institute of Infection and Global Health, University of Liverpool, Leahurst Campus, Chester High Road, Neston, Cheshire CH64 7TE, UK	Department of Epidemiology and Population Health, Institute of Infection and Global Health, University of Liverpool, Leahurst Campus, Chester High Road, Neston, Cheshire CH64 7TE, UK	Department of Epidemiology and Population Health, Institute of Infection and Global Health, University of Liverpool, Leahurst Campus, Chester High Road, Neston, Cheshire CH64 7TE, UK	Department of Epidemiology and Population Health, Institute of Infection and Global Health, University of Liverpool, Leahurst Campus, Chester High Road, Neston, Cheshire CH64 7TE, UK
+Study Person Roles					
+Study Person Roles Term Accession Number					
+Study Person Roles Term Source REF					
+Comment[Study Person ORCID]					
+Comment[Funder]					
+Comment[FundRef ID]					
+Comment[Funder Term Source REF]					
+Comment[Grant Identifier]					
