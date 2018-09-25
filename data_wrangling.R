@@ -23,24 +23,46 @@ gmpdprot %<>% filter(ParType == "Protozoa", HasBinomialName == "yes") %<>% selec
 sppintrx$parname <- gsub("(^[a-z])", "\\U\\1", tolower(sppintrx$parname), perl = T)
 sppintrx$carname <- gsub("(^[a-z])", "\\U\\1", tolower(sppintrx$carname), perl = T)
 
-#remname the two corrected protozoan names in gmpd to match parname in zooscore
-gmpdprot %<>% mutate(parname = gsub("Cystoisospora canis", "Isospora canis", gmpdprot$gmpdparname))
-#"Plasmodium malariae", "Plasmodium rodhaini"
+#gmpdparname does not match up with zooscore parname because two binomials have been updated in zooscore 
+setdiff(zooscore$parname, gmpdprot$gmpdparname)
 
+#create new parname variable in gmpd update binomials to match parname in zooscore
+gmpdprot %<>% mutate(parname=gmpdparname)
+gmpdprot$parname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprot$parname)
+gmpdprot$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprot$parname)
+
+#check the parname binomials now match
+setdiff(zooscore$parname, gmpdprot$parname)
+#there are 78 protozoa spp in gmpd that have not been scored in zooscore
+setdiff(gmpdprot$parname, zooscore$parname)
 
 #compile list of all unique protozoan spp
-allprots <- as.data.frame(zooscore$parname)
-allprots <- as.tbl(allprots)
+parname <- unique(union(sppintrx$parname, gmpdprot$parname))
+allprot <- as.data.frame(parname)
+allprot <- as.tbl(allprot)
+
+protcartraits2 <- left_join(gmpdprot, zooscore, by = "parname")
+
+protcartraits <- left_join(allprot, protcartraits2)
+protcartraits_small <- protcartraits %>% filter(zscore >= -1) ##don't like it
 
 
 
-#allprots <- as.data.frame(unique(union(sppintrx$parname, zooscore$parname)))
-#allprots %<>% rename(parname=`unique(union(sppintrx$parname, zooscore$parname))`) 
 
-protcartraits <- left_join(allprots, sppintrx)
-protcartraits <- left_join(protcartraits, zooscore)
-protcartraits2 <- protcartraits %>% group_by(parname)
-protraits <- left_join(allprots, zooscore)
+
+protfreq <- as.data.frame(table(gmpdprot$parname))
+protfreq <- as.tbl(protfreq)
+
+protfre2 <- as.data.frame(table(protcartraits2$parname))
+protfre2 <- as.tbl(protfre2)
+
+protfre3 <- left_join(protfreq, protfre2, by = "Var1")
+
+
+#protcartraits2 <- protcartraits %>% group_by(parname)
+#protraits <- left_join(allprots, zooscore)
+
+
 
 parrange <- protcartraits2 %>% summarise(n_distinct(carname), n_distinct(cartype), sum(seqcount), sum(pubcount))
 parrange %<>% rename(carsppcount=`n_distinct(carname)`, cartypecount=`n_distinct(cartype)`, protseqcount=`sum(seqcount)`, protpubcount=`sum(pubcount)`) 
