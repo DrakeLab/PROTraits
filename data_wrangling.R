@@ -19,7 +19,6 @@ zooscore %<>% select(parname=ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final
 sppintrx %<>% filter(Cargo.classification == "Protozoa", Carrier.classification == c("Human", "Mammal", "Domestic", "Primate", "Rodent"), Publications.count >= 1) %<>% select(parname=Cargo, carname=Carrier, cartype=Carrier.classification, seqcount=Sequences.count, pubcount=Publications.count)
 gmpdprot %<>% filter(ParType == "Protozoa", HasBinomialName == "yes") %<>% select(mamtype=Group, carname=HostCorrectedName, carorder=HostOrder, carfamily=HostFamily, carenv=HostEnvironment, gmpdparname=ParasiteCorrectedName, prev=Prevalence, numhosts=HostsSampled, numsamples=NumSamples)
 
-
 # capitalise first letter of binomial names in sppintrx to match zooscore and gmpdprot
 sppintrx$parname <- gsub("(^[a-z])", "\\U\\1", tolower(sppintrx$parname), perl = T)
 sppintrx$carname <- gsub("(^[a-z])", "\\U\\1", tolower(sppintrx$carname), perl = T)
