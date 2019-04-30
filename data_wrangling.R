@@ -1,6 +1,6 @@
 #############################
 ## Author:  Joy Vaz       ###
-## Date:    11 Sep 2018   ###
+## Title:   Clean data    ###
 ## Project: Protraits     ###
 #############################
 
@@ -78,10 +78,9 @@ eid2pair <- eid2prot %>%
   select(parname, carname, cartype) %>% 
   mutate(parcarpair = paste(parname, carname, sep = ", "))
 
-gmpdpair <- gmpdprot %>% 
-  select(parname, carname, mamtype) %>% 
-  unique() %>% 
-  mutate(parcarpair = paste(parname, carname, sep = ", "))
+gmpdprot %<>% mutate(parcarpair = paste(parname, carname, sep = ", "))
+
+gmpdpair <- distinct(gmpdprot, parcarpair, .keep_all = T) 
 
 parcarpair <- setdiff(eid2pair$parcarpair, gmpdpair$parcarpair)
 xtrapairs <- as.tbl(as.data.frame(parcarpair)) %>% 
@@ -92,4 +91,3 @@ allpairs <- as.tbl(as.data.frame(table(union_all(eid2pair$parcarpair, gmpdpair$p
   left_join(full_join(eid2pair, gmpdpair))
 #__________________________________________________________________________________
   
-
