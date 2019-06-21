@@ -49,3 +49,13 @@ eig <- eigen_centrality(g)$vector
 cent_df <- data.frame(types, deg, bet, clos, eig)
 
 cent_df[order(cent_df$type, decreasing = TRUE),] # sort w/ `order` by `type`
+
+library(bipartite)
+
+carparnetwork <- mutate(carparnetwork, netID = "1")
+
+web <- frame2webs(carparnetwork, varnames = c("parname", "carname", "netID"))
+
+parnetstats <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
+carnetstats <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
+
