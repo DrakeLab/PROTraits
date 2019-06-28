@@ -17,7 +17,7 @@ gmpdprot <- read.csv("./Data/GMPD_datafiles/GMPD_main.csv") # Rows are unique ob
 # subset datasets to only include protozoa rows and relevant columns
 protzoos %<>% select(parname=ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, zscore=XC_ZooScore, cscore=XC_CScore, gmpdparname=ParasiteCorrectedName.updated, tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
 #eid2prot %<>% filter(Cargo.classification == "Protozoa", Carrier.classification == c("Human", "Mammal", "Domestic", "Primate", "Rodent"), Publications.count >= 1) %<>% select(parname=Cargo, carname=Carrier, cartype=Carrier.classification, seqcount=Sequences.count, seqID=Sequences, pubcount=Publications.count, pubID=Publications)
-gmpdprot %<>% filter(ParType == "Protozoa", HasBinomialName == "yes") %<>% select(mamtype=Group, carname=HostCorrectedName, carorder=HostOrder, carfamily=HostFamily, carenv=HostEnvironment, gmpdparname=ParasiteCorrectedName, prev=Prevalence, numhosts=HostsSampled, numsamples=NumSamples)
+gmpdprot %<>% filter(ParType == "Protozoa", HasBinomialName == "yes") %<>% select(mamtype=Group, carname=HostCorrectedName, carorder=HostOrder, carfamily=HostFamily, carenv=HostEnvironment, location=LocationName, lat=Latitude, long=Longitude, gmpdparname=ParasiteCorrectedName, prev=Prevalence, numhosts=HostsSampled, numsamples=NumSamples)
 
 # capitalise first letter of binomial names in eid2prot to match zooscore and gmpdprot
 #eid2prot$parname <- gsub("(^[a-z])", "\\U\\1", tolower(eid2prot$parname), perl = T)
@@ -69,27 +69,27 @@ carnames <- as.tbl(as.data.frame(carname))
 #__________________________________________________________________________________
 
 # compare and contrast unique prot spp of the two main datasets
-eid2xtra <- setdiff(unique(eid2prot$parname), unique(gmpdprot$parname))
-gmpdxtra <- setdiff(unique(gmpdprot$parname), unique(eid2prot$parname))
-sameprot <- intersect(unique(gmpdprot$parname), unique(eid2prot$parname)) # 30 prots shared by both databases, 3 of them in noscore
+#eid2xtra <- setdiff(unique(eid2prot$parname), unique(gmpdprot$parname))
+#gmpdxtra <- setdiff(unique(gmpdprot$parname), unique(eid2prot$parname))
+#sameprot <- intersect(unique(gmpdprot$parname), unique(eid2prot$parname)) # 30 prots shared by both databases, 3 of them in noscore
 # check if zero
-sum(length(eid2xtra), length(gmpdxtra), length(sameprot)) - length(parnames$parname)
+#sum(length(eid2xtra), length(gmpdxtra), length(sameprot)) - length(parnames$parname)
 #__________________________________________________________________________________
 
-eid2pair <- eid2prot %>% 
-  select(parname, carname, cartype) %>% 
-  mutate(parcarpair = paste(parname, carname, sep = ", "))
+#eid2pair <- eid2prot %>% 
+#  select(parname, carname, cartype) %>% 
+#  mutate(parcarpair = paste(parname, carname, sep = ", "))
 
 gmpdprot %<>% mutate(parcarpair = paste(parname, carname, sep = ", "))
 
-gmpdpair <- distinct(gmpdprot, parcarpair, .keep_all = T) 
-
-parcarpair <- setdiff(eid2pair$parcarpair, gmpdpair$parcarpair)
-xtrapairs <- as.tbl(as.data.frame(parcarpair)) %>% 
-  left_join(eid2pair)
-  
-allpairs <- as.tbl(as.data.frame(table(union_all(eid2pair$parcarpair, gmpdpair$parcarpair)))) %>% 
-  select(parcarpair=Var1, shared=Freq) %>%
-  left_join(full_join(eid2pair, gmpdpair))
+#gmpdpair <- distinct(gmpdprot, parcarpair, .keep_all = T) 
+#
+#parcarpair <- setdiff(eid2pair$parcarpair, gmpdpair$parcarpair)
+#xtrapairs <- as.tbl(as.data.frame(parcarpair)) %>% 
+#  left_join(eid2pair)
+#  
+#allpairs <- as.tbl(as.data.frame(table(union_all(eid2pair$parcarpair, gmpdpair$parcarpair)))) %>% 
+#  select(parcarpair=Var1, shared=Freq) %>%
+#  left_join(full_join(eid2pair, gmpdpair))
 #__________________________________________________________________________________
   
