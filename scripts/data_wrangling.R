@@ -9,13 +9,37 @@ library(magrittr)
 library(dplyr)
 library(stringr)
 
-# load datasets
-protzoos <- read.csv("./Data/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") # Rows are unique protozoa species (ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final),  is given a zooscore (see Coding Flowchart). Data (unpublished) from: Han lab, Cary Institute of Ecosystem Studies, recieved via email from Barbara Han on 8.6.2018
-gmpdprot <- read.csv("./Data/GMPD_datafiles/GMPD_main.csv") # Rows are unique observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 9.11.2018
+# load datasets and subset data to only include relevant variables and protozoa obs.
+protzoos <- read.csv("./data/raw/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% 
+  select(parname=ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
+         zscore=XC_ZooScore, cscore=XC_CScore, 
+         gmpdparname=ParasiteCorrectedName.updated, 
+         tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, 
+         parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
+  # Rows are unique protozoa species (ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final),  is given a zooscore (see Coding Flowchart). Data (unpublished) from: Han lab, Cary Institute of Ecosystem Studies, recieved via email from Barbara Han on 8.6.2018
+gmpdprot <- read.csv("./data/raw/GMPD_datafiles/GMPD_main.csv") %>% 
+  filter(ParType == "Protozoa", HasBinomialName == "yes") %>% 
+  select(hosttype=Group, hostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
+         location=LocationName, lat=Latitude, long=Longitude, 
+         gmpdparname=ParasiteCorrectedName, 
+         prev=Prevalence, 
+         numhosts=HostsSampled, numsamples=NumSamples)
+  # Rows are unique observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 9.11.2018
+prots_48 <- read.csv("./data/clean/48prots.csv") %>% 
+  mutate(parname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)
+#  rename(parname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
+#         zscore=XC_ZooScore) %>% 
+#  mutate(cscore=NA, 
+#         gmpdparname=parname,
+#         tm_close=NA, tm_nonclose=NA, tm_vector=NA, tm_intermediate=NA)
+gmpd_tax <- read.csv("./data/raw/GMPD_datafiles/GMPD_parasite_taxonomy.csv") %>% 
+  filter(ParType == "Protozoa", HasBinomialName == "yes") %>% 
+  mutate(parname=ParasiteCorrectedName)
+#  select(parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
 
-# subset datasets to only include protozoa rows and relevant columns
-protzoos %<>% select(parname=ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, zscore=XC_ZooScore, cscore=XC_CScore, gmpdparname=ParasiteCorrectedName.updated, tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
-gmpdprot %<>% filter(ParType == "Protozoa", HasBinomialName == "yes") %<>% select(mamtype=Group, carname=HostCorrectedName, carorder=HostOrder, carfamily=HostFamily, carenv=HostEnvironment, location=LocationName, lat=Latitude, long=Longitude, gmpdparname=ParasiteCorrectedName, prev=Prevalence, numhosts=HostsSampled, numsamples=NumSamples)
+left_join(prots_48, gmpd_tax) %>% write.csv("./data/clean/48prots_tax.csv")
+
+
 
 #__________________________________________________________________________________
 ## update gmpdprot with correct prot spp names
