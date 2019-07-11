@@ -23,6 +23,20 @@ ecoregions_biome <- fasterize(ecoregions_sf, r, field = "OBJECTID", by = "BIOME"
 plot(ecoregions_biome)
 
 raster::extract(ecoregions_biome, host_par_points, method='simple', na.rm = TRUE)
+library(ggplot2)
+library(rnaturalearth)
+library(rnaturalearthdata)
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+ggplot() +
+  geom_sf(data = world, aes(fill = gdp_md_est/pop_est), color = "black") +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("World map", subtitle = paste0("(", length(unique(world$name)), " countries)")) +
+  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+  geom_point(data = host_par_points_df, aes(x = long, y = lat)) +
+  coord_sf(crs = 4326)
 
 x <- raster::extract(ecoregions_biome, host_par_points, method='simple', df = TRUE)
 print(x)
