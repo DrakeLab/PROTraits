@@ -1,28 +1,18 @@
 library(sf)
-library(raster)
-library(fasterize)
 
-host_par_points <- as.matrix(gmpdprot[, c(8,7)]) %>% na.omit()
+# assign a ecoregion data to each host-parasite location
 
-ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp")
-ecoregions_sf$BIOME <- gsub(98, 15, ecoregions_sf$BIOME)
-ecoregions_sf$BIOME <- gsub(99, 16, ecoregions_sf$BIOME)
-ecoregions_sf$BIOME <- as.numeric(ecoregions_sf$BIOME)
-biome_colors <- rev(terrain.colors(18))
+host_par_points_df <- as.data.frame(gmpdprot[, c(8,7)]) %>% na.omit() # extract lat longs and remove empty rows
+host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf
+host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
 
-st_geometry_type(ecoregions_sf)
+ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # load wwf terrestrial ecoregion data
 
-r <- raster(ecoregions_sf, res = 1)
+hp_pnts_ecoregion <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.data.frame() # create df with each point and corresponding ecoregion values
 
-ecoregions_all <- fasterize(ecoregions_sf, r, field = "BIOME")
-plot(ecoregions_all, col = biome_colors[3:18])
-points(host_par_points, cex =5)
-plot
 
-ecoregions_biome <- fasterize(ecoregions_sf, r, field = "OBJECTID", by = "BIOME")
-plot(ecoregions_biome)
+# map for fun
 
-raster::extract(ecoregions_biome, host_par_points, method='simple', na.rm = TRUE)
 library(ggplot2)
 library(rnaturalearth)
 library(rnaturalearthdata)
@@ -38,5 +28,3 @@ ggplot() +
   geom_point(data = host_par_points_df, aes(x = long, y = lat)) +
   coord_sf(crs = 4326)
 
-x <- raster::extract(ecoregions_biome, host_par_points, method='simple', df = TRUE)
-print(x)
