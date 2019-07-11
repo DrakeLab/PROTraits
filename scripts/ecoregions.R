@@ -23,7 +23,7 @@ class(world)
 ggplot() +
   geom_sf(data = world, aes(fill = gdp_md_est/pop_est), color = "black") +
   xlab("Longitude") + ylab("Latitude") +
-  ggtitle("World map", subtitle = paste0("(", length(unique(world$name)), " countries)")) +
+  ggtitle("Global distribution of protozoa records in GMPD") +
   scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
   geom_point(data = host_par_points_df, aes(x = long, y = lat)) +
   coord_sf(crs = 4326)
