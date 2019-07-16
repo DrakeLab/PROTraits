@@ -24,6 +24,8 @@ gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>%
          gmpdparname=ParasiteCorrectedName, 
          prev=Prevalence, 
          numhosts=HostsSampled, numsamples=NumSamples)
+# give unique ID to each GMPD record
+gmpdprot$ID <- seq.int(nrow(gmpdprot))
   # Rows are unique observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 9.11.2018
 prots_48 <- read.csv("./data/modified/48prots.csv") %>% 
   mutate(parname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)
@@ -78,7 +80,7 @@ gmpdprot %<>% left_join(protzoos %>% select(parname, zscore,tm_close, tm_nonclos
 # subset tbl of all gmpd protozoa-host pairs and combine with zooscore data
 gmpdzooscored <- gmpdprotraits %>% filter(zscore >= -1)
 
-protrait <- left_join(parnames, gmpdprot)
+protrait <- right_join(parnames, gmpdprot)
 
 #subset tbl of all gmpd protozoa-host pairs and combine with zooscore data
 allprotscored <- protrait %>% filter(zscore >= -1)
