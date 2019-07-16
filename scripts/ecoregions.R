@@ -2,16 +2,17 @@ library(sf)
 
 # assign a ecoregion data to each host-parasite location
 
-host_par_points_df <- as.data.frame(gmpdprot[, c(8,7)]) %>% na.omit() # extract lat longs and remove empty rows
+host_par_points_df <- as.data.frame(gmpdprot[, c(8,7,13)]) %>% na.omit() # extract lat longs and remove empty rows
 host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf
-host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
+#host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
 
-ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # load wwf terrestrial ecoregion data
+# load wwf terrestrial ecoregion data
+ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp")
 
-hp_pnts_ecoregion <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.data.frame() # create df with each point and corresponding ecoregion values
+# create df with each point and corresponding ecoregion values
+hp_pnts_ecoregion <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.data.frame()
 
-
-# map for fun
+# plot map for fun
 
 library(ggplot2)
 library(rnaturalearth)
