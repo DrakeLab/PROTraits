@@ -13,6 +13,8 @@ ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos
 # create df with each point and corresponding ecoregion values
 hp_pnts_ecoregion <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.data.frame()
 
+gmpdprot_spatial <- left_join(gmpdprot, hp_pnts_ecoregion, by = "ID")
+
 # plot maps for fun
 
 library(ggplot2)
