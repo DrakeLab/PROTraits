@@ -7,7 +7,7 @@ host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), 
 #host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
 
 # load wwf terrestrial ecoregion data
-ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp")
+ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
 
 
 # create df with each point and corresponding ecoregion values
@@ -15,11 +15,11 @@ hp_pnts_ecoregion <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.d
 
 gmpdprot_spatial <- left_join(gmpdprot, hp_pnts_ecoregion, by = "ID")
 
-# plot maps for fun
+# plot for fun
 
 library(ggplot2)
 
-# plot world map colored by terrestrial biomes
+# plot global distribution of GMPD protozoa records across TEOW biomes
 
 biome_names <- c("Tropical & Subtropical Moist Broadleaf Forests", 
                  "Tropical & Subtropical Dry Broadleaf Forests", 
@@ -54,17 +54,20 @@ biome_colors <- c("#2c3100",
                   "#7b6f29",
                   "#017db5",
                   "#00325f")
-# 606d39 (tan green)
+# view colours
 pie(rep(1,16), col = biome_colors, labels = biome_names)
+
 biome_map <- ggplot(ecoregions_sf) +
   geom_sf(aes(fill = as.factor(BIOME))) +
   scale_fill_manual(values = biome_colors, name = "Terrestrial Biome", labels = biome_names)
+
 biome_map +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("Global distribution of protozoa records in GMPD") +
   geom_point(data = host_par_points_df, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
   theme(panel.background = element_rect(fill = "azure"))
 
+# plot global distribution of GMPD protozoa records by country 
 
 library(rnaturalearth)
 library(rnaturalearthdata)
