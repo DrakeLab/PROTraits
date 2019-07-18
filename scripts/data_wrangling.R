@@ -72,7 +72,12 @@ noscores <- as.data.frame(setdiff(gmpdprot$protname, protzoos$protname)) %>% ren
 #__________________________________________________________________________________
 
 # add protzoos data to gmpdprot
-gmpdprotraits <- left_join(gmpdprot, protzoos, by = "protname")
+gmpdprotraits <- left_join(gmpdprot, protzoos, by = "protname") %>% 
+  select(ID, protname, hostname, zscore, cscore, 
+         tm_close, tm_nonclose, tm_vector, tm_intermediate, 
+         parphylum, parclass, parorder, parfamily,
+         hosttype, hostorder, hostfamily, hostenv,
+         lat, long, location, numhosts, numsamples, prev)
 
 # subset tbl of all gmpd protozoa-host pairs and combine with zooscore data
 gmpdzooscored <- gmpdprotraits %>% filter(!is.na(zscore))
