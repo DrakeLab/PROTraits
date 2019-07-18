@@ -2,18 +2,23 @@ library(sf)
 
 # assign a ecoregion data to each host-parasite location
 
-host_par_points_df <- as.data.frame(gmpdprot[, c(8,7,13)]) %>% na.omit() # extract lat longs and remove empty rows
+host_par_points_df <- as.data.frame(gmpdprotraits[, c(1, 18, 19)]) %>% na.omit() # extract lat longs and remove empty rows
 host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf
 #host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
 
 # load wwf terrestrial ecoregion data
-ecoregions_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
+teow_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
 
 
 # create df with each point and corresponding ecoregion values
-hp_pnts_ecoregion <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.data.frame()
+hp_pnts_teow <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.data.frame()
 
-gmpdprot_spatial <- left_join(gmpdprot, hp_pnts_ecoregion, by = "ID")
+gmpdprotraits_spatial <- hp_pnts_teow %>% 
+  select(ID, ECO_NAME, REALM, BIOME) %>% 
+  left_join(gmpdprotraits, by = "ID")
+
+
+
 
 # plot for fun
 
