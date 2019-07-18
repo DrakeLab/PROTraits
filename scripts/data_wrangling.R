@@ -3,10 +3,13 @@
 # Project: Protraits     #
 
 ### attach packages
-library("tidyverse", "magrittr", "dplyr", "stringr")
+library("tidyverse", 
+        "magrittr", 
+        "dplyr", 
+        "stringr")
 
 ## load protozoa zooscores data and subset relevant portions
-#prots178 <- read.csv("./data/original/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% # rows are unique protozoa species (ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final), each is given a zooscore (see Coding Flowchart). Data (unpublished) from: Han lab, Cary Institute of Ecosystem Studies, recieved via email from Barbara Han on 8.6.2018
+#prots178 <- read.csv("./data/original/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% # rows are unique protozoa species (ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final), each is given a zooscore (see Coding Flowchart). Data (unpublished) from: Han lab, Cary Institute of Ecosystem Studies, recieved via email from Barbara Han on 2018.08.06
 #  select(protname=ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
 #         zscore=XC_ZooScore, cscore=XC_CScore, 
 #         gmpdprotname=ParasiteCorrectedName.updated, 
@@ -31,7 +34,7 @@ library("tidyverse", "magrittr", "dplyr", "stringr")
 
 protzoos <- read.csv("./data/modified/protzoos.csv")[, 2:13]
 
-gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% # rows are observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 9.11.2018
+gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% # rows are observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
   filter(ParType == "Protozoa", HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName)) %>% 
   select(hosttype=Group, hostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
          location=LocationName, lat=Latitude, long=Longitude, 
@@ -84,11 +87,6 @@ protname <- as.tbl(as.data.frame(unique(gmpdprot$protname))) %>% rename(protname
 
 # create tbl listing all unique host spp from all datasets (n = 251)
 hostname <- as.tbl(as.data.frame(unique(gmpdprot$hostname))) %>% rename(hostname = `unique(gmpdprot$hostname)`)
-
-#__________________________________________________________________________________
-
-#__________________________________________________________________________________
-
 
 #__________________________________________________________________________________
   
