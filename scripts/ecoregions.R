@@ -10,15 +10,15 @@ host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), 
 teow_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
 
 
-# create df with each point and corresponding ecoregion values
-hp_pnts_teow <- st_intersection(ecoregions_sf, host_par_points_sf) %>% as.data.frame()
+# create df with each point and corresponding TEOW vars
+gmpdprot_teow <- st_intersection(ecoregions_sf, host_par_points_sf) %>% 
+  as.data.frame()
 
-gmpdprotraits_spatial <- hp_pnts_teow %>% 
-  select(ID, ECO_NAME, REALM, BIOME) %>% 
-  left_join(gmpdprotraits, by = "ID")
+gmpdprotraits <- left_join(gmpdprotraits, gmpdprot_teow %>% select(ID, ECO_NAME, REALM, BIOME), by = "ID")
 
-
-
+# create df of the GMPD prot records that did NOT overlap with TEOW polygons
+gmpdprot_no_teow <- anti_join(gmpdprotraits, gmpdprot_teow, by = "ID") # 171 records did not match, mostly because they did not have lat/longs in GMPD
+length(gmpdprot_no_teow$lat %>% na.omit()) # 75 records have lat/longs but still did not overlap with TEOW polygons because they were off the coast in Marine ecoregions. 26 of these are records of zoonotic species. 
 
 # plot for fun
 
@@ -60,7 +60,7 @@ biome_colors <- c("#2c3100",
                   "#017db5",
                   "#00325f")
 # view colours
-pie(rep(1,16), col = biome_colors, labels = biome_names)
+#pie(rep(1,16), col = biome_colors, labels = biome_names)
 
 biome_map <- ggplot(ecoregions_sf) +
   geom_sf(aes(fill = as.factor(BIOME))) +
@@ -70,7 +70,8 @@ biome_map +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("Global distribution of protozoa records in GMPD") +
   geom_point(data = host_par_points_df, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
-  theme(panel.background = element_rect(fill = "azure"))
+  theme(panel.background = element_rect(fill = "azure")) +
+  coord_sf(crs = 4326)
 
 # plot global distribution of GMPD protozoa records by country 
 
@@ -85,6 +86,5 @@ ggplot() +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("Global distribution of protozoa records in GMPD") +
   scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-  geom_point(data = host_par_points_df, aes(x = long, y = lat)) +
-  coord_sf(crs = 4326)
+  geom_point(data = host_par_points_df, aes(x = long, y = lat)) 
 
