@@ -3,10 +3,10 @@
 # Project: Protraits     #
 
 ### attach packages
-library("tidyverse", 
-        "magrittr", 
-        "dplyr", 
-        "stringr")
+library(tidyverse) 
+library(magrittr) 
+library(dplyr) 
+library(stringr)
 
 ## load protozoa zooscores data and subset relevant portions
 #prots178 <- read.csv("./data/original/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% # rows are unique protozoa species (ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final), each is given a zooscore (see Coding Flowchart). Data (unpublished) from: Han lab, Cary Institute of Ecosystem Studies, recieved via email from Barbara Han on 2018.08.06
@@ -94,4 +94,3 @@ protname <- as.tbl(as.data.frame(unique(gmpdprot$protname))) %>% rename(protname
 hostname <- as.tbl(as.data.frame(unique(gmpdprot$hostname))) %>% rename(hostname = `unique(gmpdprot$hostname)`)
 
 #__________________________________________________________________________________
-  
