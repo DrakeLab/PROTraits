@@ -29,68 +29,78 @@ library(stringr)
 #protzoos <- rbind(prots178, prots048)
 #
 #write.csv(protzoos, "./data/modified/protzoos.csv")
+#
+#gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% # rows are observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
+#  filter(ParType == "Protozoa", HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName)) %>% 
+#  select(hosttype=Group, hostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
+#         location=LocationName, lat=Latitude, long=Longitude, 
+#         gmpdprotname=ParasiteCorrectedName, 
+#         prev=Prevalence, 
+#         numhosts=HostsSampled, numsamples=NumSamples) %>% 
+#  mutate(ID = seq(len=2484))  # give unique ID to each GMPD record 
+#
+### update gmpdprot with correct prot spp names
+## check  for discrepencies in gmpdprotnames between the two dataframes 
+#
+#setdiff(protzoos$gmpdprotname, gmpdprot$gmpdprotname) # 1 spp in protzoos does is not listed gmpdprot - this is because its host does not have a binomial name and was filtered out above. 
+## remove T. brimonti from protzoos
+#protzoos <- protzoos %>% filter(!grepl("Trypanosoma brimonti", protname))
+#
+## check for discrepencies between final protnames and gmpdprotnames
+#setdiff(protzoos$protname, gmpdprot$gmpdprotname) # the final protnames in protzoos contains 2 corrected protnames that have been updated from the original gmpdprotname
+#
+## create protname variable in gmpd for final protnames
+#gmpdprot <- gmpdprot %>% mutate(protname=gmpdprotname)
+#
+## update the 2 spp names to match zooscore
+#gmpdprot$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprot$protname)
+#gmpdprot$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprot$protname)
+#
+## verify that the protnames in both datasets are now matching
+#setdiff(protzoos$protname, gmpdprot$protname)
+#
+#write.csv(gmpdprot, "./data/modified/gmpdprot.csv")
 
 #__________________________________________________________________________________
 
-protzoos <- read.csv("./data/modified/protzoos.csv")[, 2:13]
-
-gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% # rows are observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
-  filter(ParType == "Protozoa", HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName)) %>% 
-  select(hosttype=Group, hostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
-         location=LocationName, lat=Latitude, long=Longitude, 
-         gmpdprotname=ParasiteCorrectedName, 
-         prev=Prevalence, 
-         numhosts=HostsSampled, numsamples=NumSamples) %>% 
-  mutate(ID = seq(len=2484)) # give unique ID to each GMPD record
-
-## update gmpdprot with correct prot spp names
-
-# check  for discrepencies in gmpdprotnames between the two dataframes 
-setdiff(protzoos$gmpdprotname, gmpdprot$gmpdprotname) # 1 spp in protzoos does is not listed gmpdprot - this is because its host does not have a binomial name and was filtered out above. 
-# remove T. brimonti from protzoos
-protzoos <- protzoos %>% filter(!grepl("Trypanosoma brimonti", protname))
-
-# check for discrepencies between final protnames and gmpdprotnames
-setdiff(protzoos$protname, gmpdprot$gmpdprotname) # the final protnames in protzoos contains 2 corrected protnames that have been updated from the original gmpdprotname
-
-# create protname variable in gmpd for final protnames
-gmpdprot <- gmpdprot %>% mutate(protname=gmpdprotname)
-
-# update the 2 spp names to match zooscore
-gmpdprot$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprot$protname)
-gmpdprot$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprot$protname)
-
-# verify that the protnames in both datasets are now matching
-setdiff(protzoos$protname, gmpdprot$protname)
-
-# check if that gmpdprot has the same number of prot spp as protzoos
-length(unique(gmpdprot$protname)) - length(protzoos$protname) # there are 30 protozoa spp in gmpd that have not been scored yet
+protzoos <- read.csv("./data/modified/protzoos.csv")[, -1]
+gmpdprot <- read.csv("./data/modified/gmpdprot.csv")[, -1]
 
 # save a list of the prot spp that were not in protzoos
-noscores <- as.data.frame(setdiff(gmpdprot$protname, protzoos$protname)) %>% rename(protname = `setdiff(gmpdprot$protname, protzoos$protname)`)
+#noscores <- as.data.frame(setdiff(gmpdprot$protname, protzoos$protname)) %>% rename(protname = `setdiff(gmpdprot$protname, protzoos$protname)`)
+#write.csv(noscores, "./data/modified/noscores.csv")
 
 #__________________________________________________________________________________
 
-# add protzoos data to gmpdprot
-gmpdprotraits <- left_join(gmpdprot, protzoos, by = "protname") %>% 
-  select(ID, protname, hostname, zscore, cscore, 
-         tm_close, tm_nonclose, tm_vector, tm_intermediate, 
-         parphylum, parclass, parorder, parfamily,
-         hosttype, hostorder, hostfamily, hostenv,
-         lat, long, location, numhosts, numsamples, prev)
+# add protzoos data to gmpdprot to create protraits
+#protraits <- left_join(gmpdprot, protzoos, by = "protname") %>% 
+#  select(ID, protname, hostname, zscore, cscore, 
+#         tm_close, tm_nonclose, tm_vector, tm_intermediate, 
+#         parphylum, parclass, parorder, parfamily,
+#         hosttype, hostorder, hostfamily, hostenv,
+#         lat, long, location, numhosts, numsamples, prev)
+#write.csv(protraits, "./data/modified/protraits.csv")
+
+protraits <- read.csv("./data/modified/protraits.csv")[, -1]
 
 # subset tbl of all gmpd protozoa-host pairs and combine with zooscore data
-gmpdzooscored <- gmpdprotraits %>% filter(!is.na(zscore))
+#protraits_zooscored <- protraits %>% filter(!is.na(zscore))
+#write.csv(protraits_zooscored, "./data/modified/protraits_zooscored.csv")
 
-# check if gmpdzooscored has 225 prot species
-length(unique(gmpdzooscored$protname))
+protraits_zooscored <- read.csv("./data/modified/protraits_zooscored.csv")[, 2:24]
+
+# check if protraits_zooscored has 225 prot species
+length(unique(protraits_zooscored$protname))
+
+#__________________________________________________________________________________
+
+
+
+# save as csvs
+#write.csv(prots, "./data/modified/prots.csv")
+#write.csv(hosts, "./data/modified/hosts.csv")
+#write.csv(pairs, "./data/modified/pairs.csv")
 
 #__________________________________________________________________________________
 
-# create tbl listing all unique protozoa spp (n = 255)
-protname <- as.tbl(as.data.frame(unique(gmpdprot$protname))) %>% rename(protname = `unique(gmpdprot$protname)`)
-
-# create tbl listing all unique host spp from all datasets (n = 251)
-hostname <- as.tbl(as.data.frame(unique(gmpdprot$hostname))) %>% rename(hostname = `unique(gmpdprot$hostname)`)
-
-#__________________________________________________________________________________
+#rm(list=ls())
