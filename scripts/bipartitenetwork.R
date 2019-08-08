@@ -1,20 +1,30 @@
 ###Host-Prasite Bipartite Network
 
-#Used code from this tutorial: https://rpubs.com/pjmurphy/317838
-
 library(igraph)
+library(bipartite)
 
-##Setup
+allpairs <- read.csv("./data/modified/allpairs.csv", stringsAsFactors = F)[, -1]
+
+hostprotnetwork <- allpairs %>% select(protname, hostname) %>% mutate(netID = "1")
+
+web <- frame2webs(hostprotnetwork, varnames = c("protname", "hostname", "netID"))
+
+protnetstats <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
+hostnetstats <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
+
+as.one.mode(web[["1"]])
+
+##Setup for igraph
 
 #Take only host and parasite columns and put the data in the right format to feed to igraph
-carparnetwork <- gmpdpair %>% select(parname, carname)
-g <- graph.data.frame(carparnetwork, directed = F)
+
+g <- graph.data.frame(hostprotnetwork[,1:2], directed = F)
 
 bipartite.mapping(g)  # this tells us if the network meets the criteria for a 2-mode network ($res)
-                      # and which nodes fall into each mode - FALSE is parasite and TRUE is host
+# and which nodes fall into each mode - FALSE is prot and TRUE is host
 
 #Check: number of nodes should equal the total number of unique host + parasite spp.
-length(bipartite.mapping(g)$type) - length(unique(union(carparnetwork$parname, carparnetwork$carname))) 
+length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname, hostprotnetwork$hostname))) 
 
 #Add the 'type' attribute to the network
 V(g)$type <- bipartite_mapping(g)$type
@@ -28,8 +38,10 @@ V(g)$size <- 15
 plot(g, layout = layout_with_graphopt)
 
 plot(g, layout=layout.bipartite, vertex.size=7, vertex.label.cex=0.6)
-     
+
 ##Analysis
+
+#Used code from this tutorial: https://rpubs.com/pjmurphy/317838
 
 #From the tutorial page:
 #Igraph was not designed with two-mode networks in mind. It does, however recognize that the network is two-mode. 
@@ -49,13 +61,3 @@ eig <- eigen_centrality(g)$vector
 cent_df <- data.frame(types, deg, bet, clos, eig)
 
 cent_df[order(cent_df$type, decreasing = TRUE),] # sort w/ `order` by `type`
-
-library(bipartite)
-
-carparnetwork <- mutate(carparnetwork, netID = "1")
-
-web <- frame2webs(carparnetwork, varnames = c("parname", "carname", "netID"))
-
-parnetstats <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
-carnetstats <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
-
