@@ -2,6 +2,8 @@
 
 ## create affiliate networks for host-prot pairs
 
+protzoos <- read.csv("./data/modified/protzoos.csv", stringsAsFactors = F)[, -1]
+
 allpairs <- read.csv("./data/modified/allpairs.csv", stringsAsFactors = F)[, -1]
 
 allhosts <- read.csv("./data/modified/allhosts.csv", stringsAsFactors = F)[, -1] %>% 
@@ -11,7 +13,6 @@ allprots <- read.csv("./data/modified/allprots.csv", stringsAsFactors = F)[, -1]
   left_join(protzoos[,1:2], by = "protname") %>% 
   mutate(numhosts = NA, numhostprots = NA, hostzoos = NA, numhostzoons = NA, prophostzoon = NA)
 
-protzoos <- read.csv("./data/modified/protzoos.csv", stringsAsFactors = F)[, -1]
 
 for (i in 1:length(allhosts$hostname)) {
   allhosts$hostprots[i] <- allpairs %>% filter(hostname == allhosts$hostname[i]) %>% 
