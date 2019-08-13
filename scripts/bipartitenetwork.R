@@ -59,13 +59,14 @@ plot(g, layout=layout.bipartite, vertex.size=7, vertex.label.cex=0.6)
 #then the best you will be able to do in igraph will be to analyze each mode separately. 
 
 m <- as.one.mode(web[["1"]])
+mgraph <- graph.adjacency(m)
 
 #Calculate centrality
 types <- V(g)$type                 # get each vertex `type` in order to sort easily
 deg <- degree(m)
 bet <- betweenness(m)
 clos <- closeness(m)
-eig <- eigen_centrality(g)$vector
+eig <- eigen_centrality(mgraph)$vector
 
 protsnet <- left_join(x = specieslevel(web[["1"]], level = "lower", 
                                    index = c("normalised degree", "betweenness", "closeness")) %>% 
@@ -74,3 +75,4 @@ protsnet <- left_join(x = specieslevel(web[["1"]], level = "lower",
                         rownames_to_column("protname") %>% 
                         mutate(types = as.character(types)) %>% 
                         filter(types == "FALSE"))
+ 
