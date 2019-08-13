@@ -1,0 +1,1676 @@
+Spp,Label,Order,Zoonosis,Parasite
+Acinonyx jubatus,1,Carnivora,Anthrax,Bacillus anthracis
+Acinonyx jubatus,1,Carnivora,Toxoplasmosis,Toxoplasma sp.
+Ailuropoda melanoleuca,1,Carnivora,Cryptosporidiosis,Cryptosporidium sp.
+Ailuropoda melanoleuca,1,Carnivora,Toxoplasmosis,Toxoplasma sp.
+Ailurus fulgens,1,Carnivora,Cryptosporidiosis,Cryptosporidium sp.
+Aonyx capensis,0,Carnivora,,
+Aonyx cinerea,0,Carnivora,,
+Arctictis binturong,1,Carnivora,Influenza,Influenza
+Arctocephalus australis,1,Carnivora,Anisakiasis,Contracaecum osculatum
+Arctocephalus forsteri,1,Carnivora,Toxoplasmosis,Toxoplasma sp.
+Arctocephalus galapagoensis,0,Carnivora,,
+Arctocephalus gazella,1,Carnivora,Toxoplasmosis,Toxoplasma sp.
+Arctocephalus philippii,0,Carnivora,,
+Arctocephalus pusillus,1,Carnivora,Toxoplasmosis,Toxoplasma sp.
+Arctocephalus townsendi,0,Carnivora,,
+Arctocephalus tropicalis,0,Carnivora,,
+Arctogalidia trivirgata,0,Carnivora,,
+Arctonyx collaris,0,Carnivora,,
+Atelocynus microtis,0,Carnivora,,
+Atilax paludinosus,1,Carnivora,Paragonimiasis,Paragonimus sp.
+Atilax paludinosus,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Bassaricyon alleni,0,Carnivora,,
+Bassaricyon beddardi,0,Carnivora,,
+Bassaricyon gabbii,0,Carnivora,,
+Bassaricyon lasius,0,Carnivora,,
+Bassaricyon pauli,0,Carnivora,,
+Bassariscus astutus,1,Carnivora,Baylisascariasis,Baylisascaris sp.
+Bassariscus astutus,1,Carnivora,Trypanosomiasis - American,Trypanosoma sp.
+Bassariscus sumichrasti,0,Carnivora,,
+Bdeogale crassicauda,0,Carnivora,,
+Bdeogale jacksoni,0,Carnivora,,
+Bdeogale nigripes,0,Carnivora,,
+Canis aureus,1,Carnivora,Anaplasmosis,Anaplasma sp.
+Canis aureus,1,Carnivora,Brucellosis,Brucella sp.
+Canis aureus,1,Carnivora,Dipylidiasis,Dipylidium sp.
+Canis aureus,1,Carnivora,Dirofilariasis,Dirofilaria immitis
+Canis aureus,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Canis aureus,1,Carnivora,Echinococcosis - unilocular,Echinococcus granulosus
+Canis aureus,1,Carnivora,Ehrlichiosis - human monocytic,Ehrlichia sp.
+Canis aureus,1,Carnivora,Giardiasis,Giardia sp.
+Canis aureus,1,Carnivora,Leishmaniasis - cutaneous,Leishmania sp.
+Canis aureus,1,Carnivora,Leishmaniasis - visceral,Leishmania sp.
+Canis aureus,1,Carnivora,Moniliformis and Macracanthorhynchus,Macracanthorhynchus hirudinaceus
+Canis aureus,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Canis aureus,1,Carnivora,Toxocariasis,Toxocara sp.
+Canis aureus,1,Carnivora,Trichinosis,Trichinella sp.
+Canis latrans,1,Carnivora,Anaplasmosis,Anaplasma phagocytophilum
+Canis latrans,1,Carnivora,Bartonellosis - other systemic,Bartonella sp.
+Canis latrans,1,Carnivora,California encephalitis group,Orthobunyavirus
+Canis latrans,1,Carnivora,Cryptosporidiosis,Cryptosporidium sp.
+Canis latrans,1,Carnivora,Dirofilariasis,Dirofilaria immitis
+Canis latrans,1,Carnivora,Eastern equine encephalitis,Eastern equine encephalitis virus
+Canis latrans,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Canis latrans,1,Carnivora,Ehrlichiosis - human monocytic,Ehrlichia sp.
+Canis latrans,1,Carnivora,Giardiasis,Giardia sp.
+Canis latrans,1,Carnivora,Leptospirosis,Leptospira sp.
+Canis latrans,1,Carnivora,Lyme disease,Borrelia burgdorferi
+Canis latrans,1,Carnivora,Paragonimiasis,Paragonimus sp.
+Canis latrans,1,Carnivora,Plague,Yersinia pestis
+Canis latrans,1,Carnivora,Powassan,Powassan virus
+Canis latrans,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Canis latrans,1,Carnivora,Rocky Mountain spotted fever,Rickettsia rickettsii
+Canis latrans,1,Carnivora,Toxocariasis,Toxascaris sp.
+Canis latrans,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Canis latrans,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Canis latrans,1,Carnivora,West Nile fever,West Nile virus
+Canis lupus,1,Carnivora,Anaplasmosis,Anaplasma sp.
+Canis lupus,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Canis lupus,1,Carnivora,Bartonellosis - other systemic,Bartonella sp.
+Canis lupus,1,Carnivora,Coenurosis,Taenia sp.
+Canis lupus,1,Carnivora,Diphyllobothriasis,Diphyllobothrium sp
+Canis lupus,1,Carnivora,Dipylidiasis,Dipylidium caninum
+Canis lupus,1,Carnivora,Dirofilariasis,Dirofilaria sp.
+Canis lupus,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Canis lupus,1,Carnivora,Echinococcosis - unilocular,Echinococcus granulosus
+Canis lupus,1,Carnivora,Ehrlichiosis - human monocytic,Ehrlichia sp.
+Canis lupus,1,Carnivora,Giardiasis,Giardia sp.
+Canis lupus,1,Carnivora,Influenza,Influenza
+Canis lupus,1,Carnivora,Leishmaniasis - visceral,Leishmania infantum
+Canis lupus,1,Carnivora,Leptospirosis,Leptospira interrogans
+Canis lupus,1,Carnivora,Moniliformis and Macracanthorhynchus,Macracanthorhynchus catulinus
+Canis lupus,1,Carnivora,Sarcocystosis,Sarcocystis sp.
+Canis lupus,1,Carnivora,Toxocariasis,Toxocara canis
+Canis lupus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Canis lupus,1,Carnivora,Trichinosis,Trichinella sp.
+Canis lupus,1,Carnivora,Yersiniosis,Yersinia sp.
+Canis mesomelas,1,Carnivora,Anthrax,Bacillus anthracis
+Canis mesomelas,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Canis simensis,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Caracal caracal,1,Carnivora,Anthrax,Bacillus anthracis
+Caracal caracal,1,Carnivora,Toxoplasmosis,Toxoplasma sp.
+Catopuma badia,0,Carnivora,,
+Catopuma temminckii,0,Carnivora,,
+Cerdocyon thous,1,Carnivora,Capillariasis - extraintestinal,Capillaria aerophila
+Cerdocyon thous,1,Carnivora,Dioctophyma renale infection,Dioctophyma renale
+Cerdocyon thous,1,Carnivora,Dipylidiasis,Dipylidium caninum
+Cerdocyon thous,1,Carnivora,Leishmaniasis - cutaneous,Leishmania sp.
+Cerdocyon thous,1,Carnivora,Leishmaniasis - visceral,Leishmania sp.
+Cerdocyon thous,1,Carnivora,Leptospirosis,Leishmania sp.
+Cerdocyon thous,1,Carnivora,Rabies,Rabies virus
+Cerdocyon thous,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Chrotogale owstoni,1,Carnivora,Influenza,Influenza virus
+Chrysocyon brachyurus,1,Carnivora,Dirofilariasis,"Dirofilaria sp.
+"
+Chrysocyon brachyurus,1,Carnivora,Leishmaniasis - visceral,Leishmania sp.
+Chrysocyon brachyurus,1,Carnivora,Leptospirosis,Leptospira interrogans
+Chrysocyon brachyurus,1,Carnivora,Rabies,Rabies virus
+Chrysocyon brachyurus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Civettictis civetta,1,Carnivora,Rabies,Rabies virus
+Conepatus chinga,1,Carnivora,Leptospirosis,Leishmania sp.
+Conepatus humboldtii,0,Carnivora,,
+Conepatus leuconotus,0,Carnivora,,
+Conepatus semistriatus,0,Carnivora,,
+Crocuta crocuta,1,Carnivora,Dipylidiasis,Dipylidium sp.
+Crocuta crocuta,1,Carnivora,Echinococcosis - unilocular,Echinococcus sp.
+Crocuta crocuta,1,Carnivora,Rabies,Rabies virus
+Crocuta crocuta,1,Carnivora,Trypanosomiasis - African,Trypanosoma (Trypanozoon) brucei gambiense and T. b. rhodesiense
+Crossarchus alexandri,0,Carnivora,,
+Crossarchus ansorgei,0,Carnivora,,
+Crossarchus obscurus,1,Carnivora,Paragonimiasis,Paragonimus sp.
+Crossarchus platycephalus,0,Carnivora,,
+Cryptoprocta ferox,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Cuon alpinus,0,Carnivora,,
+Cynictis penicillata,1,Carnivora,Rabies,Rabies virus
+Cynogale bennettii,0,Carnivora,,
+Cystophora cristata,1,Carnivora,Cryptosporidiosis,Cryptosporidium spp.
+Cystophora cristata,1,Carnivora,Giardiasis,Giardia spp.
+Cystophora cristata,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Diplogale hosei,0,Carnivora,,
+Dologale dybowskii,0,Carnivora,,
+Dusicyon australis,0,Carnivora,,
+Eira barbara,1,Carnivora,Mayaro,Mayaro virus
+Eira barbara,1,Carnivora,Yellow fever,Yellow fever virus
+Enhydra lutris,1,Carnivora,Campylobacteriosis,Campylobacter spp.
+Enhydra lutris,1,Carnivora,Coccidioidomycosis,Coccidioides immitis
+Enhydra lutris,1,Carnivora,Histoplasmosis,Histoplasma capsulatum var. capsulatum 
+Enhydra lutris,1,Carnivora,Salmonellosis,Salmonella spp.
+Erignathus barbatus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Eumetopias jubatus,1,Carnivora,Q-fever,Coxiella burnetii 
+Eupleres goudotii,0,Carnivora,,
+Felis bieti,0,Carnivora,,
+Felis catus,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Felis catus,1,Carnivora,Cryptosporidiosis,Cryptosporidium sp.
+Felis catus,1,Carnivora,Dipylidiasis,Dipylidium caninum
+Felis catus,1,Carnivora,Dirofilariasis,Dirofilaria sp.
+Felis catus,1,Carnivora,Giardiasis,Giardia sp.
+Felis catus,1,Carnivora,Leishmaniasis - cutaneous,Leishmania sp.
+Felis catus,1,Carnivora,Leishmaniasis - mucocutaneous,Leishmania spp.
+Felis catus,1,Carnivora,Leishmaniasis - visceral,Leishmania spp.
+Felis catus,1,Carnivora,Toxocariasis,Toxocara spp.
+Felis catus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Felis chaus,0,Carnivora,,
+Felis manul,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Felis margarita,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Felis nigripes,1,Carnivora,Leishmaniasis - cutaneous,
+Felis nigripes,1,Carnivora,Leishmaniasis - mucocutaneous,
+Felis silvestris,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Felis silvestris,1,Carnivora,Bartonellosis - other systemic,Bartonella sp.
+Felis silvestris,1,Carnivora,Dirofilariasis,Dirofilaria sp.
+Felis silvestris,1,Carnivora,Leptospirosis,Leptospira sp.
+Felis silvestris,1,Carnivora,Thelaziasis,Thelazia sp.
+Felis silvestris,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Fossa fossana,0,Carnivora,,
+Galerella flavescens,0,Carnivora,,
+Galerella ochracea,0,Carnivora,,
+Galerella pulverulenta,0,Carnivora,,
+Galerella sanguinea,0,Carnivora,,
+Galictis cuja,1,Carnivora,Dioctophyma renale infection,Dioctophyma renale
+Galictis vittata,0,Carnivora,,
+Galidia elegans,0,Carnivora,,
+Galidictis fasciata,0,Carnivora,,
+Galidictis grandidieri,0,Carnivora,,
+Genetta abyssinica,0,Carnivora,,
+Genetta angolensis,0,Carnivora,,
+Genetta bourloni,0,Carnivora,,
+Genetta cristata,0,Carnivora,,
+Genetta genetta,1,Carnivora,Echinococcosis - multilocular,Echinococcus spp.
+Genetta genetta,1,Carnivora,Echinococcosis - unilocular,Echinococcus granulosus
+Genetta genetta,1,Carnivora,Leishmaniasis - cutaneous,Leishmania spp.
+Genetta genetta,1,Carnivora,Leishmaniasis - visceral,Leishmania infantum 
+Genetta genetta,1,Carnivora,Leptospirosis,Leptospira interrogans 
+Genetta genetta,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Genetta genetta,1,Carnivora,Trypanosomiasis - African,
+Genetta johnstoni,0,Carnivora,,
+Genetta maculata,0,Carnivora,,
+Genetta pardina,0,Carnivora,,
+Genetta piscivora,0,Carnivora,,
+Genetta poensis,0,Carnivora,,
+Genetta servalina,1,Carnivora,Trypanosomiasis - African,Trypanosoma brucei gambiense 
+Genetta thierryi,0,Carnivora,,
+Genetta tigrina,0,Carnivora,,
+Genetta victoriae,0,Carnivora,,
+Gulo gulo,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Halichoerus grypus,1,Carnivora,Anisakiasis,Anisakis simplex
+Halichoerus grypus,1,Carnivora,Campylobacteriosis,Campylobacter spp.
+Halichoerus grypus,1,Carnivora,Pseudocowpox,Pseudocowpox
+Halichoerus grypus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Helarctos malayanus,0,Carnivora,,
+Helogale hirtula,0,Carnivora,,
+Helogale parvula,0,Carnivora,,
+Hemigalus derbyanus,0,Carnivora,,
+Herpestes brachyurus,1,Carnivora,Herpes B infection,
+Herpestes edwardsi,1,Carnivora,Herpes B infection,
+Herpestes fuscus,1,Carnivora,Rabies,
+Herpestes ichneumon,1,Carnivora,Leishmaniasis - visceral,Leishmania spp.
+Herpestes ichneumon,1,Carnivora,Leptospirosis,Leptospira interrogans 
+Herpestes ichneumon,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Herpestes javanicus,1,Carnivora,Campylobacteriosis,Campylobacter spp.
+Herpestes javanicus,1,Carnivora,Rabies,Rabies virus
+Herpestes javanicus,1,Carnivora,Salmonellosis,Salmonella 
+Herpestes naso,1,Carnivora,Herpes B infection,
+Herpestes semitorquatus,1,Carnivora,Herpes B infection,
+Herpestes smithii,1,Carnivora,Herpes B infection,
+Herpestes urva,1,Carnivora,Herpes B infection,
+Herpestes vitticollis,1,Carnivora,Herpes B infection,
+Histriophoca fasciata,0,Carnivora,,
+Hyaena brunnea,0,Carnivora,,
+Hyaena hyaena,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Hyaena hyaena,1,Carnivora,Echinococcosis - unilocular,Echinococcus granulosus
+Hydrictis maculicollis,0,Carnivora,,
+Hydrurga leptonyx,0,Carnivora,,
+Ichneumia albicauda,0,Carnivora,,
+Ictonyx libyca,0,Carnivora,,
+Ictonyx striatus,0,Carnivora,,
+Leopardus braccatus,0,Carnivora,,
+Leopardus colocolo,1,Carnivora,Toxoplasmosis,Toxoplasma gondii  
+Leopardus geoffroyi,1,Carnivora,Dirofilariasis,Dirofilaria spp.
+Leopardus geoffroyi,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Leopardus guigna,0,Carnivora,,
+Leopardus jacobitus,0,Carnivora,,
+Leopardus pajeros,0,Carnivora,,
+Leopardus pardalis,1,Carnivora,Dirofilariasis,Dirofilaria immitis
+Leopardus pardalis,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Leopardus tigrinus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Leopardus wiedii,1,Carnivora,Dirofilariasis,Dirofilaria immitis
+Leopardus wiedii,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Leptailurus serval,1,Carnivora,Leptospirosis,Leptospira sp.
+Leptonychotes weddellii,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Liberiictis kuhni,0,Carnivora,,
+Lobodon carcinophaga,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Lontra canadensis,1,Carnivora,Diphyllobothriasis,Diphyllobothrium dendriticum 
+Lontra canadensis,1,Carnivora,Giardiasis,Giardia sp.
+Lontra felina,0,Carnivora,,
+Lontra longicaudis,0,Carnivora,,
+Lontra provocax,0,Carnivora,,
+Lutra lutra,1,Carnivora,Diphyllobothriasis,Diphyllobothrium latum
+Lutra lutra,1,Carnivora,Dirofilariasis,Dirofilaria immitis
+Lutra lutra,1,Carnivora,Metorchiasis,Metorchis sp.
+Lutra lutra,1,Carnivora,Microsporidiosis,Encephalitozoon cuniculi 
+Lutra lutra,1,Carnivora,Opisthorchiasis,Opisthorchis sp. 
+Lutra lutra,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Lutra nippon,0,Carnivora,,
+Lutra sumatrana,0,Carnivora,,
+Lutrogale perspicillata,0,Carnivora,,
+Lycalopex culpaeus,0,Carnivora,,
+Lycalopex fulvipes,0,Carnivora,,
+Lycalopex griseus,1,Carnivora,Leptospirosis,Leptospira sp.
+Lycalopex gymnocercus,1,Carnivora,Echinococcosis - unilocular,Echinococcus granulosus
+Lycalopex sechurae,0,Carnivora,,
+Lycalopex vetulus,1,Carnivora,Leishmaniasis - visceral,Leishmania sp.
+Lycaon pictus,1,Carnivora,Echinococcosis - unilocular,Echinococcus granulosus
+Lycaon pictus,1,Carnivora,Rabies,Rabies virus
+Lyncodon patagonicus,0,Carnivora,,
+Lynx canadensis,1,Carnivora,Cryptosporidiosis,Cryptosporidium spp.
+Lynx canadensis,1,Carnivora,Giardiasis,Giardia lamblia 
+Lynx canadensis,1,Carnivora,Plague,Yersinia pestis 
+Lynx canadensis,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Lynx lynx,1,Carnivora,Cryptosporidiosis,Cryptosporidium spp.
+Lynx lynx,1,Carnivora,Diphyllobothriasis,Diphyllobothrium latum
+Lynx lynx,1,Carnivora,Echinococcosis - American polycystic,Echinococcus spp.
+Lynx lynx,1,Carnivora,Giardiasis,Giardia spp.
+Lynx lynx,1,Carnivora,Leishmaniasis - visceral,Leishmania spp.
+Lynx lynx,1,Carnivora,Leptospirosis,Leptospira spp.
+Lynx lynx,1,Carnivora,Plague,Yersinia pestis 
+Lynx lynx,1,Carnivora,Rabies,Rabies virus
+Lynx lynx,1,Carnivora,Thelaziasis,Thelazia callipaeda 
+Lynx lynx,1,Carnivora,Toxocariasis,Toxocara spp.
+Lynx lynx,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Lynx lynx,1,Carnivora,Trichinosis,Trichinella spp.
+Lynx lynx,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Lynx lynx,1,Carnivora,Tuberculosis,Mycobacterium bovis 
+Lynx lynx,1,Carnivora,Vaccinia and cowpox,Orthopoxvirus
+Lynx pardinus,1,Carnivora,Leishmaniasis - visceral,Leishmania spp.
+Lynx pardinus,1,Carnivora,Leptospirosis,Leptospira spp.
+Lynx pardinus,1,Carnivora,Toxocariasis,Toxocara spp.
+Lynx pardinus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Lynx rufus,1,Carnivora,Cryptosporidiosis,Cryptosporidium spp.
+Lynx rufus,1,Carnivora,Echinococcosis - American polycystic,Echinococcus spp.
+Lynx rufus,1,Carnivora,Giardiasis,Giardia lamblia 
+Lynx rufus,1,Carnivora,Plague,Yersinia pestis 
+Lynx rufus,1,Carnivora,Rabies,Rabies
+Lynx rufus,1,Carnivora,Toxocariasis,Toxocara cati 
+Lynx rufus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Lynx rufus,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Macrogalidia musschenbroekii,0,Carnivora,,
+Martes americana,1,Carnivora,Dioctophyma renale infection,Dioctophyma renale
+Martes flavigula,0,Carnivora,,
+Martes foina,1,Carnivora,Dirofilariasis,Dirofilaria repens 
+Martes foina,1,Carnivora,Rabies,Rabies virus
+Martes foina,1,Carnivora,Thelaziasis,Thelazia callipaeda
+Martes foina,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Martes foina,1,Carnivora,Trichinosis,Trichinella spp.
+Martes foina,1,Carnivora,Tularemia,Francisella tularensis 
+Martes gwatkinsii,0,Carnivora,,
+Martes martes,1,Carnivora,Dioctophyma renale infection,Dioctophyma renale
+Martes martes,1,Carnivora,Dirofilariasis,
+Martes martes,1,Carnivora,Japanese spotted fever,Rickettsia japonica
+Martes martes,1,Carnivora,Leishmaniasis - visceral,Leishmania spp.
+Martes martes,1,Carnivora,Microsporidiosis,Encephalitozoon cuniculi 
+Martes martes,1,Carnivora,Rabies,Rabies virus
+Martes martes,1,Carnivora,Sarcocystosis,Sarcocystis spp.
+Martes martes,1,Carnivora,Thelaziasis,Thelazia spp.
+Martes martes,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Martes martes,1,Carnivora,Trichinosis,Trichinella spp.
+Martes martes,1,Carnivora,Tularemia,Francisella tularensis 
+Martes melampus,1,Carnivora,Japanese spotted fever,Rickettsia japonica
+Martes melampus,1,Carnivora,Sarcocystosis,Sarcocystis spp.
+Martes melampus,1,Carnivora,Trichinosis,Trichinella spp.
+Martes pennanti,1,Carnivora,Sarcocystosis,Sarcocystis spp.
+Martes pennanti,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Martes zibellina,0,Carnivora,,
+Meles anakuma,1,Carnivora,Sarcocystosis,Sarcocystis spp.
+Meles leucurus,0,Carnivora,,
+Meles meles,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Meles meles,1,Carnivora,Bartonellosis - other systemic,Bartonella spp.
+Meles meles,1,Carnivora,Bunyaviridae infections - misc.,
+Meles meles,1,Carnivora,Dirofilariasis,
+Meles meles,1,Carnivora,Histoplasmosis,Histoplasma capsulatum var. capsulatum 
+Meles meles,1,Carnivora,Leishmaniasis - visceral,Leishmania spp.
+Meles meles,1,Carnivora,Leptospirosis,Leptospira spp.
+Meles meles,1,Carnivora,Sarcocystosis,Sarcocystis spp.
+Meles meles,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Meles meles,1,Carnivora,Trichinosis,Trichinella spp.
+Meles meles,1,Carnivora,Tuberculosis,Mycobacterium 
+Mellivora capensis,1,Carnivora,Rabies,Rabies virus
+Melogale everetti,0,Carnivora,,
+Melogale moschata,1,Carnivora,Rabies,Rabies virus
+Melogale moschata,1,Carnivora,SARS,Coronavirus
+Melogale orientalis,0,Carnivora,,
+Melogale personata,0,Carnivora,,
+Melursus ursinus,0,Carnivora,,
+Mephitis macroura,1,Carnivora,West Nile fever,West Nile virus 
+Mephitis mephitis,1,Carnivora,Anaplasmosis,Anaplasma sp.
+Mephitis mephitis,1,Carnivora,California encephalitis group,California encephalitis
+Mephitis mephitis,1,Carnivora,Paragonimiasis,Paragonimus sp.
+Mephitis mephitis,1,Carnivora,Powassan,Flavivirus sp.
+Mephitis mephitis,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Mephitis mephitis,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Mephitis mephitis,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Mephitis mephitis,1,Carnivora,Tularemia,Francisella tularensis 
+Mephitis mephitis,1,Carnivora,West Nile fever,West Nile virus 
+Mirounga angustirostris,1,Carnivora,Influenza,Influenza virus
+Mirounga leonina,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Monachus monachus,1,Carnivora,Dirofilariasis,Dirofilaria spp.
+Monachus monachus,1,Carnivora,Leptospirosis,Leptospira spp.
+Monachus monachus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Monachus monachus,1,Carnivora,West Nile fever,West Nile virus 
+Monachus schauinslandi,1,Carnivora,Dirofilariasis,Dirofilaria spp.
+Monachus schauinslandi,1,Carnivora,Leptospirosis,Leptospira spp.
+Monachus schauinslandi,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Monachus tropicalis,0,Carnivora,,
+Mungos gambianus,0,Carnivora,,
+Mungos mungo,1,Carnivora,Leptospirosis,Leptospira interrogans 
+Mungos mungo,1,Carnivora,Tuberculosis,Mycobacterium tuberculosis 
+Mungos mungo,1,Carnivora,Vaccinia and cowpox,Cowpox virus
+Mungotictis decemlineata,0,Carnivora,,
+Mustela africana,0,Carnivora,,
+Mustela altaica,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Mustela erminea,1,Carnivora,Cryptosporidiosis,Cryptosporidium
+Mustela erminea,1,Carnivora,Trichinosis,Trichinella spp.
+Mustela eversmanii,0,Carnivora,,
+Mustela felipei,0,Carnivora,,
+Mustela frenata,0,Carnivora,,
+Mustela itatsi,1,Carnivora,Gnathostomiasis,Gnathostoma nipponicum
+Mustela kathiah,0,Carnivora,,
+Mustela lutreola,1,Carnivora,Leptospirosis,Leptospira spp.
+Mustela lutreola,1,Carnivora,Lyme disease,Borrelia spp.
+Mustela lutreolina,0,Carnivora,,
+Mustela nigripes,0,Carnivora,,
+Mustela nivalis,1,Carnivora,Leishmaniasis - cutaneous,Leishmania spp.
+Mustela nudipes,0,Carnivora,,
+Mustela putorius,1,Carnivora,Dirofilariasis,Dirofilaria sp.
+Mustela putorius,1,Carnivora,Leptospirosis,Leptospira interrogans
+Mustela putorius,1,Carnivora,Rabies,Rabies virus
+Mustela putorius,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Mustela sibirica,1,Carnivora,Gnathostomiasis,Gnathostoma spp.
+Mustela strigidorsa,0,Carnivora,,
+Mustela subpalmata,0,Carnivora,,
+Mydaus javanensis,0,Carnivora,,
+Mydaus marchei,0,Carnivora,,
+Nandinia binotata,1,Carnivora,Trypanosomiasis - African,Trypanosoma brucei gambiense
+Nasua narica,1,Carnivora,Baylisascariasis,Baylisascaris procyonis
+Nasua narica,1,Carnivora,Rabies,Rabies virus
+Nasua narica,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Nasua nasua,1,Carnivora,Baylisascariasis,Baylisascaris procyonis
+Nasua nasua,1,Carnivora,Leishmaniasis - cutaneous,Leishmania spp.
+Nasua nasua,1,Carnivora,Leptospirosis,Leptospira spp.
+Nasua nasua,1,Carnivora,Mayaro,Mayaro virus
+Nasua nasua,1,Carnivora,Paragonimiasis,Paragonimus spp.
+Nasua nasua,1,Carnivora,Rabies,Rabies virus
+Nasua nasua,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Nasua nasua,1,Carnivora,Tuberculosis,Mycobacterium
+Nasua nasua,1,Carnivora,Vaccinia and cowpox,Orthopoxvirus
+Nasuella olivacea,0,Carnivora,,
+Neofelis nebulosa,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Neophoca cinerea,1,Carnivora,Cryptosporidiosis,
+Neophoca cinerea,1,Carnivora,Giardiasis,Giardia duodenalis
+Neovison macrodon,0,Carnivora,,
+Neovison vison,1,Carnivora,Influenza,Influenza virus
+Neovison vison,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Nyctereutes procyonoides,1,Carnivora,Anaplasmosis,Anaplasma sp.
+Nyctereutes procyonoides,1,Carnivora,Dipylidiasis,Dipylidium caninum
+Nyctereutes procyonoides,1,Carnivora,Dirofilariasis,Dirofilaria immitis
+Nyctereutes procyonoides,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Nyctereutes procyonoides,1,Carnivora,Leishmaniasis - visceral,Leishmania sp.
+Nyctereutes procyonoides,"Lossi (RC), Lope  (Gabon), ",Carnivora,Paragonimiasis,Paragonimus westermani
+Nyctereutes procyonoides,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Nyctereutes procyonoides,1,Carnivora,Sarcocystosis,Sarcocystis sp.
+Nyctereutes procyonoides,1,Carnivora,SARS,Coronavirus
+Nyctereutes procyonoides,1,Carnivora,Toxocariasis,Toxocara spp.
+Nyctereutes procyonoides,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Nyctereutes procyonoides,1,Carnivora,Trichinosis,Trichinella spp.
+Nyctereutes procyonoides,1,Carnivora,Tularemia,Francisella tularensis 
+Odobenus rosmarus,1,Carnivora,Coccidioidomycosis,Coccidioides sp.
+Odobenus rosmarus,1,Carnivora,Trichinosis,Trichinella spiralis
+Ommatophoca rossii,0,Carnivora,,
+Otaria flavescens,1,Carnivora,Salmonellosis,Salmonella 
+Otocyon megalotis,1,Carnivora,Rabies,Rabies virus
+Pagophilus groenlandicus,0,Carnivora,,
+Paguma larvata,1,Carnivora,Campylobacteriosis,Campylobacter spp.
+Paguma larvata,1,Carnivora,Rabies,Rabies virus
+Paguma larvata,1,Carnivora,Salmonellosis,Salmonella 
+Paguma larvata,1,Carnivora,SARS,Coronavirus
+Paguma larvata,1,Carnivora,Yersiniosis,Yersinia spp.
+Panthera leo,1,Carnivora,Anaplasmosis,Anaplasma phagocytophilum
+Panthera leo,1,Carnivora,Anthrax,Bacillus anthracis
+Panthera leo,1,Carnivora,Echinococcosis - unilocular,Echinococcus granulosus
+Panthera leo,1,Carnivora,Ehrlichiosis - human monocytic,
+Panthera leo,1,Carnivora,Gnathostomiasis,Gnathostoma spinigerum
+Panthera leo,1,Carnivora,Leishmaniasis - visceral,Leishmania infantum
+Panthera leo,1,Carnivora,Pentastomiasis - Armillifer,Armillifer spp.
+Panthera leo,1,Carnivora,Pentastomiasis - Linguatula,Linguatula serrata
+Panthera leo,1,Carnivora,Rabies,Lyssavirus Rabies lyssavirus
+Panthera leo,1,Carnivora,Toxocariasis,Toxocara sp.
+Panthera leo,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Panthera leo,1,Carnivora,Trypanosomiasis - African,Trypanosoma sp.
+Panthera leo,1,Carnivora,Tuberculosis,Mycobacterium tuberculosis 
+Panthera onca,1,Carnivora,Brucellosis,
+Panthera onca,1,Carnivora,Echinococcosis - American polycystic,Echinococcus oligarthrus
+Panthera onca,1,Carnivora,Leptospirosis,Leptospira spp.
+Panthera onca,1,Carnivora,Q-fever,Coxiella burnetii 
+Panthera onca,1,Carnivora,Rocky Mountain spotted fever,Rickettsia parkeri
+Panthera onca,1,Carnivora,Toxocariasis,Toxocara spp.
+Panthera onca,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Panthera onca,1,Carnivora,Tungiasis,Tunga spp.
+Panthera pardus,1,Carnivora,Dirofilariasis,Dirofilaria spp.
+Panthera pardus,1,Carnivora,Influenza,Influenza virus
+Panthera pardus,1,Carnivora,Pentastomiasis - Armillifer,Armillifer spp.
+Panthera pardus,1,Carnivora,Pentastomiasis - Linguatula,Linguatula serrata
+Panthera pardus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Panthera tigris,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Panthera tigris,1,Carnivora,Histoplasmosis,Histoplasma capsulatum var. capsulatum 
+Panthera tigris,1,Carnivora,Influenza,Influenza virus
+Panthera tigris,1,Carnivora,Paragonimiasis,Paragonimus westermani
+Panthera tigris,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Paracynictis selousi,0,Carnivora,,
+Paradoxurus hermaphroditus,0,Carnivora,,
+Paradoxurus jerdoni,0,Carnivora,,
+Paradoxurus zeylonensis,1,Carnivora,Rabies,Rabies virus
+Pardofelis marmorata,0,Carnivora,,
+Phoca largha,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Phoca vitulina,1,Carnivora,Coccidioidomycosis,Coccidioides spp.
+Phoca vitulina,1,Carnivora,Cryptosporidiosis,Cryptosporidium spp.
+Phoca vitulina,1,Carnivora,Dioctophyma renale infection,Dioctophyma renale
+Phoca vitulina,1,Carnivora,Eastern equine encephalitis,Eastern equine encephalitis virus
+Phoca vitulina,1,Carnivora,Giardiasis,Giardia sp.
+Phoca vitulina,1,Carnivora,Leptospirosis,Leptospira spp.
+Phoca vitulina,1,Carnivora,Q-fever,Coxiella burnetii 
+Phoca vitulina,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Phocarctos hookeri,1,Carnivora,Brucellosis,
+Phocarctos hookeri,1,Carnivora,Leptospirosis,
+Poecilogale albinucha,0,Carnivora,,
+Poiana leightoni,0,Carnivora,,
+Poiana richardsonii,0,Carnivora,,
+Potos flavus,1,Carnivora,Baylisascariasis,Baylisascaris procyonis
+Potos flavus,1,Carnivora,Blastomycosis,Blastomyces dermatitidis
+Potos flavus,1,Carnivora,Leishmaniasis - cutaneous,Leishmania spp.
+Potos flavus,1,Carnivora,Mayaro,Mayaro virus
+Potos flavus,1,Carnivora,Rabies,Rabies virus
+Prionailurus bengalensis,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Prionailurus iriomotensis,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Prionailurus planiceps,0,Carnivora,,
+Prionailurus rubiginosus,0,Carnivora,,
+Prionailurus viverrinus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Prionodon linsang,0,Carnivora,,
+Prionodon pardicolor,0,Carnivora,,
+Procyon cancrivorus,0,Carnivora,,
+Procyon lotor,1,Carnivora,Anaplasmosis,Anaplasma phagocytophilum
+Procyon lotor,1,Carnivora,Babesiosis,Babesia sp.
+Procyon lotor,1,Carnivora,Baylisascariasis,Baylisascaris procyonis
+Procyon lotor,1,Carnivora,Borna virus encephalitis,Bornavirus
+Procyon lotor,1,Carnivora,California encephalitis group,California encephalitis
+Procyon lotor,1,Carnivora,Campylobacteriosis,Campylobacter spp.
+Procyon lotor,1,Carnivora,Dirofilariasis,Dirofilaria spp.
+Procyon lotor,1,Carnivora,Ehrlichiosis - human monocytic,Ehrlichia chaffeensis 
+Procyon lotor,1,Carnivora,Histoplasmosis,Histoplasma capsulatum var. capsulatum 
+Procyon lotor,1,Carnivora,Influenza,Influenza virus
+Procyon lotor,1,Carnivora,Japanese spotted fever,Rickettsia japonica
+Procyon lotor,1,Carnivora,Leptospirosis,Leptospira spp.
+Procyon lotor,1,Carnivora,Lyme disease,Borrelia spp.
+Procyon lotor,1,Carnivora,Metagonimiasis,Metagonimus yokogawai
+Procyon lotor,1,Carnivora,Powassan,Powassan virus
+Procyon lotor,1,Carnivora,Q-fever,Coxiella burnetii 
+Procyon lotor,1,Carnivora,Rabies,Rabies virus
+Procyon lotor,1,Carnivora,Rickettsia felis infection,Rickettsia felis
+Procyon lotor,1,Carnivora,Salmonellosis,Salmonella 
+Procyon lotor,1,Carnivora,Spotted fevers - Old World,Rickettsia spp.
+Procyon lotor,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Procyon lotor,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Procyon lotor,1,Carnivora,Tularemia,Francisella tularensis 
+Procyon lotor,1,Carnivora,Typhus - scrub,Orientia spp.
+Procyon lotor,1,Carnivora,West Nile fever,West Nile virus 
+Procyon lotor,1,Carnivora,Yersiniosis,Yersinia spp.
+Procyon pygmaeus,1,Carnivora,Baylisascariasis,
+Procyon pygmaeus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Procyon pygmaeus,1,Carnivora,Tularemia,Francisella tularensis 
+Profelis aurata,0,Carnivora,,
+Proteles cristata,1,Carnivora,Bertiella and Inermicapsifer,
+Pteronura brasiliensis,0,Carnivora,,
+Puma concolor,1,Carnivora,Anaplasmosis,Anaplasma phagocytophilum
+Puma concolor,1,Carnivora,Bartonellosis - cat borne,Bartonella henselae
+Puma concolor,1,Carnivora,Capillariasis - extraintestinal,Capillaria spp.
+Puma concolor,1,Carnivora,Echinococcosis - American polycystic,Echinococcus oligarthrus
+Puma concolor,1,Carnivora,Lyme disease,Borrelia spp.
+Puma concolor,1,Carnivora,Plague,Yersinia pestis 
+Puma concolor,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Puma concolor,1,Carnivora,Tularemia,Francisella tularensis 
+Puma yagouaroundi,1,Carnivora,Echinococcosis - American polycystic,Echinococcus oligarthrus
+Puma yagouaroundi,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Pusa caspica,0,Carnivora,,
+Pusa hispida,1,Carnivora,Rabies,Rabies virus
+Pusa sibirica,0,Carnivora,,
+Rhynchogale melleri,0,Carnivora,,
+Salanoia concolor,0,Carnivora,,
+Speothos venaticus,1,Carnivora,Echinococcosis - American polycystic,Echinococcus vogeli
+Speothos venaticus,1,Carnivora,Leishmaniasis - visceral,Leishmania chagasi/infantum
+Spilogale angustifrons,0,Carnivora,,
+Spilogale gracilis,0,Carnivora,,
+Spilogale putorius,0,Carnivora,,
+Spilogale pygmaea,0,Carnivora,,
+Suricata suricatta,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Suricata suricatta,1,Carnivora,Tuberculosis,Mycobacterium tuberculosis 
+Taxidea taxus,1,Carnivora,Influenza,Influenza virus
+Taxidea taxus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Tremarctos ornatus,0,Carnivora,,
+Uncia uncia,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Urocyon cinereoargenteus,1,Carnivora,Anaplasmosis,Anaplasma phagocytophilum
+Urocyon cinereoargenteus,1,Carnivora,Bartonellosis - cat borne,Bartonella vinsonii
+Urocyon cinereoargenteus,1,Carnivora,Bartonellosis - other systemic,Bartonella spp.
+Urocyon cinereoargenteus,1,Carnivora,Rabies,Rabies virus
+Urocyon cinereoargenteus,1,Carnivora,Trypanosomiasis - American,Trypanosoma cruzi
+Urocyon cinereoargenteus,1,Carnivora,West Nile fever,West Nile virus 
+Urocyon littoralis,1,Carnivora,Bartonellosis - cat borne,Bartonella vinsonii
+Urocyon littoralis,1,Carnivora,Bartonellosis - other systemic,Bartonella spp.
+Ursus americanus,1,Carnivora,Anaplasmosis,Anaplasma sp.
+Ursus americanus,1,Carnivora,Babesiosis,Babesia sp.
+Ursus americanus,1,Carnivora,Baylisascariasis,Baylisascaris procyonis
+Ursus americanus,1,Carnivora,Blastomycosis,Blastomyces dermatitidis
+Ursus americanus,1,Carnivora,Cysticercosis,Taenia solium
+Ursus americanus,1,Carnivora,Dirofilariasis,Dirofilaria ursi
+Ursus americanus,1,Carnivora,Ehrlichiosis - human monocytic,Ehrlichia spp.
+Ursus americanus,1,Carnivora,Rocky Mountain spotted fever,Rickettsia parkeri 
+Ursus americanus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Ursus americanus,1,Carnivora,Trichinosis,Trichinella sp.
+Ursus americanus,1,Carnivora,Tularemia,Francisella tularensis 
+Ursus americanus,1,Carnivora,Venezuelan equine encephalitis,Venezuelan equine encephalitis virus
+Ursus americanus,1,Carnivora,West Nile fever,West Nile virus 
+Ursus arctos,1,Carnivora,Anaplasmosis,Anaplasma sp.
+Ursus arctos,1,Carnivora,Baylisascariasis,Baylisascaris procyonis
+Ursus arctos,1,Carnivora,Brucellosis,Brucella spp.
+Ursus arctos,1,Carnivora,Bunyaviridae infections - misc.,Bhanja virus
+Ursus arctos,1,Carnivora,California encephalitis group,California encephalitis
+Ursus arctos,1,Carnivora,Cryptosporidiosis,Cryptosporidium spp.
+Ursus arctos,1,Carnivora,Giardiasis,Giardia spp.
+Ursus arctos,1,Carnivora,Hepatitis E,Hepatitis E virus
+Ursus arctos,1,Carnivora,Histoplasmosis,Histoplasma capsulatum
+Ursus arctos,1,Carnivora,Leptospirosis,Leptospira spp.
+Ursus arctos,1,Carnivora,Old World phleboviruses,Sandfly fever virus  
+Ursus arctos,1,Carnivora,Ornithosis,Chlamydophila psittaci
+Ursus arctos,1,Carnivora,Q-fever,Coxiella burnetii 
+Ursus arctos,1,Carnivora,Trichinosis,Trichinella spp.
+Ursus arctos,1,Carnivora,Tularemia,Francisella tularensis 
+Ursus arctos,1,Carnivora,West Nile fever,West Nile virus 
+Ursus maritimus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Ursus maritimus,1,Carnivora,Trichinosis,Trichinella sp.
+Ursus thibetanus,1,Carnivora,Tularemia,Francisella tularensis 
+Viverra civettina,0,Carnivora,,
+Viverra megaspila,0,Carnivora,,
+Viverra tangalunga,1,Carnivora,Filariasis - Brugia malayi,Brugia malayi
+Viverra zibetha,0,Carnivora,,
+Viverricula indica,0,Carnivora,,
+Vormela peregusna,1,Carnivora,Lyme disease,Borrelia burgdorferi
+Vulpes bengalensis,0,Carnivora,,
+Vulpes cana,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Vulpes chama,0,Carnivora,,
+Vulpes corsac,1,Carnivora,Leishmaniasis - visceral,Leishmania spp.
+Vulpes corsac,1,Carnivora,Trichinosis,Trichinella sp.
+Vulpes ferrilata,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Vulpes lagopus,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Vulpes lagopus,1,Carnivora,Leptospirosis,
+Vulpes lagopus,1,Carnivora,Rabies,Rabies virus
+Vulpes lagopus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Vulpes lagopus,1,Carnivora,Trichinosis,Trichinella sp.
+Vulpes macrotis,0,Carnivora,,
+Vulpes pallida,0,Carnivora,,
+Vulpes rueppellii,0,Carnivora,,
+Vulpes velox,0,Carnivora,,
+Vulpes vulpes,1,Carnivora,Anaplasmosis,Anaplasma phagocytophilum
+Vulpes vulpes,1,Carnivora,Babesiosis,Babesia sp.
+Vulpes vulpes,1,Carnivora,Bartonellosis - cat borne,Bartonella sp.
+Vulpes vulpes,1,Carnivora,Bartonellosis - other systemic,Bartonella sp.
+Vulpes vulpes,1,Carnivora,California encephalitis group,La Crosse
+Vulpes vulpes,1,Carnivora,Capillariasis - extraintestinal,Capillaria spp.
+Vulpes vulpes,1,Carnivora,Cryptosporidiosis,Cryptosporidium spp.
+Vulpes vulpes,1,Carnivora,Diphyllobothriasis,Diphyllobothrium latum
+Vulpes vulpes,1,Carnivora,Dipylidiasis,Dipylidium caninum
+Vulpes vulpes,1,Carnivora,Dirofilariasis,Dirofilaria sp.
+Vulpes vulpes,1,Carnivora,Echinococcosis - multilocular,Echinococcus multilocularis
+Vulpes vulpes,1,Carnivora,Echinococcosis - unilocular,Echinococcus sp.
+Vulpes vulpes,1,Carnivora,Ehrlichiosis - human monocytic,Ehrlichia sp.
+Vulpes vulpes,1,Carnivora,Giardiasis,Giardia sp.
+Vulpes vulpes,1,Carnivora,Hantavirus infection - Old World,Puumala Hantaan virus
+Vulpes vulpes,1,Carnivora,Hymenolepis diminuta infection,Hymenolepis diminuta
+Vulpes vulpes,1,Carnivora,Hymenolepis nana infection,Hymenolepis (Rodentolepis) nana
+Vulpes vulpes,1,Carnivora,Influenza,Influenza virus
+Vulpes vulpes,1,Carnivora,Leishmaniasis - cutaneous,Leishmania sp.
+Vulpes vulpes,1,Carnivora,Leishmaniasis - visceral,Leishmania sp.
+Vulpes vulpes,1,Carnivora,Leptospirosis,Leptospira interrogans
+Vulpes vulpes,1,Carnivora,Lyme disease,Borrelia sp.
+Vulpes vulpes,1,Carnivora,Metagonimiasis,Metagonimus yokogawai
+Vulpes vulpes,1,Carnivora,Moniliformis and Macracanthorhynchus,
+Vulpes vulpes,1,Carnivora,Opisthorchiasis,Opisthorchis sp.
+Vulpes vulpes,1,Carnivora,Paragonimiasis,Paragonimus sp.
+Vulpes vulpes,1,Carnivora,Powassan,Powassan virus
+Vulpes vulpes,1,Carnivora,Rabies,Rabies virus
+Vulpes vulpes,1,Carnivora,Rickettsia felis infection,Rickettsia felis
+Vulpes vulpes,1,Carnivora,Sarcocystosis,Sarcocystis spp.
+Vulpes vulpes,1,Carnivora,Spotted fevers - Old World,Rickettsia sp.
+Vulpes vulpes,1,Carnivora,Taeniasis,Taenia sp.
+Vulpes vulpes,1,Carnivora,Thelaziasis,Thelazia callipaeda
+Vulpes vulpes,1,Carnivora,Tick-borne encephalitis,tick-borne encephalitis virus
+Vulpes vulpes,1,Carnivora,Toxocariasis,Toxocara sp.
+Vulpes vulpes,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Vulpes vulpes,1,Carnivora,Trichinosis,Trichinella sp.
+Vulpes vulpes,1,Carnivora,Trypanosomiasis - American,
+Vulpes vulpes,1,Carnivora,Tularemia,Francisella tularensis 
+Vulpes vulpes,1,Carnivora,West Nile fever,West Nile virus 
+Vulpes zerda,0,Carnivora,,
+Zalophus californianus,1,Carnivora,Coccidioidomycosis,Coccidioides immitis
+Zalophus californianus,1,Carnivora,Cryptosporidiosis,Cryptosporidium sp.
+Zalophus californianus,1,Carnivora,Giardiasis,"Giardia lamblia (G. intestinalis, G. duodenalis)"
+Zalophus californianus,1,Carnivora,Leptospirosis,Leptospira interrogans
+Zalophus californianus,1,Carnivora,Toxoplasmosis,Toxoplasma gondii
+Zalophus japonicus,0,Carnivora,,
+Zalophus wollebaeki,0,Carnivora,,
+Beatragus hunteri,0,Artiodactyla,,
+Bos javanicus,0,Artiodactyla,,
+Capra sibirica,0,Artiodactyla,,
+Gazella gazella,0,Artiodactyla,,
+Ovis canadensis,0,Artiodactyla,,
+Pelea capreolus,0,Artiodactyla,,
+Philantomba maxwellii,0,Artiodactyla,,
+Przewalskium albirostris,0,Artiodactyla,,
+Rucervus duvaucelii,0,Artiodactyla,,
+Rucervus eldii,0,Artiodactyla,,
+Rucervus schomburgki,0,Artiodactyla,,
+Addax nasomaculatus,1,Artiodactyla,Spotted fevers - Old World,Rickettsia sp.
+Addax nasomaculatus,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus sp.
+Aepyceros melampus,1,Artiodactyla,Brucellosis,Brucella sp.
+Aepyceros melampus,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium sp.
+Aepyceros melampus,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus sp.
+Aepyceros melampus,1,Artiodactyla,Fascioliasis,Fasciola sp.
+Aepyceros melampus,1,Artiodactyla,Pentastomiasis - Armillifer,Armillifer Sp.
+Aepyceros melampus,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula serrata
+Alcelaphus buselaphus,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma (Trypanozoon) brucei gambiense
+Alces alces,1,Artiodactyla,Anaplasmosis,Anaplasma phagocytophilum
+Alces alces,1,Artiodactyla,Bartonellosis - other systemic,Bartonella sp.
+Alces alces,1,Artiodactyla,Brucellosis,Brucella sp.
+Alces alces,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus granulosus
+Alces alces,1,Artiodactyla,Fascioliasis,Fasciola sp.
+Alces alces,1,Artiodactyla,Giardiasis,Giardia duodenalis
+Alces alces,1,Artiodactyla,Hantavirus infection - Old World,"Hantaan, Puumala, Dobrava/Belgrade, Saaremaa & Seoul viruses"
+Alces alces,1,Artiodactyla,Hepatitis E,Hepatitis E virus
+Alces alces,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Alces americanus,1,Artiodactyla,Eastern equine encephalitis,Eastern equine encephalitis virus
+Ammotragus lervia,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Antidorcas marsupialis,1,Artiodactyla,Anthrax,Bacillus anthracis 
+Antilocapra americana,1,Artiodactyla,Capillariasis - extraintestinal,Capillaria hepatica 
+Antilocapra americana,1,Artiodactyla,Eastern equine encephalitis,Eastern equine encephalitis virus
+Axis axis,1,Artiodactyla,Cryptococcus macerans (Cryptococcosis?),Cryptococcus macerans
+Bison bison,1,Artiodactyla,Anthrax,Bacillus anthracis
+Bison bison,1,Artiodactyla,Brucellosis,Brucella sp.
+Bison bison,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium parvum
+Bison bison,1,Artiodactyla,Escherichia coli diarrhea,Escherichia coli
+Bison bison,1,Artiodactyla,Giardiasis,Giardia lamblia
+Bison bison,1,Artiodactyla,Hepatitis E,hepatitis E virus 
+Bison bison,1,Artiodactyla,Tuberculosis,Mycobacterium caprae
+Bison bonasus,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Bison bonasus,1,Artiodactyla,Leptospirosis,Leptospira spp.
+Bison bonasus,1,Artiodactyla,Anaplasmosis,Anaplasma phagocytophilum
+Blastocerus dichotomus,1,Artiodactyla,Anaplasmosis,Anaplasma marginale
+Blastocerus dichotomus,1,Artiodactyla,Rabies,Rabies virus
+Bos frontalis,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Bos grunniens,1,Artiodactyla,Brucellosis,Brucella spp.
+Bos grunniens,1,Artiodactyla,Cryptosporidiosis, Cryptosporidium spp.
+Bos grunniens,1,Artiodactyla,Hepatitis E,Hepatitis E virus
+Bos grunniens,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Bos taurus,1,Artiodactyla,Giardiasis,Giardia spp.
+Bos taurus,1,Artiodactyla,Influenza,Influenza virus
+Bos taurus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Bos taurus,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium spp.
+Boselaphus tragocamelus,1,Artiodactyla,Anthrax,Bacillus anthracis
+Bubalus bubalis,1,Artiodactyla,Brucellosis,Brucella abortus
+Bubalus bubalis,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium parvum 
+Bubalus bubalis,1,Artiodactyla,Giardiasis,Giardia duodenalis
+Bubalus bubalis,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus granulosus
+Bubalus bubalis,1,Artiodactyla,Escherichia coli diarrhea,Escherichia coli 
+Bubalus bubalis,1,Artiodactyla,Fascioliasis,Fasciola gigantica 
+Bubalus bubalis,1,Artiodactyla,Mammomonogamiasis,Mammomonogamus laryngeus
+Bubalus bubalis,1,Artiodactyla,Schistosomiasis - japonicum (Schistosomiasis?),Schistosoma japonicum
+Bubalus bubalis,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Bubalus bubalis,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma evansi
+Bubalus bubalis,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Bubalus bubalis,1,Artiodactyla,Vaccinia and cowpox,vaccinia virus
+Budorcas taxicolor,1,Artiodactyla,Brucellosis,Brucella spp.
+Budorcas taxicolor,1,Artiodactyla,Cryptosporidiosis, Cryptosporidium spp.
+Budorcas taxicolor,1,Artiodactyla,Giardiasis,Giardia intestinalis
+Budorcas taxicolor,1,Artiodactyla,Microsporidiosis,Enterocytozoon bieneusi
+Camelus bactrianus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Camelus dromedarius,1,Artiodactyla,Anaplasmosis,Anaplasma phagocytophilum
+Camelus dromedarius,1,Artiodactyla,Brucellosis,Brucella spp.
+Camelus dromedarius,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium spp.
+Camelus dromedarius,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus ortleppi
+Camelus dromedarius,1,Artiodactyla,Glanders,Burkholderia mallei
+Camelus dromedarius,1,Artiodactyla,Gongylonemiasis,Gongylonema pulchrum
+Camelus dromedarius,1,Artiodactyla,Orf,Orf virus
+Camelus dromedarius,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula serrata
+Camelus dromedarius,1,Artiodactyla,Pythiosis,Pythium insidiosum
+Camelus dromedarius,1,Artiodactyla,Q-fever,Coxiella burnetii
+Camelus dromedarius,1,Artiodactyla,Rift Valley fever,Rift Valley fever virus
+Camelus dromedarius,1,Artiodactyla,Salmonellosis,Salmonella 
+Camelus dromedarius,1,Artiodactyla,Sarcocystosis,Sarcocystis sp.
+Camelus dromedarius,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Camelus dromedarius,1,Artiodactyla,Trichostrongyliasis,Trichostrongylus spp.
+Camelus dromedarius,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma simiae
+Camelus dromedarius,1,Artiodactyla,West Nile fever,West Nile virus
+Capra falconeri,1,Artiodactyla,Tick-borne encephalitis,Tick-borne encephalitis virus
+Capra hircus,1,Artiodactyla,Orf,Orf virus
+Capra hircus,1,Artiodactyla,Q-fever,Coxiella burnetii 
+Capra hircus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Capra ibex,1,Artiodactyla,Brucellosis,Brucella melitensis
+Capra ibex,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium spp
+Capra ibex,1,Artiodactyla,Leptospirosis,Leptospira spp.
+Capra ibex,1,Artiodactyla,Q-fever,Coxiella burnetii
+Capra ibex,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Capra nubiana,1,Artiodactyla,Coenurosis,Taenia multiceps
+Capra pyrenaica,1,Artiodactyla,Brucellosis,Brucella melitensis
+Capra pyrenaica,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Capreolus capreolus,1,Artiodactyla,Anaplasmosis,Anaplasma sp.
+Capreolus capreolus,1,Artiodactyla,Babesiosis,Babesia sp.
+Capreolus capreolus,1,Artiodactyla,Bartonellosis - other systemic,Bartonella sp.
+Capreolus capreolus,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium parvum
+Capreolus capreolus,1,Artiodactyla,Dicrocoeliasis,Dicrocoelium dendriticum
+Capreolus capreolus,1,Artiodactyla,Fascioliasis,Fasciola sp.
+Capreolus capreolus,1,Artiodactyla,Giardiasis,Giardia intestinalis
+Capreolus capreolus,1,Artiodactyla,Hantavirus infection - Old World,Hantaan virus
+Capreolus capreolus,1,Artiodactyla,Hepatitis E,hepatitis E virus
+Capreolus capreolus,1,Artiodactyla,Leptospirosis,Leptospira sp.
+Capreolus capreolus,1,Artiodactyla,Lyme disease,Borrelia burgdorferi
+Capreolus capreolus,1,Artiodactyla,Q-fever,Coxiella burnetii
+Capreolus capreolus,1,Artiodactyla,Tick-borne encephalitis,Tick-borne encephalitis virus
+Capreolus capreolus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Capreolus capreolus,1,Artiodactyla,Trichostrongyliasis,Trichostrongylus sp.
+Capricornis crispus,1,Artiodactyla,Dicrocoeliasis,Dicrocoelium dendriticum
+Capricornis crispus,1,Artiodactyla,Onchocerciasis,Onchocerca sp.
+Capricornis crispus,1,Artiodactyla,Orf,orf virus
+Capricornis crispus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Cephalophus dorsalis,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma brucei gambiense
+Cervus elaphus,1,Artiodactyla,Anaplasmosis,Anaplasma sp.
+Cervus elaphus,1,Artiodactyla,Anthrax,Bacillus anthracis
+Cervus elaphus,1,Artiodactyla,Babesiosis,Babesia sp.
+Cervus elaphus,1,Artiodactyla,Brucellosis,Brucella sp.
+Cervus elaphus,1,Artiodactyla,Crimean-Congo hemorrhagic fever,Erve virus
+Cervus elaphus,1,Artiodactyla,Dicrocoeliasis,Dicrocoelium dendriticum
+Cervus elaphus,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus granulosus
+Cervus elaphus,1,Artiodactyla,Fascioliasis,Fasciola sp.
+Cervus elaphus,1,Artiodactyla,Giardiasis,Giardia intestinalis
+Cervus elaphus,1,Artiodactyla,Hepatitis E,hepatitis E virus
+Cervus elaphus,1,Artiodactyla,Leptospirosis,Leptospira sp.
+Cervus elaphus,1,Artiodactyla,Microsporidiosis,Enterocytozoon bieneusi
+Cervus elaphus,1,Artiodactyla,Ornithosis,Chlamydophila psittaci
+Cervus elaphus,1,Artiodactyla,Q-fever,Coxiella burnetii
+Cervus elaphus,1,Artiodactyla,Tick-borne encephalitis,Tick-borne encephalitis virus
+Cervus elaphus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Cervus elaphus,1,Artiodactyla,Trichostrongyliasis,Trichostrongylus sp.
+Cervus elaphus,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Cervus elaphus,1,Artiodactyla,Yersiniosis,Yersinia sp.
+Cervus nippon,1,Artiodactyla,Anaplasmosis,Anaplasma sp.
+Cervus nippon,1,Artiodactyla,Babesiosis,Babesia divergens
+Cervus nippon,1,Artiodactyla,Ehrlichiosis - human monocytic,Ehrlichia muris
+Cervus nippon,1,Artiodactyla,Escherichia coli diarrhea,Escherichia coli
+Cervus nippon,1,Artiodactyla,Fascioliasis,Fasciola hepatica
+Cervus nippon,1,Artiodactyla,Hepatitis E,hepatitis E virus 
+Cervus nippon,1,Artiodactyla,Listeriosis,Listeria monocytogene
+Cervus nippon,1,Artiodactyla,Microsporidiosis,Enterocytozoon bieneusi 
+Cervus nippon,1,Artiodactyla,Sarcocystosis,Sarcocystis spp.
+Cervus nippon,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Connochaetes taurinus,1,Artiodactyla,Anthrax,Bacillus anthracis
+Connochaetes taurinus,1,Artiodactyla,Brucellosis,Brucella sp.
+Connochaetes taurinus,1,Artiodactyla,Pentastomiasis - Armillifer,Armillifer Sp.
+Connochaetes taurinus,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula sp.
+Dama dama,1,Artiodactyla,Anaplasmosis,Anaplasma phagocytophilum
+Dama dama,1,Artiodactyla,Fascioliasis,Fasciola sp.
+Dama dama,1,Artiodactyla,Leptospirosis,Leptospira spp.
+Dama dama,1,Artiodactyla,Listeriosis,Listeria monocytogenes
+Dama dama,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Dama dama,1,Artiodactyla,Yersiniosis,Yersinia pseudotuberculosis
+Gazella dorcas,1,Artiodactyla,Rift Valley fever,Rift Valley fever virus
+Giraffa camelopardalis,1,Artiodactyla,Crimean-Congo hemorrhagic fever,Crimean-Congo hemorrhagic fever nairovirus
+Giraffa camelopardalis,1,Artiodactyla,Pentastomiasis - Armillifer,Armillifer Sp.
+Giraffa camelopardalis,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula Sp.
+Giraffa camelopardalis,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Giraffa camelopardalis,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma brucei
+Hippopotamus amphibius,1,Artiodactyla,Anthrax,Bacillus anthracis
+Hippopotamus amphibius,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus felidis
+Hippopotamus amphibius,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma (Trypanozoon) brucei rhodesiense
+Hippotragus niger,1,Artiodactyla,Tuberculosis,Mycobacterium tuberculosis 
+Hydropotes inermis,1,Artiodactyla,Anaplasmosis,Anaplasma sp.
+Hydropotes inermis,1,Artiodactyla,Bartonellosis - other systemic,Bartonella grahamii
+Hydropotes inermis,1,Artiodactyla,Brucellosis,Borrelia afzelii
+Hydropotes inermis,1,Artiodactyla,Q-fever,Coxiella burnetii
+Kobus ellipsiprymnus,1,Artiodactyla,Rift Valley fever,Rift Valley fever virus
+Kobus ellipsiprymnus,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma brucei
+Kobus ellipsiprymnus,1,Artiodactyla,Pentastomiasis - Armillifer,Armillifer Sp.
+Kobus ellipsiprymnus,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula Sp.
+Kobus kob,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma sp.
+Kobus leche,1,Artiodactyla,Brucellosis,Brucella sp.
+Lama glama,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Mazama americana,1,Artiodactyla,Rabies,rabies virus
+Mazama americana,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii 
+Mazama gouazoubira,1,Artiodactyla,Anaplasmosis,Anaplasma sp.
+Mazama gouazoubira,1,Artiodactyla,Ehrlichiosis - human monocytic,Ehrlichia chaffeensis
+Mazama gouazoubira,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii 
+Muntiacus reevesi,1,Artiodactyla,Ehrlichiosis - human monocytic,Ehrlichia chaffeensis
+Odocoileus hemionus,1,Artiodactyla,Anaplasmosis,Anaplasma sp.
+Odocoileus hemionus,1,Artiodactyla,Brucellosis,Brucella sp.
+Odocoileus hemionus,1,Artiodactyla,California encephalitis group,California encephalitis orthobunyaviruses
+Odocoileus hemionus,1,Artiodactyla,Dicrocoeliasis,Dicrocoelium dendriticum
+Odocoileus hemionus,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus granulosus
+Odocoileus hemionus,1,Artiodactyla,Escherichia coli diarrhea,Escherichia coli
+Odocoileus hemionus,1,Artiodactyla,Leptospirosis,Leptospira spp.
+Odocoileus hemionus,1,Artiodactyla,Relapsing fever,Rickettsia spp.
+Odocoileus virginianus,1,Artiodactyla,Anaplasmosis,Anaplasma spp.
+Odocoileus virginianus,1,Artiodactyla,Anthrax,Bacillus anthracis
+Odocoileus virginianus,1,Artiodactyla,Babesiosis,Babesia spp.
+Odocoileus virginianus,1,Artiodactyla,Bartonellosis - other systemic,Bartonella vinsonii subsp. berkhoffii 
+Odocoileus virginianus,1,Artiodactyla,Bunyaviridae infections - misc.,bunyavirus 
+Odocoileus virginianus,1,Artiodactyla,California encephalitis group,California encephalitis orthobunyavirus
+Odocoileus virginianus,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium parvum
+Odocoileus virginianus,1,Artiodactyla,Dicrocoeliasis,Dicrocoelium dendriticum
+Odocoileus virginianus,1,Artiodactyla,Eastern equine encephalitis,Eastern equine encephalitis virus
+Odocoileus virginianus,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus canadensis
+Odocoileus virginianus,1,Artiodactyla,Ehrlichiosis - human monocytic,Ehrlichia sp.
+Odocoileus virginianus,1,Artiodactyla,Escherichia coli diarrhea,Escherichia coli
+Odocoileus virginianus,1,Artiodactyla,Giardiasis,Giardia spp.
+Odocoileus virginianus,1,Artiodactyla,Gongylonemiasis,Gongylonema sp.
+Odocoileus virginianus,1,Artiodactyla,Hepatitis E,Hepatitis E virus
+Odocoileus virginianus,1,Artiodactyla,Leptospirosis,Leptospira interrogans
+Odocoileus virginianus,1,Artiodactyla,Listeriosis,Listeria monocytogenes
+Odocoileus virginianus,1,Artiodactyla,Lyme disease,Borrelia burgdorferi
+Odocoileus virginianus,1,Artiodactyla,Q-fever,Coxiella burnetii 
+Odocoileus virginianus,1,Artiodactyla,Relapsing fever,Borrelia lonestari 
+Odocoileus virginianus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Odocoileus virginianus,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Odocoileus virginianus,1,Artiodactyla,Venezuelan equine encephalitis,Venezuelan equine encephalitis virus
+Odocoileus virginianus,1,Artiodactyla,Yersiniosis,Yersinia Pseudotuberculosis
+Oreamnos americanus,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus granulosus
+Oreamnos americanus,1,Artiodactyla,Tuberculosis,Mycobacterium tuberculosis
+Oreamnos americanus,1,Artiodactyla,Fascioliasis,
+Oryx beisa,1,Artiodactyla,Brucellosis,Brucella spp.
+Oryx gazella,1,Artiodactyla,Anthrax,Bacillus anthracis
+Oryx gazella,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Oryx leucoryx,1,Artiodactyla,Q-fever,
+Oryx leucoryx,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Ovibos moschatus,1,Artiodactyla,Giardiasis,Giardia duodenalis
+Ovibos moschatus,1,Artiodactyla,Orf,Orf virus
+Ovis ammon,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Ovis aries,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium parvum
+Ovis aries,1,Artiodactyla,Orf,Orf virus
+Ovis aries,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Ovis dalli,1,Artiodactyla,Orf,Orf virus
+Ozotoceros bezoarticus,1,Artiodactyla,Leptospirosis,Leptospira sp.
+Pecari tajacu,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii 
+Phacochoerus aethiopicus,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma simiae
+Philantomba monticola,1,Artiodactyla,Trypanosomiasis - African,
+Rangifer tarandus,1,Artiodactyla,Babesiosis,Babesia divergens
+Rangifer tarandus,1,Artiodactyla,Brucellosis,Brucella sp.
+Rangifer tarandus,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus granulosus
+Rangifer tarandus,1,Artiodactyla,Giardiasis,Giardia intestinalis
+Rangifer tarandus,1,Artiodactyla,Orf,
+Rangifer tarandus,1,Artiodactyla,Rabies,Rabies lyssavirus
+Rangifer tarandus,1,Artiodactyla,Sarcocystosis,Sarcocystis sp.
+Rangifer tarandus,1,Artiodactyla,Tick-borne encephalitis,Tick-borne encephalitis virus
+Rangifer tarandus,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Redunca redunca,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma congolense
+Rupicapra pyrenaica,1,Artiodactyla,Brucellosis,Brucella sp.
+Rupicapra pyrenaica,1,Artiodactyla,Lyme disease,Borrelia sp.
+Rupicapra pyrenaica,1,Artiodactyla,Spotted fevers - Old World,Rickettsia helvetica
+Rupicapra pyrenaica,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Rupicapra rupicapra,1,Artiodactyla,Anaplasmosis,Anaplasma phagocytophilum
+Rupicapra rupicapra,1,Artiodactyla,Babesiosis,Babesia sp.
+Rupicapra rupicapra,1,Artiodactyla,Brucellosis,Brucella sp.
+Rupicapra rupicapra,1,Artiodactyla,Leptospirosis,Leptospira sp.
+Rupicapra rupicapra,1,Artiodactyla,Lyme disease,
+Rupicapra rupicapra,1,Artiodactyla,Orf,Orf virus
+Rupicapra rupicapra,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Rusa timorensis,1,Artiodactyla,Leptospirosis,Leptospira sp.
+Sus scrofa,1,Artiodactyla,Anaplasmosis,Anaplasma spp.
+Sus scrofa,1,Artiodactyla,Anthrax,Bacillus anthracis
+Sus scrofa,1,Artiodactyla,Balantidiasis,Balantidium coli
+Sus scrofa,1,Artiodactyla,Brucellosis,Brucella sp.
+Sus scrofa,1,Artiodactyla,Campylobacteriosis,Campylobacter spp.
+Sus scrofa,1,Artiodactyla,Crimean-Congo hemorrhagic fever,Erve virus
+Sus scrofa,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium parvum
+Sus scrofa,1,Artiodactyla,Echinococcosis - multilocular,†Echinococcus multilocularis
+Sus scrofa,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus granulosis
+Sus scrofa,1,Artiodactyla,Fascioliasis,Fasciola spp.
+Sus scrofa,1,Artiodactyla,Giardiasis,Giardia sp.
+Sus scrofa,1,Artiodactyla,Gnathostomiasis,Gnathostoma doloresi
+Sus scrofa,1,Artiodactyla,Gongylonemiasis,Gongylonema pulchrum
+Sus scrofa,1,Artiodactyla,Hepatitis E,hepatitis E virus
+Sus scrofa,1,Artiodactyla,Japanese encephalitis,Japanese encephalitis virus
+Sus scrofa,1,Artiodactyla,Leptospirosis,Leptospira sp.
+Sus scrofa,1,Artiodactyla,Listeriosis,Listeria monocytogenes
+Sus scrofa,1,Artiodactyla,Paracoccidioidomycosis,Paracoccidioides brasiliensis
+Sus scrofa,1,Artiodactyla,Q-fever,Coxiella burnetii 
+Sus scrofa,1,Artiodactyla,Salmonellosis,Salmonella sp.
+Sus scrofa,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Sus scrofa,1,Artiodactyla,Trichinosis,
+Sus scrofa,1,Artiodactyla,Trichostrongyliasis,Trichostrongylus colubriformis
+Sus scrofa,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Sus scrofa,1,Artiodactyla,Tularemia,Francisella tularensis 
+Sus scrofa,1,Artiodactyla,Venezuelan equine encephalitis,
+Sus scrofa,1,Artiodactyla,Yersiniosis,Yersinia pseudotuberculosis
+Syncerus caffer,1,Artiodactyla,Brucellosis,Brucella sp.
+Syncerus caffer,1,Artiodactyla,Chikungunya,chikungunya virus
+Syncerus caffer,1,Artiodactyla,Crimean-Congo hemorrhagic fever,Crimean-Congo hemorrhagic fever virus
+Syncerus caffer,1,Artiodactyla,Cryptosporidiosis,Cryptosporidium sp.
+Syncerus caffer,1,Artiodactyla,Echinococcosis - unilocular,Echinococcus sp.
+Syncerus caffer,1,Artiodactyla,Giardiasis,Giardia sp.
+Syncerus caffer,1,Artiodactyla,Leptospirosis,Leptospira interrogans
+Syncerus caffer,1,Artiodactyla,Pentastomiasis - Armillifer,Armillifer Sp.
+Syncerus caffer,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula Sp.
+Syncerus caffer,1,Artiodactyla,Rift Valley fever,Rift Valley fever virus
+Syncerus caffer,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Syncerus caffer,1,Artiodactyla,West Nile fever,West Nile virus
+Taurotragus oryx,1,Artiodactyla,Brucellosis,Brucella spp.
+Taurotragus oryx,1,Artiodactyla,Crimean-Congo hemorrhagic fever,Brucella sp.
+Tayassu pecari,1,Artiodactyla,Leptospirosis,Leptospira sp. 
+Tayassu pecari,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Tragelaphus angasii,1,Artiodactyla,Schistosomiasis - mattheei,Schistosoma mattheei
+Tragelaphus angasii,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Tragelaphus scriptus,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma sp.
+Tragelaphus strepsiceros,1,Artiodactyla,Anthrax,Bacillus anthracis
+Tragelaphus strepsiceros,1,Artiodactyla,Crimean-Congo hemorrhagic fever,Crimean-Congo hemorrhagic fever virus
+Tragelaphus strepsiceros,1,Artiodactyla,Rabies,Rabies virus
+Tragelaphus strepsiceros,1,Artiodactyla,Schistosomiasis - mattheei,Schistosoma mattheei
+Tragelaphus strepsiceros,1,Artiodactyla,Toxoplasmosis,Toxoplasma gondii
+Tragelaphus strepsiceros,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma sp.
+Tragelaphus strepsiceros,1,Artiodactyla,Tuberculosis,Mycobacterium bovis
+Tragelaphus strepsiceros,1,Artiodactyla,Pentastomiasis - Armillifer,Armillifer Sp.
+Tragelaphus strepsiceros,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula Sp.
+Vicugna vicugna,1,Artiodactyla,Blastomycosis,
+Vicugna vicugna,1,Artiodactyla,Coccidioidomycosis,
+Vicugna vicugna,1,Artiodactyla,Cryptosporidiosis,
+Vicugna vicugna,1,Artiodactyla,Fascioliasis,Fasciola sp.
+Vicugna vicugna,1,Artiodactyla,Giardiasis,
+Vicugna vicugna,1,Artiodactyla,Vaccinia and cowpox,
+Damaliscus lunatus,1,Artiodactyla,Pentastomiasis - Armillifer,Armillifer Sp.
+Damaliscus lunatus,1,Artiodactyla,Pentastomiasis - Linguatula,Linguatula Sp.
+Hippotragus equinus,1,Artiodactyla,Trypanosomiasis - African,Trypanosoma sp.
+Alcelaphus caama,0,Artiodactyla,,
+Alcelaphus lichtensteinii,0,Artiodactyla,,
+Ammodorcas clarkei,0,Artiodactyla,,
+Antilope cervicapra,0,Artiodactyla,,
+Axis calamianensis,0,Artiodactyla,,
+Axis kuhlii,0,Artiodactyla,,
+Axis porcinus,0,Artiodactyla,,
+Babyrousa babyrussa,0,Artiodactyla,,
+Babyrousa bolabatuensis,0,Artiodactyla,,
+Babyrousa celebensis,0,Artiodactyla,,
+Babyrousa togeanensis,0,Artiodactyla,,
+Bos sauveli,0,Artiodactyla,,
+Bubalus depressicornis,0,Artiodactyla,,
+Bubalus mindorensis,0,Artiodactyla,,
+Bubalus quarlesi,0,Artiodactyla,,
+Capra caucasica,0,Artiodactyla,,
+Capra walie,0,Artiodactyla,,
+Capreolus pygargus,0,Artiodactyla,,
+Capricornis milneedwardsii,0,Artiodactyla,,
+Capricornis rubidus,0,Artiodactyla,,
+Capricornis sumatraensis,0,Artiodactyla,,
+Capricornis swinhoei,0,Artiodactyla,,
+Capricornis thar,0,Artiodactyla,,
+Catagonus wagneri,0,Artiodactyla,,
+Cephalophus adersi,0,Artiodactyla,,
+Cephalophus brookei,0,Artiodactyla,,
+Cephalophus callipygus,0,Artiodactyla,,
+Cephalophus jentinki,0,Artiodactyla,,
+Cephalophus leucogaster,0,Artiodactyla,,
+Cephalophus natalensis,0,Artiodactyla,,
+Cephalophus niger,0,Artiodactyla,,
+Cephalophus nigrifrons,0,Artiodactyla,,
+Cephalophus ogilbyi,0,Artiodactyla,,
+Cephalophus rufilatus,0,Artiodactyla,,
+Cephalophus silvicultor,0,Artiodactyla,,
+Cephalophus spadix,0,Artiodactyla,,
+Cephalophus weynsi,0,Artiodactyla,,
+Cephalophus zebra,0,Artiodactyla,,
+Connochaetes gnou,0,Artiodactyla,,
+Damaliscus korrigum,0,Artiodactyla,,
+Damaliscus pygargus,0,Artiodactyla,,
+Damaliscus superstes,0,Artiodactyla,,
+Dorcatragus megalotis,0,Artiodactyla,,
+Elaphodus cephalophus,0,Artiodactyla,,
+Elaphurus davidianus,0,Artiodactyla,,
+Eudorcas rufifrons,0,Artiodactyla,,
+Eudorcas rufina,0,Artiodactyla,,
+Eudorcas thomsonii,0,Artiodactyla,,
+Gazella arabica,0,Artiodactyla,,
+Gazella bennettii,0,Artiodactyla,,
+Gazella cuvieri,0,Artiodactyla,,
+Gazella erlangeri,0,Artiodactyla,,
+Gazella leptoceros,0,Artiodactyla,,
+Gazella saudiya,0,Artiodactyla,,
+Gazella spekei,0,Artiodactyla,,
+Gazella subgutturosa,0,Artiodactyla,,
+Hemitragus hylocrius,0,Artiodactyla,,
+Hemitragus jayakari,0,Artiodactyla,,
+Hemitragus jemlahicus,0,Artiodactyla,,
+Hexaprotodon liberiensis,0,Artiodactyla,,
+Hippocamelus antisensis,0,Artiodactyla,,
+Hippocamelus bisulcus,0,Artiodactyla,,
+Hippotragus leucophaeus,0,Artiodactyla,,
+Hyemoschus aquaticus,0,Artiodactyla,,
+Hylochoerus meinertzhageni,0,Artiodactyla,,
+Kobus megaceros,0,Artiodactyla,,
+Kobus vardonii,0,Artiodactyla,,
+Litocranius walleri,0,Artiodactyla,,
+Madoqua guentheri,0,Artiodactyla,,
+Madoqua kirkii,0,Artiodactyla,,
+Madoqua piacentinii,0,Artiodactyla,,
+Madoqua saltiana,0,Artiodactyla,,
+Mazama bororo,0,Artiodactyla,,
+Mazama bricenii,0,Artiodactyla,,
+Mazama chunyi,0,Artiodactyla,,
+Mazama nana,0,Artiodactyla,,
+Mazama pandora,0,Artiodactyla,,
+Mazama rufina,0,Artiodactyla,,
+Mazama temama,0,Artiodactyla,,
+Moschiola meminna,0,Artiodactyla,,
+Moschus anhuiensis,0,Artiodactyla,,
+Moschus berezovskii,0,Artiodactyla,,
+Moschus chrysogaster,0,Artiodactyla,,
+Moschus cupreus,0,Artiodactyla,,
+Moschus fuscus,0,Artiodactyla,,
+Moschus leucogaster,0,Artiodactyla,,
+Moschus moschiferus,0,Artiodactyla,,
+Muntiacus atherodes,0,Artiodactyla,,
+Muntiacus crinifrons,0,Artiodactyla,,
+Muntiacus feae,0,Artiodactyla,,
+Muntiacus gongshanensis,0,Artiodactyla,,
+Muntiacus muntjak,0,Artiodactyla,,
+Muntiacus puhoatensis,0,Artiodactyla,,
+Muntiacus putaoensis,0,Artiodactyla,,
+Muntiacus rooseveltorum,0,Artiodactyla,,
+Muntiacus truongsonensis,0,Artiodactyla,,
+Muntiacus vuquangensis,0,Artiodactyla,,
+Naemorhedus baileyi,0,Artiodactyla,,
+Naemorhedus caudatus,0,Artiodactyla,,
+Naemorhedus goral,0,Artiodactyla,,
+Naemorhedus griseus,0,Artiodactyla,,
+Nanger dama,0,Artiodactyla,,
+Nanger granti,0,Artiodactyla,,
+Nanger soemmerringii,0,Artiodactyla,,
+Neotragus batesi,0,Artiodactyla,,
+Neotragus moschatus,0,Artiodactyla,,
+Neotragus pygmaeus,0,Artiodactyla,,
+Okapia johnstoni,0,Artiodactyla,,
+Oreotragus oreotragus,0,Artiodactyla,,
+Oryx dammah,0,Artiodactyla,,
+Ourebia ourebi,0,Artiodactyla,,
+Ovis nivicola,0,Artiodactyla,,
+Pantholops hodgsonii,0,Artiodactyla,,
+Phacochoerus africanus,0,Artiodactyla,,
+Potamochoerus larvatus,0,Artiodactyla,,
+Potamochoerus porcus,0,Artiodactyla,,
+Procapra gutturosa,0,Artiodactyla,,
+Procapra picticaudata,0,Artiodactyla,,
+Procapra przewalskii,0,Artiodactyla,,
+Pseudois nayaur,0,Artiodactyla,,
+Pseudois schaeferi,0,Artiodactyla,,
+Pseudoryx nghetinhensis,0,Artiodactyla,,
+Pudu mephistophiles,0,Artiodactyla,,
+Pudu puda,0,Artiodactyla,,
+Raphicerus campestris,0,Artiodactyla,,
+Raphicerus melanotis,0,Artiodactyla,,
+Raphicerus sharpei,0,Artiodactyla,,
+Redunca arundinum,0,Artiodactyla,,
+Redunca fulvorufula,0,Artiodactyla,,
+Rusa alfredi,0,Artiodactyla,,
+Rusa marianna,0,Artiodactyla,,
+Rusa unicolor,0,Artiodactyla,,
+Saiga borealis,0,Artiodactyla,,
+Saiga tatarica,0,Artiodactyla,,
+Sus ahoenobarbus,0,Artiodactyla,,
+Sus barbatus,0,Artiodactyla,,
+Sus bucculentus,0,Artiodactyla,,
+Sus cebifrons,0,Artiodactyla,,
+Sus celebensis,0,Artiodactyla,,
+Sus oliveri,0,Artiodactyla,,
+Sus philippensis,0,Artiodactyla,,
+Sus salvanius,0,Artiodactyla,,
+Sus verrucosus,0,Artiodactyla,,
+Sylvicapra grimmia,0,Artiodactyla,,
+Taurotragus derbianus,0,Artiodactyla,,
+Tetracerus quadricornis,0,Artiodactyla,,
+Tragelaphus buxtoni,0,Artiodactyla,,
+Tragelaphus eurycerus,0,Artiodactyla,,
+Tragelaphus imberbis,0,Artiodactyla,,
+Tragelaphus spekii,0,Artiodactyla,,
+Tragulus javanicus,0,Artiodactyla,,
+Tragulus kanchil,0,Artiodactyla,,
+Tragulus napu,0,Artiodactyla,,
+Tragulus nigricans,0,Artiodactyla,,
+Tragulus versicolor,0,Artiodactyla,,
+Tragulus williamsoni,0,Artiodactyla,,
+Equus hemionus,0,Perissodactyla,,
+Equus zebra,0,Perissodactyla,,
+Ceratotherium simum,1,Perissodactyla,Rift Valley fever,Rift Valley fever virus
+Diceros bicornis,1,Perissodactyla,Coccidioidomycosis,Coccidioides immitis
+Diceros bicornis,1,Perissodactyla,Crimean-Congo hemorrhagic fever,Crimean-Congo hemorrhagic fever virus 
+Diceros bicornis,1,Perissodactyla,Rift Valley fever,Rift Valley fever virus
+Diceros bicornis,1,Perissodactyla,Tuberculosis,Mycobacterium bovis
+Equus asinus,1,Perissodactyla,Anthrax,Bacillus anthracis
+Equus asinus,1,Perissodactyla,Echinococcosis - unilocular,Giardia intestinalis
+Equus asinus,1,Perissodactyla,Leishmaniasis - cutaneous,Leishmania
+Equus asinus,1,Perissodactyla,Toxoplasmosis,Toxoplasma gondii
+Equus caballus,1,Perissodactyla,Leishmaniasis - cutaneous,Leishmania sp.
+Equus caballus,1,Perissodactyla,Leishmaniasis - visceral,
+Equus caballus,1,Perissodactyla,Ross River disease,Ross River virus
+Equus caballus,1,Perissodactyla,Toxoplasmosis,Toxoplasma gondii
+Equus caballus,1,Perissodactyla,West Nile fever,West Nile virus
+Equus grevyi,1,Perissodactyla,Anthrax,Bacillus anthracis
+Rhinoceros unicornis,1,Perissodactyla,Anthrax,Bacillus anthracis 
+Tapirus terrestris,1,Perissodactyla,Toxoplasmosis,Toxoplasma gondii
+Equus burchellii,1,Perissodactyla,Echinococcosis - unilocular,Echinococcus granulosus 
+Equus burchellii,1,Perissodactyla,Anthrax,Bacillus anthracis
+Equus burchellii,1,Perissodactyla,Crimean-Congo hemorrhagic fever,Crimean-Congo hemorrhagic fever (CCHF) virus
+Equus quagga (=Equus burchellii),1,Perissodactyla,Anthrax,
+Dicerorhinus sumatrensis,0,Perissodactyla,,
+Equus kiang,0,Perissodactyla,,
+Rhinoceros sondaicus,0,Perissodactyla,,
+Tapirus bairdii,0,Perissodactyla,,
+Tapirus indicus,0,Perissodactyla,,
+Tapirus pinchaque,0,Perissodactyla,,
+Allenopithecus nigroviridis,0,Primates,,
+Allocebus trichotis,0,Primates,,
+Alouatta belzebul,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Alouatta caraya,1,Primates,Giardiasis,Giardia intestinalis
+Alouatta caraya,1,Primates,Leptospirosis,Leptospira interrogans
+Alouatta caraya,1,Primates,St. Louis encephalitis,Flavivirus St. Louis encephalitis virus
+Alouatta caraya,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Alouatta caraya,1,Primates,Vaccinia and cowpox,Orthopoxvirus sp.
+Alouatta caraya,1,Primates,Yellow fever,Flavivirus Yellow fever virus
+Alouatta coibensis,0,Primates,,
+Alouatta guariba,1,Primates,Leishmaniasis - visceral,Leishmania donovani
+Alouatta macconnelli,0,Primates,,
+Alouatta nigerrima,0,Primates,,
+Alouatta palliata,1,Primates,Ascariasis,Ascaris lumbricoides
+Alouatta palliata,1,Primates,Leishmaniasis - cutaneous,Leishmania mexicana
+Alouatta palliata,1,Primates,Trypanosomiasis - American,Trypanosoma cruzi
+Alouatta pigra,1,Primates,Giardiasis,Giardia intestinalis
+Alouatta pigra,1,Primates,Leishmaniasis - cutaneous,Leishmania mexicana
+Alouatta pigra,1,Primates,Trypanosomiasis - American,Trypanosoma cruzi
+Alouatta sara,0,Primates,,
+Alouatta seniculus,1,Primates,Mayaro,Alphavirus Mayaro virus
+Alouatta seniculus,1,Primates,Yellow fever,Flavivirus Yellow fever virus
+Aotus azarae,0,Primates,,
+Aotus hershkovitzi,0,Primates,,
+Aotus lemurinus,0,Primates,,
+Aotus miconax,0,Primates,,
+Aotus nancymaae,0,Primates,,
+Aotus nigriceps,1,Primates,Leishmaniasis - visceral,Leishmania donovani
+Aotus trivirgatus,1,Primates,Leishmaniasis - cutaneous,Leishmania braziliensis
+Aotus trivirgatus,1,Primates,Leishmaniasis - mucocutaneous,Leishmania braziliensis
+Aotus vociferans,0,Primates,,
+Arctocebus aureus,0,Primates,,
+Arctocebus calabarensis,0,Primates,,
+Ateles belzebuth,0,Primates,,
+Ateles chamek,0,Primates,,
+Ateles fusciceps,0,Primates,,
+Ateles geoffroyi,1,Primates,Echinococcosis - multilocular,Echinococcus multilocularis
+Ateles hybridus,0,Primates,,
+Ateles marginatus,0,Primates,,
+Ateles paniscus,1,Primates,Leishmaniasis - cutaneous,Leishmania amazoensis
+Avahi laniger,0,Primates,,
+Avahi occidentalis,0,Primates,,
+Avahi unicolor,0,Primates,,
+Brachyteles arachnoides,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Brachyteles hypoxanthus,0,Primates,,
+Bunopithecus hoolock,0,Primates,,
+Cacajao calvus,0,Primates,,
+Cacajao melanocephalus,0,Primates,,
+Callicebus baptista,0,Primates,,
+Callicebus barbarabrownae,0,Primates,,
+Callicebus bernhardi,0,Primates,,
+Callicebus brunneus,0,Primates,,
+Callicebus caligatus,0,Primates,,
+Callicebus cinerascens,0,Primates,,
+Callicebus coimbrai,0,Primates,,
+Callicebus cupreus,0,Primates,,
+Callicebus discolor,0,Primates,,
+Callicebus donacophilus,0,Primates,,
+Callicebus dubius,0,Primates,,
+Callicebus hoffmannsi,0,Primates,,
+Callicebus lucifer,0,Primates,,
+Callicebus lugens,0,Primates,,
+Callicebus medemi,0,Primates,,
+Callicebus melanochir,0,Primates,,
+Callicebus modestus,0,Primates,,
+Callicebus moloch,0,Primates,,
+Callicebus nigrifrons,1,Primates,Leishmaniasis - visceral,Leishmania sp.
+Callicebus oenanthe,1,Primates,Bertiella and Inermicapsifer,Bertiella sp.
+Callicebus olallae,0,Primates,,
+Callicebus ornatus,0,Primates,,
+Callicebus pallescens,0,Primates,,
+Callicebus personatus,0,Primates,,
+Callicebus purinus,0,Primates,,
+Callicebus regulus,0,Primates,,
+Callicebus stephennashi,0,Primates,,
+Callicebus torquatus,0,Primates,,
+Callimico goeldii,0,Primates,,
+Callithrix acariensis,0,Primates,,
+Callithrix argentata,0,Primates,,
+Callithrix aurita,0,Primates,,
+Callithrix chrysoleuca,0,Primates,,
+Callithrix emiliae,0,Primates,,
+Callithrix flaviceps,0,Primates,,
+Callithrix humeralifera,0,Primates,,
+Callithrix humilis,0,Primates,,
+Callithrix intermedia,0,Primates,,
+Callithrix jacchus,1,Primates,Gongylonemiasis,Gongylonema pulchrum
+Callithrix jacchus,1,Primates,Rabies,Lyssavirus Rabies lyssavirus
+Callithrix jacchus,1,Primates,Tularemia,Francisella tularensis
+Callithrix kuhlii,0,Primates,,
+Callithrix leucippe,0,Primates,,
+Callithrix manicorensis,0,Primates,,
+Callithrix marcai,0,Primates,,
+Callithrix mauesi,0,Primates,,
+Callithrix melanura,0,Primates,,
+Callithrix nigriceps,0,Primates,,
+Callithrix penicillata,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Callithrix pygmaea,0,Primates,,
+Callithrix saterei,0,Primates,,
+Cebus albifrons,0,Primates,,
+Cebus apella,1,Primates,Leishmaniasis - cutaneous,Leishmania sp.
+Cebus apella,1,Primates,Leptospirosis,Leptospira sp.
+Cebus apella,1,Primates,Rabies,Lyssavirus Rabies lyssavirus
+Cebus apella,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Cebus apella,1,Primates,Tuberculosis,Mycobacterium tuberculosis
+Cebus apella,1,Primates,Vaccinia and cowpox,Orthopoxvirus sp.
+Cebus apella,1,Primates,Yellow fever,Flavivirus Yellow fever virus
+Cebus capucinus,1,Primates,Tuberculosis,Mycobacterium tuberculosis
+Cebus kaapori,0,Primates,,
+Cebus libidinosus,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Cebus nigritus,1,Primates,Rabies,Lyssavirus Rabies lyssavirus
+Cebus olivaceus,0,Primates,,
+Cebus xanthosternos,1,Primates,Leishmaniasis - visceral,Leishmania sp.
+Cercocebus atys,1,Primates,Monkeypox,Orthopoxvirus Monkeypox virus
+Cercocebus atys,1,Primates,Tuberculosis,Mycobacterium tuberculosis
+Cercocebus atys,1,Primates,West Nile fever,Flavivirus West Nile virus
+Cercocebus torquatus,1,Primates,Trypanosomiasis - African,Trypanosoma brucei gambiense
+Cercopithecus albogularis,0,Primates,,
+Cercopithecus ascanius,1,Primates,Cryptosporidiosis,Cryptosporidium sp.
+Cercopithecus ascanius,1,Primates,Giardiasis,Giardia sp
+Cercopithecus campbelli,0,Primates,,
+Cercopithecus cephus,1,Primates,Bartonellosis - other systemic,Bartonella quintana
+Cercopithecus cephus,1,Primates,Rickettsia felis infection,Rickettsia felis
+Cercopithecus denti,0,Primates,,
+Cercopithecus diana,1,Primates,Echinococcosis - multilocular,Echinococcus multilocularis
+Cercopithecus doggetti,0,Primates,,
+Cercopithecus dryas,0,Primates,,
+Cercopithecus erythrogaster,0,Primates,,
+Cercopithecus erythrotis,0,Primates,,
+Cercopithecus hamlyni,0,Primates,,
+Cercopithecus kandti,0,Primates,,
+Cercopithecus lhoesti,1,Primates,Oesophagostomiasis,Oesophagostomum sp.
+Cercopithecus lowei,0,Primates,,
+Cercopithecus mitis,1,Primates,Leishmaniasis - cutaneous,Leishmania major
+Cercopithecus mona,0,Primates,,
+Cercopithecus neglectus,1,Primates,Balantidiasis,Balantidium coli
+Cercopithecus neglectus,1,Primates,Herpes B infection,Simplexvirus Human alphaherpesvirus 1
+Cercopithecus nictitans,1,Primates,Trypanosomiasis - African,Trypanosoma brucei
+Cercopithecus petaurista,0,Primates,,
+Cercopithecus pogonias,0,Primates,,
+Cercopithecus preussi,0,Primates,,
+Cercopithecus roloway,0,Primates,,
+Cercopithecus sclateri,0,Primates,,
+Cercopithecus solatus,0,Primates,,
+Cercopithecus wolfi,0,Primates,,
+Cheirogaleus adipicaudatus,0,Primates,,
+Cheirogaleus crossleyi,0,Primates,,
+Cheirogaleus major,0,Primates,,
+Cheirogaleus medius,0,Primates,,
+Cheirogaleus minusculus,0,Primates,,
+Cheirogaleus ravus,0,Primates,,
+Cheirogaleus sibreei,0,Primates,,
+Chiropotes albinasus,0,Primates,,
+Chiropotes chiropotes,1,Primates,Leishmaniasis - cutaneous,
+Chiropotes israelita,0,Primates,,
+Chiropotes satanas,0,Primates,,
+Chiropotes utahickae,0,Primates,,
+Chlorocebus aethiops,1,Primates,Leishmaniasis - cutaneous,Leishmania major
+Chlorocebus aethiops,1,Primates,Tularemia,Francisella tularensis
+Chlorocebus aethiops,1,Primates,Yersiniosis,Yersinia enterocolitica
+Chlorocebus cynosuros,0,Primates,,
+Chlorocebus djamdjamensis,0,Primates,,
+Chlorocebus pygerythrus,1,Primates,Tuberculosis,Mycobacterium tuberculosis
+Chlorocebus sabaeus,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Chlorocebus sabaeus,1,Primates,Yersiniosis,Yersinia enterocolitica
+Chlorocebus tantalus,0,Primates,,
+Colobus angolensis,0,Primates,,
+Colobus guereza,1,Primates,Listeriosis,Listeria monocytogenes
+Colobus polykomos,0,Primates,,
+Colobus satanas,0,Primates,,
+Colobus vellerosus,0,Primates,,
+Daubentonia madagascariensis,0,Primates,,
+Erythrocebus patas,1,Primates,Crimean-Congo hemorrhagic fever,Nairovirus Crimean-Congo hemorrhagic fever nairovirus
+Erythrocebus patas,1,Primates,Tularemia,Francisella tularensis
+Erythrocebus patas,1,Primates,Zika,Zika virus
+Eulemur albifrons,1,Primates,Baylisascariasis,Baylisascaris procyonis
+Eulemur albifrons,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Eulemur albocollaris,0,Primates,,
+Eulemur cinereiceps,0,Primates,,
+Eulemur collaris,0,Primates,,
+Eulemur coronatus,0,Primates,,
+Eulemur fulvus,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Eulemur macaco,1,Primates,Gongylonemiasis,Gongylonema pulchrum
+Eulemur macaco,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Eulemur mongoz,0,Primates,,
+Eulemur rubriventer,0,Primates,,
+Eulemur sanfordi,0,Primates,,
+Euoticus elegantulus,0,Primates,,
+Euoticus pallidus,0,Primates,,
+Galago alleni,0,Primates,,
+Galago cameronensis,0,Primates,,
+Galago demidoff,0,Primates,,
+Galago gabonensis,0,Primates,,
+Galago gallarum,0,Primates,,
+Galago granti,0,Primates,,
+Galago matschiei,0,Primates,,
+Galago moholi,0,Primates,,
+Galago nyasae,0,Primates,,
+Galago orinus,0,Primates,,
+Galago rondoensis,0,Primates,,
+Galago senegalensis,0,Primates,,
+Galago thomasi,0,Primates,,
+Galago zanzibaricus,0,Primates,,
+Gorilla beringei,1,Primates,Balantidiasis,Balantidium coli
+Gorilla beringei,1,Primates,Cryptosporidiosis,Cryptosporidium parvum
+Gorilla beringei,1,Primates,Microsporidiosis,Enterocytozoon bieneusi and Encephalitozoon cuniculi
+Gorilla beringei,1,Primates,Oesophagostomiasis,Oesophagostomum spp.
+Gorilla gorilla,1,Primates,Anthrax,Bacillus anthracis
+Gorilla gorilla,1,Primates,Balantidiasis,Balantidium coli
+Gorilla gorilla,1,Primates,Cryptosporidiosis,Cryptosporidium sp.
+Gorilla gorilla,1,Primates,Dientamoeba fragilis infection,Dientamoeba fragilis
+Gorilla gorilla,1,Primates,Ebola,Zaire ebolavirus
+Gorilla gorilla,1,Primates,Giardiasis,Giardia sp.
+Gorilla gorilla,1,Primates,Hepatitis B,hepatitis B virus
+Gorilla gorilla,1,Primates,Microsporidiosis,Encephalitozoon cuniculi and Enterocytozoon bieneusi
+Hapalemur alaotrensis,0,Primates,,
+Hapalemur aureus,0,Primates,,
+Hapalemur griseus,0,Primates,,
+Hapalemur occidentalis,0,Primates,,
+Hylobates agilis,0,Primates,,
+Hylobates albibarbis,0,Primates,,
+Hylobates klossii,0,Primates,,
+Hylobates lar,1,Primates,Angiostrongyliasis,Angiostrongylus cantonensis
+Hylobates lar,1,Primates,Balantidiasis,Balantidium coli
+Hylobates moloch,0,Primates,,
+Hylobates muelleri,0,Primates,,
+Hylobates pileatus,1,Primates,Hepatitis B,hepatitis B virus
+Lagothrix cana,0,Primates,,
+Lagothrix lagotricha,1,Primates,Hepatitis B,hepatitis B virus
+Lagothrix lagotricha,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Lagothrix lugens,0,Primates,,
+Lagothrix poeppigii,0,Primates,,
+Lemur catta,1,Primates,Capillariasis - extraintestinal,Capillaria sp.
+Lemur catta,1,Primates,Echinococcosis - multilocular,Echinococcus multilocularis
+Lemur catta,1,Primates,Ehrlichiosis - human monocytic,Ehrlichia chaffeensis
+Lemur catta,1,Primates,Giardiasis,Giardia duodenalis
+Lemur catta,1,Primates,Hymenolepis nana infection,Hymenolepis nana
+Lemur catta,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Lemur catta,1,Primates,Trypanosomiasis - American,Trypanosoma cruzi
+Lemur catta,1,Primates,West Nile fever,West Nile virus
+Leontopithecus chrysomelas,0,Primates,,
+Leontopithecus chrysopygus,0,Primates,,
+Leontopithecus rosalia,0,Primates,,
+Lepilemur ankaranensis,0,Primates,,
+Lepilemur dorsalis,0,Primates,,
+Lepilemur edwardsi,0,Primates,,
+Lepilemur leucopus,0,Primates,,
+Lepilemur microdon,0,Primates,,
+Lepilemur mustelinus,0,Primates,,
+Lepilemur ruficaudatus,0,Primates,,
+Lepilemur septentrionalis,0,Primates,,
+Lophocebus albigena,0,Primates,,
+Lophocebus aterrimus,0,Primates,,
+Lophocebus opdenboschi,0,Primates,,
+Loris lydekkerianus,0,Primates,,
+Loris tardigradus,0,Primates,,
+Macaca arctoides,1,Primates,Herpes B infection,
+Macaca arctoides,1,Primates,Melioidosis,Burkholderia pseudomallei
+Macaca assamensis,0,Primates,,
+Macaca cyclopis,1,Primates,Herpes B infection,Herpesvirus
+Macaca fascicularis,1,Primates,Bartonellosis - other systemic,Bartonella quintana
+Macaca fascicularis,1,Primates,Chikungunya,chikungunya virus
+Macaca fascicularis,1,,Cryptosporidiosis,Cryptosporidium spp.
+Macaca fascicularis,1,Primates,Cyclosporiasis,Cyclospora sp.
+Macaca fascicularis,1,Primates,Dengue,Dengue virus
+Macaca fascicularis,1,Primates,Ebola,Reston virus
+Macaca fascicularis,1,Primates,Giardiasis,Giardia duodenalis
+Macaca fascicularis,1,Primates,Hepatitis B,Hepatitis B virus
+Macaca fascicularis,1,Primates,Herpes B infection,Herpesvirus 1
+Macaca fascicularis,1,Primates,Influenza,Influenza virus
+Macaca fascicularis,1,Primates,Japanese encephalitis,Japanese encephalitis virus
+Macaca fascicularis,1,Primates,Malaria,Plasmodium vivax
+Macaca fascicularis,1,Primates,Melioidosis,Burkholderia pseudomallei
+Macaca fascicularis,1,Primates,Microsporidiosis,Enterocytozoon bieneusi
+Macaca fascicularis,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Macaca fascicularis,1,Primates,Tuberculosis,Mycobacterium bovis
+Macaca fascicularis,1,Primates,Tularemia,Francisella tularensis
+Macaca fuscata,1,Primates,Balantidiasis,Balantidium coli
+Macaca fuscata,1,Primates,Echinococcosis - multilocular,Echinococcus multilocularis
+Macaca fuscata,1,Primates,Gongylonemiasis,Gongylonema sp.
+Macaca fuscata,1,Primates,Herpes B infection,Herpes B virus
+Macaca fuscata,1,Primates,Japanese encephalitis,Japanese encephalitis virus
+Macaca fuscata,1,Primates,Strongyloidiasis,Strongyloides sp.
+Macaca hecki,0,Primates,,
+Macaca leonina,1,Primates,Chikungunya,Chikungunya virus
+Macaca leonina,1,Primates,Dengue,Dengue virus
+Macaca leonina,1,Primates,Japanese encephalitis,Japanese encephalitis virus
+Macaca maura,0,Primates,,
+Macaca mulatta,1,Primates,Balantidiasis,Balantidium coli
+Macaca mulatta,1,Primates,Bartonellosis - other systemic,Bartonella quintana
+Macaca mulatta,1,Primates,Cryptosporidiosis,Cryptosporidium spp.
+Macaca mulatta,1,Primates,Giardiasis,Giardia duodenalis
+Macaca mulatta,1,Primates,Hepatitis E,hepatitis E Virus
+Macaca mulatta,1,Primates,Herpes B infection,Herpes B virus
+Macaca mulatta,1,Primates,Listeriosis,Listeria monocytogenes
+Macaca mulatta,1,Primates,Melioidosis,Burkholderia pseudomallei
+Macaca mulatta,1,Primates,Microsporidiosis,Enterocytozoon bieneusi
+Macaca mulatta,1,Primates,Trypanosomiasis - American,Trypanosoma cruzi
+Macaca mulatta,1,Primates,Tuberculosis,Mycobacterium bovis
+Macaca mulatta,1,Primates,Tularemia,Francisella tularensis
+Macaca mulatta,1,Primates,West Nile fever,West Nile virus
+Macaca nemestrina,1,Primates,Chikungunya,Chikungunya virus
+Macaca nemestrina,1,Primates,Dengue,Dengue virus
+Macaca nemestrina,1,Primates,Japanese encephalitis,Japanese encephalitis virus
+Macaca nemestrina,1,Primates,Melioidosis,Burkholderia pseudomallei
+Macaca nemestrina,1,Primates,West Nile fever,West Nile virus
+Macaca nigra,1,Primates,Echinococcosis - multilocular,Echinococcus multilocularis
+Macaca nigrescens,0,Primates,,
+Macaca ochreata,0,Primates,,
+Macaca pagensis,0,Primates,,
+Macaca radiata,1,Primates,Herpes B infection,Herpesvirus simiae
+Macaca radiata,1,Primates,Kyasanur Forest disease,Tick-borne encephalitis virus
+Macaca siberu,0,Primates,,
+Macaca silenus,1,Primates,Trypanosomiasis - American,Trypanosoma cruzi
+Macaca sinica,1,Primates,Bunyaviridae infections - misc.,Orthobunyavirus Bunyamwera orthobunyavirus
+Macaca sinica,1,Primates,Chandipura and Vesicular stomatitis viruses,Chandipura virus
+Macaca sinica,1,Primates,Dengue,Dengue virus
+Macaca sylvanus,1,Primates,Tick-borne encephalitis,Tick-borne encephalitis virus
+Macaca sylvanus,1,Primates,Vaccinia and cowpox,Cowpox virus
+Macaca sylvanus,1,Primates,West Nile fever,West Nile virus
+Macaca thibetana,0,Primates,,
+Macaca tonkeana,0,Primates,,
+Mandrillus leucophaeus,1,Primates,Paragonimiasis,Paragonimus africanus
+Mandrillus sphinx,1,Primates,West Nile fever,West Nile virus
+Mandrillus sphinx,1,Primates,Yellow fever,yellow fever virus
+Miopithecus ogouensis,0,Primates,,
+Miopithecus talapoin,0,Primates,,
+Nasalis larvatus,0,Primates,,
+Nomascus concolor,0,Primates,,
+Nomascus gabriellae,0,Primates,,
+Nomascus hainanus,0,Primates,,
+Nomascus leucogenys,0,Primates,,
+Nomascus siki,0,Primates,,
+Nycticebus bengalensis,0,Primates,,
+Nycticebus coucang,0,Primates,,
+Nycticebus pygmaeus,0,Primates,,
+Oreonax flavicauda,0,Primates,,
+Otolemur crassicaudatus,0,Primates,,
+Otolemur garnettii,0,Primates,,
+Otolemur monteiri,0,Primates,,
+Pan paniscus,0,Primates,,
+Pan troglodytes,1,Primates,Anthrax,Bacillus anthracis
+Pan troglodytes,1,Primates,Ascariasis,Ascaris lumbricoides
+Pan troglodytes,1,Primates,Balantidiasis,Balantidium coli
+Pan troglodytes,1,Primates,Bertiella and Inermicapsifer,Bertiella studeri
+Pan troglodytes,1,Primates,Cryptosporidiosis,Cryptosporidium
+Pan troglodytes,1,Primates,Cyclosporiasis,Cyclospora sp.
+Pan troglodytes,1,Primates,Giardiasis,Giardia sp.
+Pan troglodytes,1,Primates,Hepatitis B,hepatitis B virus
+Pan troglodytes,1,Primates,Hymenolepis diminuta infection,Hymenolepis sp.
+Pan troglodytes,1,Primates,Melioidosis,Burkholderia pseudomallei
+Pan troglodytes,1,Primates,Oesophagostomiasis,Oesophagostomum sp.
+Papio anubis,1,Primates,Ascariasis,Ascaris lumbricoides
+Papio anubis,1,Primates,Balantidiasis,Balantidium coli
+Papio anubis,1,Primates,Cryptosporidiosis,Cryptosporidium sp.
+Papio anubis,1,Primates,Hymenolepis nana infection,Hymenolepis sp.
+Papio anubis,1,Primates,Leishmaniasis - cutaneous,Leishmania major
+Papio anubis,1,Primates,Oesophagostomiasis,Oesophagostomum sp.
+Papio anubis,1,Primates,Schistosomiasis - mansoni,Schistosoma sp.
+Papio anubis,1,Primates,Strongyloidiasis,Strongyloides sp.
+Papio cynocephalus,1,Primates,Balantidiasis,Balantidium coli
+Papio cynocephalus,1,Primates,Bertiella and Inermicapsifer,Bertiella studeri
+Papio cynocephalus,1,Primates,Leishmaniasis - cutaneous,Leishmania major
+Papio cynocephalus,1,Primates,Schistosomiasis - mansoni,Schistosoma sp.
+Papio hamadryas,1,Primates,Schistosomiasis - mansoni,Schistosoma mansoni
+Papio papio,1,Primates,Ascariasis,Ascaris spp.
+Papio papio,1,Primates,Balantidiasis,Balantidium coli
+Papio ursinus,1,Primates,Bertiella and Inermicapsifer,Bertiella studeri
+Papio ursinus,1,Primates,Hepatitis B,Hepatitis B virus
+Papio ursinus,1,Primates,Oesophagostomiasis,Oesophagostomum sp.
+Papio ursinus,1,Primates,Strongyloidiasis,Strongyloides sp.
+Papio ursinus,1,Primates,Tuberculosis,Mycobacterium tuberculosis
+Perodicticus potto,0,Primates,,
+Phaner electromontis,0,Primates,,
+Phaner furcifer,0,Primates,,
+Phaner pallescens,0,Primates,,
+Phaner parienti,0,Primates,,
+Piliocolobus badius,0,Primates,,
+Piliocolobus foai,0,Primates,,
+Piliocolobus gordonorum,0,Primates,,
+Piliocolobus kirkii,0,Primates,,
+Piliocolobus pennantii,0,Primates,,
+Piliocolobus preussi,0,Primates,,
+Piliocolobus rufomitratus,0,Primates,,
+Piliocolobus tephrosceles,0,Primates,,
+Piliocolobus tholloni,0,Primates,,
+Pithecia aequatorialis,0,Primates,,
+Pithecia albicans,0,Primates,,
+Pithecia irrorata,1,Primates,Leishmaniasis - visceral,Leishmania sp.
+Pithecia monachus,0,Primates,,
+Pithecia pithecia,1,Primates,Malaria,Plasmodium brasilianum
+Pithecia pithecia,1,Primates,Mayaro,Mayaro virus
+Pithecia pithecia,1,Primates,Yellow fever,Yellow fever virus
+Pongo abelii,0,Primates,,
+Pongo pygmaeus,1,Primates,Balantidiasis,Balantidium coli
+Pongo pygmaeus,1,Primates,Campylobacteriosis,Campylobacter sp.
+Pongo pygmaeus,1,,Cryptosporidiosis,Cryptosporidium
+Pongo pygmaeus,1,,Giardiasis,Giardia intestinalis
+Pongo pygmaeus,1,Primates,Ebola,Ebola virus
+Pongo pygmaeus,1,Primates,Hepatitis B,Hepatitis B virus
+Pongo pygmaeus,1,Primates,Marburg virus disease,Marburg virus
+Pongo pygmaeus,1,Primates,Strongyloidiasis,
+Pongo pygmaeus,1,Primates,Tularemia,Francisella tularensis
+Presbytis chrysomelas,0,Primates,,
+Presbytis comata,0,Primates,,
+Presbytis femoralis,0,Primates,,
+Presbytis frontata,0,Primates,,
+Presbytis hosei,0,Primates,,
+Presbytis melalophos,0,Primates,,
+Presbytis natunae,0,Primates,,
+Presbytis potenziani,0,Primates,,
+Presbytis rubicunda,0,Primates,,
+Presbytis siamensis,0,Primates,,
+Presbytis thomasi,0,Primates,,
+Procolobus verus,0,Primates,,
+Prolemur simus,0,Primates,,
+Propithecus coquereli,0,Primates,,
+Propithecus deckenii,0,Primates,,
+Propithecus diadema,0,Primates,,
+Propithecus edwardsi,0,Primates,,
+Propithecus perrieri,0,Primates,,
+Propithecus tattersalli,0,Primates,,
+Propithecus verreauxi,0,Primates,,
+Pseudopotto martini,0,Primates,,
+Pygathrix cinerea,0,Primates,,
+Pygathrix nemaeus,0,Primates,,
+Pygathrix nigripes,0,Primates,,
+Rhinopithecus avunculus,0,Primates,,
+Rhinopithecus bieti,0,Primates,,
+Rhinopithecus brelichi,0,Primates,,
+Rhinopithecus roxellana,0,Primates,,
+Saguinus bicolor,0,Primates,,
+Saguinus fuscicollis,0,Primates,,
+Saguinus geoffroyi,1,Primates,Angiostrongyliasis,Angiostrongylus cantonensis
+Saguinus graellsi,0,Primates,,
+Saguinus imperator,1,Primates,Leishmaniasis - visceral,Leishmania sp.
+Saguinus inustus,0,Primates,,
+Saguinus labiatus,0,Primates,,
+Saguinus leucopus,0,Primates,,
+Saguinus martinsi,0,Primates,,
+Saguinus melanoleucus,0,Primates,,
+Saguinus midas,1,Primates,Malaria,Plasmodium spp.
+Saguinus midas,1,Primates,Mayaro,Mayaro virus
+Saguinus midas,1,Primates,Yellow fever,Yellow fever virus
+Saguinus mystax,1,Primates,Angiostrongyliasis - abdominal,Angiostrongylus costaricensis
+Saguinus niger,0,Primates,,
+Saguinus nigricollis,0,Primates,,
+Saguinus oedipus,0,Primates,,
+Saguinus pileatus,0,Primates,,
+Saguinus tripartitus,0,Primates,,
+Saimiri boliviensis,1,Primates,Trypanosomiasis - American,Trypanosoma cruzi
+Saimiri oerstedii,0,Primates,,
+Saimiri sciureus,1,,Cryptosporidiosis,Cryptosporidium spp.
+Saimiri sciureus,1,,Giardiasis,Giardia intestinalis
+Saimiri sciureus,1,Primates,Leptospirosis,Leptospira interrogans
+Saimiri sciureus,1,Primates,Mayaro,Mayaro virus
+Saimiri sciureus,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Saimiri sciureus,1,Primates,Tuberculosis,Mycobacterium tuberculosis
+Saimiri sciureus,1,Primates,Yersiniosis,Yersinia pseudotuberculosis
+Saimiri ustus,0,Primates,,
+Saimiri vanzolinii,0,Primates,,
+Semnopithecus ajax,0,Primates,,
+Semnopithecus dussumieri,0,Primates,,
+Semnopithecus entellus,1,Primates,Kyasanur Forest disease,Flavivirus Tick-borne encephalitis virus
+Semnopithecus hector,0,Primates,,
+Semnopithecus hypoleucos,0,Primates,,
+Semnopithecus priam,0,Primates,,
+Semnopithecus schistaceus,0,Primates,,
+Simias concolor,0,Primates,,
+Symphalangus syndactylus,0,Primates,,
+Tarsius bancanus,0,Primates,,
+Tarsius dentatus,0,Primates,,
+Tarsius pelengensis,0,Primates,,
+Tarsius pumilus,0,Primates,,
+Tarsius sangirensis,0,Primates,,
+Tarsius syrichta,0,Primates,,
+Tarsius tarsier,0,Primates,,
+Theropithecus gelada,0,Primates,,
+Trachypithecus auratus,0,Primates,,
+Trachypithecus barbei,0,Primates,,
+Trachypithecus cristatus,1,Primates,Dengue,Dengue virus
+Trachypithecus cristatus,1,Primates,Filariasis,Wuchereria bancrofti
+Trachypithecus delacouri,0,Primates,,
+Trachypithecus ebenus,0,Primates,,
+Trachypithecus francoisi,0,Primates,,
+Trachypithecus geei,0,Primates,,
+Trachypithecus germaini,0,Primates,,
+Trachypithecus hatinhensis,0,Primates,,
+Trachypithecus johnii,0,Primates,,
+Trachypithecus laotum,0,Primates,,
+Trachypithecus obscurus,0,Primates,,
+Trachypithecus phayrei,0,Primates,,
+Trachypithecus pileatus,0,Primates,,
+Trachypithecus poliocephalus,0,Primates,,
+Trachypithecus shortridgei,0,Primates,,
+Trachypithecus vetulus,0,Primates,,
+Varecia rubra,1,Primates,Toxoplasmosis,Toxoplasma gondii
+Varecia variegata,1,Primates,Ehrlichiosis - human monocytic,Ehrlichia chaffeensis
+Varecia variegata,1,Primates,Toxoplasmosis,Toxoplasma gondii
