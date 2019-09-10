@@ -75,4 +75,12 @@ protsnet <- left_join(x = specieslevel(web[["1"]], level = "lower",
                         rownames_to_column("protname") %>% 
                         mutate(types = as.character(types)) %>% 
                         filter(types == "FALSE"))
+
+hostsnet <- left_join(x = specieslevel(web[["1"]], level = "higher", 
+                                       index = c("normalised degree", "betweenness", "closeness")) %>% 
+                        rownames_to_column("hostname"), 
+                      y = data.frame(types, deg, bet, clos, eig) %>% 
+                        rownames_to_column("hostname") %>% 
+                        mutate(types = as.character(types)) %>% 
+                        filter(types == "TRUE"))
  
