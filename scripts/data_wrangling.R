@@ -32,8 +32,8 @@ gmpdtaxo <- read.csv("./data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv"
   distinct()
 
 # Save as csvs
-write.csv(gmpdprot, "./data/modified/gmpdprot.csv")
-write.csv(gmpdtaxo, "./data/modified/gmpdtaxo.csv")
+#write.csv(gmpdprot, "./data/modified/gmpdprot.csv")
+#write.csv(gmpdtaxo, "./data/modified/gmpdtaxo.csv")
 
 
 ## Load protozoa zooscores data and subset relevant portions
@@ -46,7 +46,7 @@ prots178 <- read.csv("./data/original/Zooscore_datafiles/Zooscore_trait_Protozoa
          tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, 
          parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
 
-write.csv(prots178, "./data/modified/prots178.csv")
+#write.csv(prots178, "./data/modified/prots178.csv")
 
 # 
 prots049 <- read.csv("./data/modified/48prots.csv") %>% # 49 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
@@ -56,10 +56,10 @@ prots049 <- read.csv("./data/modified/48prots.csv") %>% # 49 additional protozoa
          tm_vector=NA, tm_intermediate=NA) %>% 
   left_join(gmpdtaxo)
 
-write.csv(prots049, "./data/modified/prots049.csv")
+#write.csv(prots049, "./data/modified/prots049.csv")
 
 # 
-prots227 <- rbind(prots178, prots049)
+prots226 <- rbind(prots178, prots049)
 
 
 ### Clean data
@@ -104,19 +104,19 @@ protraits <- left_join(prots226, gmpdprot, by = "protname") %>%
 # Check if protraits_zooscored has 226 prot species
 length(unique(protraits$protname))
 
-# create tbl listing all unique prot spp (n = 255)
+# create tbl listing all unique prot spp (n = 226)
 allprots <- as.tbl(as.data.frame(unique(protraits$protname))) %>% 
   rename(protname = `unique(protraits$protname)`)
 
-# create tbl listing all unique host spp (n = 251)
+# create tbl listing all unique host spp (n = 245)
 allhosts <- as.tbl(as.data.frame(unique(protraits$hostname))) %>% 
   rename(hostname = `unique(protraits$hostname)`)
 
-# create tbl listing all unique hp pairs (n = 880)
+# create tbl listing all unique hp pairs (n = 840)
 allpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl() %>% 
   mutate(pairname = paste(protname, ", ", hostname))
 
 # Save as csvs
-write.csv(allhosts, "./data/modified/allhosts.csv")
-write.csv(allprots, "./data/modified/allprots.csv")
-write.csv(allpairs, "./data/modified/allpairs.csv")
+#write.csv(allprots, "./data/modified/allprots.csv")
+#write.csv(allpairs, "./data/modified/allpairs.csv")
+#write.csv(allhosts, "./data/modified/allhosts.csv")
