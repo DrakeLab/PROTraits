@@ -36,15 +36,15 @@ length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname
 # add the 'type' attribute to the network
 V(g)$type <- bipartite_mapping(g)$type
 
-## Visualise (not very useful because network is so large)
-V(g)$label.color <- "black" 
-V(g)$label.cex <- 0.65 
-V(g)$frame.color <-  "gray"
-V(g)$size <- 15
-
-plot(g, layout = layout_with_graphopt)
-
-plot(g, layout=layout.bipartite, vertex.size=7, vertex.label.cex=0.6)
+### Visualise (not very useful because network is so large)
+#V(g)$label.color <- "black" 
+#V(g)$label.cex <- 0.65 
+#V(g)$frame.color <-  "gray"
+#V(g)$size <- 15
+#
+#plot(g, layout = layout_with_graphopt)
+#
+#plot(g, layout=layout.bipartite, vertex.size=7, vertex.label.cex=0.6)
 
 ## Analysis
 
@@ -83,4 +83,9 @@ hostsnet <- left_join(x = specieslevel(web[["1"]], level = "higher",
                         rownames_to_column("hostname") %>% 
                         mutate(types = as.character(types)) %>% 
                         filter(types == "TRUE"))
- 
+# Save as csvs
+#write.csv(protsnet, "./data/modified/protsnet.csv")
+#write.csv(hostsnet, "./data/modified/hostsnet.csv")
+
+# Add protsnet vars to protratis
+protraits <- left_join(protraits, protsnet, by = "protname") #protraits should now have 37 vars
