@@ -61,6 +61,14 @@ prots049 <- read.csv("./data/modified/48prots.csv") %>% # 49 additional protozoa
 # 
 prots226 <- rbind(prots178, prots049)
 
+for (i in 1:length(prots226$protname)) {
+  if(prots226$zscore[i] > 0){
+    prots226$zoostat[i] <- 1
+  } else {
+    prots226$zoostat[i] <- 0
+  }
+}
+
 
 ### Clean data
 
@@ -70,13 +78,13 @@ prots226 <- rbind(prots178, prots049)
 setdiff(prots226$gmpdprotname, gmpdprot$gmpdprotname) # 1 spp in prots226 does is not listed gmpdprot - this is because its host does not have a binomial name and was filtered out above. 
 
 # Remove T. brimonti from prots226
-prots226 <- prots227 %>% filter(!grepl("Trypanosoma brimonti", protname))
+prots226 <- prots226 %>% filter(!grepl("Trypanosoma brimonti", protname))
 
 # Check for discrepencies between final protnames and gmpdprotnames
 setdiff(prots226$protname, gmpdprot$gmpdprotname) # the final protnames in prots226 contains 2 corrected protnames that have been updated from the original gmpdprotname
 
 # Create protname variable in gmpd for final protnames
-gmpdprot <- gmpdprot %>% mutate(protname=gmpdprotname)
+gmpdprot <- gmpdprot %>% mutate(protname = gmpdprotname)
 
 # Update the 2 spp names to match zooscore
 gmpdprot$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprot$protname)
@@ -95,7 +103,7 @@ noscores <- as.data.frame(setdiff(gmpdprot$protname, prots226$protname)) %>% ren
 
 # Add prots226 data to gmpdprot to create protraits
 protraits <- left_join(prots226, gmpdprot, by = "protname") %>% 
-  select(ID, protname, hostname, zscore, cscore, 
+  select(ID, protname, hostname, zoostat, zscore, cscore, 
          tm_close, tm_nonclose, tm_vector, tm_intermediate, 
          parphylum, parclass, parorder, parfamily,
          hosttype, hostorder, hostfamily, hostenv,
