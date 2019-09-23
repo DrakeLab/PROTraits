@@ -26,9 +26,9 @@ for (i in 1:length(allhosts$hostname)) {
   allhosts$numprotzoons[i] <- length(which(allhosts$protzoos[[i]] >= 1))
   allhosts$propprotzoon[i] <- allhosts$numprotzoons[i]/allhosts$numprots[i]
   if(allhosts$numprotzoons[i] > 0){
-    allhosts$zoonstat[i] <- 1
+    allhosts$zoores[i] <- 1
   } else {
-    allhosts$zoonstat[i] <- 0
+    allhosts$zoores[i] <- 0
   }
 }
 
@@ -48,3 +48,5 @@ for (i in 1:length(allprots$protname)) {
   allprots$numhostzoons[i] <- length(which(allprots$hostzoos[[i]] >= 1))
   allprots$prophostzoon[i] <- allprots$numhostzoons[i]/allprots$numhosts[i]
 }
+
+protraits <- protraits %>% left_join(protsnet[,c(1, 3:11)], by ="protname") #protraits should now have 46 vars
