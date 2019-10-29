@@ -5,7 +5,7 @@
 ### Attach packages
 
 library(tidyverse) 
-library(magrittr) 
+library(magrittr)
 library(dplyr) 
 library(stringr)
 
@@ -128,3 +128,6 @@ allpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl()
 #write.csv(allprots, "./data/modified/allprots.csv")
 #write.csv(allpairs, "./data/modified/allpairs.csv")
 #write.csv(allhosts, "./data/modified/allhosts.csv")
+
+library(BRRR)
+skrrrahh("flava")

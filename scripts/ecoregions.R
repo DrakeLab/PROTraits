@@ -2,7 +2,7 @@ library(sf)
 
 # assign a ecoregion data to each host-parasite location
 
-host_par_points_df <- as.data.frame(protraits[, c(1, 18, 19)]) %>% na.omit() # extract lat longs and remove empty rows
+host_par_points_df <- as.data.frame(protraits[, c(1, 19, 20)]) %>% na.omit() # extract lat longs and remove empty rows
 host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf
 #host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
 
@@ -60,9 +60,9 @@ biome_colors <- c("#2c3100",
                   "#017db5",
                   "#00325f")
 # view colours
-#pie(rep(1,16), col = biome_colors, labels = biome_names)
+pie(rep(1,16), col = biome_colors, labels = biome_names)
 
-biome_map <- ggplot(ecoregions_sf) +
+biome_map <- ggplot(teow_sf) +
   geom_sf(aes(fill = as.factor(BIOME))) +
   scale_fill_manual(values = biome_colors, name = "Terrestrial Biome", labels = biome_names)
 
