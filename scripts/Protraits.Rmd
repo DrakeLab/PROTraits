@@ -1,0 +1,251 @@
+---
+title: "Protraits"
+author: "Joy Vaz"
+date: "October 16, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+require("knitr")
+opts_chunk$set(echo=T, tidy=T, warning=F, message=F)
+opts_knit$set(root.dir = "C:/Protraits_Joy")
+```
+
+## Source and Clean Data
+
+```{r Data Wrangling}
+
+### Attach packages
+
+library(tidyverse) 
+library(dplyr) 
+library(stringr)
+
+### Import data ----------------------------------------------------------------------------
+
+## Global Mammal Parasite Database (GMPD) 2.0
+
+# Database of the parasites of wild primates, carnivores and ungulates. See metadata for more info. Data published in Stephens et al. (2017) at ttp://onlinelibrary.wiley.com/doi/10.1002/ecy.1799/suppinfo. Downloaded on 20180911. 
+
+gmpdprot <- read.csv("data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+  filter(ParType == "Protozoa", HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName)) %>% 
+  select(hosttype=Group, hostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
+         location=LocationName, lat=Latitude, long=Longitude, 
+         gmpdprotname=ParasiteCorrectedName, 
+         prev=Prevalence, 
+         numhosts=HostsSampled, numsamples=NumSamples) %>% 
+  mutate(ID = seq(len=2484))  # give unique ID to each GMPD record 
+
+gmpdtaxo <- read.csv("data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv") %>% # rows are unique parasite species, columns are taxonomic classifications of each species
+  filter(ParType == "Protozoa", HasBinomialName == "yes") %>% 
+  select(gmpdprotname=ParasiteCorrectedName, 
+         parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily) %>% 
+  distinct()
+
+# Save as flat files
+#write.csv(gmpdprot, "data/modified/gmpdprot.csv")
+#write.csv(gmpdtaxo, "data/modified/gmpdtaxo.csv")
+
+## Zooscores
+
+# Database of the zoonotic statuses of protozoa in GMPD. See metadata for more info. Data (unpublished) from Han lab, Cary Institute of Ecosystem Studies. Recieved from Barbara Han on 20180806.
+
+prots178 <- read.csv("data/original/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% 
+  select(protname=ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
+         zscore=XC_ZooScore, cscore=XC_CScore, 
+         gmpdprotname=ParasiteCorrectedName.updated, 
+         tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, 
+         parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
+
+# Save as flat file
+#write.csv(prots178, "data/modified/prots178.csv")
+
+prots049 <- read.csv("data/modified/48prots.csv") %>% # 49 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
+  rename(protname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
+         zscore=XC_ZooScore, cscore=XC_CScore) %>% 
+  mutate(gmpdprotname=protname, tm_close=NA, tm_nonclose=NA, 
+         tm_vector=NA, tm_intermediate=NA) %>% 
+  left_join(gmpdtaxo)
+
+# Save as flat file
+#write.csv(prots049, "data/modified/prots049.csv")
+
+# Join prots178 and prots049
+prots226 <- rbind(prots178, prots049)
+
+
+### Clean data ----------------------------------------------------------------------------
+
+## Names
+
+# Check  for discrepencies in gmpdprotnames between the two dataframes 
+setdiff(prots226$gmpdprotname, gmpdprot$gmpdprotname) # 1 spp in prots226 does is not listed gmpdprot - this is because its host does not have a binomial name and was filtered out above. 
+
+# Remove T. brimonti from prots226
+prots226 <- prots226 %>% filter(!grepl("Trypanosoma brimonti", protname))
+
+# Check for discrepencies between final protnames and gmpdprotnames
+setdiff(prots226$protname, gmpdprot$gmpdprotname) # the final protnames in prots226 contains 2 corrected protnames that have been updated from the original gmpdprotname
+
+# Create protname variable in gmpd for final protnames
+gmpdprot <- gmpdprot %>% mutate(protname = gmpdprotname)
+
+# Update the 2 spp names to match zooscore
+gmpdprot$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprot$protname)
+gmpdprot$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprot$protname)
+
+# Verify that the protnames in both datasets are now matching
+setdiff(prots226$protname, gmpdprot$protname)
+
+## Completeness
+
+# Save a list of the gmpdprot spp that are not in prots226
+noscores <- as.data.frame(setdiff(gmpdprot$protname, prots226$protname)) %>% rename(protname = `setdiff(gmpdprot$protname, prots226$protname)`)
+
+
+### Create protraits ----------------------------------------------------------------------------
+
+# Add prots226 data to gmpdprot to create protraits. Each row is a unique host-parasite interaction
+protraits <- left_join(prots226, gmpdprot, by = "protname") %>% 
+  select(ID, protname, hostname, zscore, cscore, 
+         tm_close, tm_nonclose, tm_vector, tm_intermediate, 
+         parphylum, parclass, parorder, parfamily,
+         hosttype, hostorder, hostfamily, hostenv,
+         lat, long, location, numhosts, numsamples, prev)
+
+# Add binary var to protraits indicating zoonotic status of each prot spp
+for (i in 1:length(protraits$protname)) {
+  if(protraits$zscore[i] > 0){
+    protraits$zoostat[i] <- 1
+  } else {
+    protraits$zoostat[i] <- 0
+  }
+}
+
+# Verify that protraits has 226 prot species
+length(unique(protraits$protname))
+
+# Create tbl of all unique prot spp names (n = 226)
+allprots <- as.tbl(as.data.frame(unique(protraits$protname))) %>% 
+  rename(protname = `unique(protraits$protname)`)
+
+# Create tbl of all unique host spp names (n = 245)
+allhosts <- as.tbl(as.data.frame(unique(protraits$hostname))) %>% 
+  rename(hostname = `unique(protraits$hostname)`)
+
+# Create tbl of all unique host-parasite interaction pairs (n = 840)
+allintrx <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl() %>% 
+  mutate(pairname = paste(protname, ", ", hostname))
+
+# Save as flat files
+#write.csv(allprots, "data/modified/allprots.csv")
+#write.csv(allhosts, "data/modified/allhosts.csv")
+#write.csv(allintrx, "data/modified/allintrx.csv")
+
+```
+
+## TEOW Ecoregions
+
+
+```{r Ecoregions, echo=T, tidy=T, warning=F, message=F}
+
+library(sf)
+
+# Assign a ecoregion data to each host-parasite location
+
+intrxgeo <- protraits %>% select(ID, lat, long) %>% na.omit() %>% # Extract lat long coordinates for each intrx. 86 host-prot intrx do not have coordinates in GMPD
+  st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf object
+ 
+### Import data ----------------------------------------------------------------------------
+
+## WWF Terrestrial Ecoregions of the World (TEOW)
+
+# Spatial polygons dataset downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
+
+teowshps <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") 
+
+
+# Create df with each point and corresponding TEOW vars
+teowprot <- st_intersection(teowshps, intrxgeo) %>% 
+  as.data.frame()
+
+# Save as flat file
+write.csv(teowprot, "data/modified/teowprot.csv")
+
+protraits <- left_join(protraits, teowprot %>% select(ID, ECO_NAME, REALM, BIOME), by = "ID") #protraits should now have 27 vars
+
+# Create df of the protraits records that did NOT overlap with TEOW polygons
+noteows <- anti_join(protraits, teowprot, by = "ID") # 160 records did not match, 86 of which do not have lat long coordinates in GMPD
+length(noteows$lat %>% na.omit()) # 74 records have lat/longs but still did not overlap with TEOW polygons because they were off the coast in marine ecoregions.
+
+# Plot map
+
+library(ggplot2)
+
+# plot global distribution of GMPD protozoa records across TEOW biomes
+
+biome_names <- c("Tropical & Subtropical Moist Broadleaf Forests", 
+                 "Tropical & Subtropical Dry Broadleaf Forests", 
+                 "Tropical & Subtropical Coniferous Forests", 
+                 "Temperate Broadleaf & Mixed Forests", 
+                 "Temperate Conifer Forests", 
+                 "Boreal Forests/Taiga", 
+                 "Tropical & Subtropical Grasslands, Savannas & Shrublands", 
+                 "Temperate Grasslands, Savannas & Shrublands", 
+                 "Flooded Grasslands & Savannas", 
+                 "Montane Grasslands & Shrublands", 
+                 "Tundra", 
+                 "Mediterranean Forests, Woodlands & Scrub", 
+                 "Deserts & Xeric Shrublands", 
+                 "Mangroves", 
+                 "Lake", 
+                 "Rock & Ice")
+
+biome_colors <- c("#2c3100",
+                  "#707d37",
+                  "#1a4910",
+                  "#437c44",
+                  "#00765a",
+                  "#008fac",
+                  "#843a29",
+                  "#9f8075",
+                  "#6e480e",
+                  "#312c1e",
+                  "#015281",
+                  "#5c2f00",
+                  "#a68052",
+                  "#7b6f29",
+                  "#017db5",
+                  "#00325f")
+# view colours
+#pie(rep(1,16), col = biome_colors, labels = biome_names)
+
+biome_map <- ggplot(ecoregions_sf) +
+  geom_sf(aes(fill = as.factor(BIOME))) +
+  scale_fill_manual(values = biome_colors, name = "Terrestrial Biome", labels = biome_names)
+
+biome_map +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("Global distribution of protozoa records in GMPD") +
+  geom_point(data = host_par_points_df, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
+  theme(panel.background = element_rect(fill = "azure")) +
+  coord_sf(crs = 4326)
+
+# plot global distribution of GMPD protozoa records by country 
+
+library(rnaturalearth)
+library(rnaturalearthdata)
+
+world <- ne_countries(scale = "medium", returnclass = "sf")
+class(world)
+
+ggplot() +
+  geom_sf(data = world, aes(fill = gdp_md_est/pop_est), color = "black") +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("Global distribution of protozoa records in GMPD") +
+  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+  geom_point(data = host_par_points_df, aes(x = long, y = lat)) 
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
