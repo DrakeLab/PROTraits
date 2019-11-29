@@ -88,4 +88,4 @@ hostsnet <- left_join(x = specieslevel(web[["1"]], level = "higher",
 #write.csv(hostsnet, "./data/modified/hostsnet.csv")
 
 # Add protsnet vars to protratis
-protraits <- left_join(protraits, protsnet, by = "protname") #protraits should now have 37 vars
+protraits <- left_join(protraits, protsnet, by = "protname") #protraits should now have 38 vars
