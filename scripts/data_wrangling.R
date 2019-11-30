@@ -6,13 +6,11 @@
 
 library(tidyverse) 
 library(magrittr)
-library(dplyr) 
-library(stringr)
 
 
 ### Load data
 
-## 
+## GMPD data 
 
 #
 gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% # rows are observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
@@ -128,6 +126,23 @@ allpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl()
 #write.csv(allprots, "./data/modified/allprots.csv")
 #write.csv(allpairs, "./data/modified/allpairs.csv")
 #write.csv(allhosts, "./data/modified/allhosts.csv")
+
+
+## Manually entered data
+
+rawprots <- read.csv("./data/original/protsentry.csv") %>% 
+  select(protname = ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, Type,
+         intra = intra_extra, bodysystem = site_system, continent = geo_dist,
+         domestic = dom_host, domestic_name = dom_hostname, flagella, sexual)
+
+View(rawprots)
+
+bodysystems <- c("muscular", "skeletal", "circulatory", "respiratory", "digestive", "immune", "urinary", 
+                 "nervous", "endocrine", "reproductive", "lymphatic", "integumentary", "ocular")
+
+recode(rawprots$domestic, "yes" = 1, "no" = 0)
+recode(rawprots$flagella, "yes" = 1, "no" = 0)
+recode(rawprots$sexual, "yes" = 1, "both" = 1, "no" = 0)
 
 library(BRRR)
 skrrrahh("flava")
