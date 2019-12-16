@@ -1,9 +1,6 @@
 ## 7/30/2019
 
 library(tidyverse) 
-library(magrittr) 
-library(dplyr) 
-library(stringr)
 
 ## create affiliate networks for host-prot pairs
 
