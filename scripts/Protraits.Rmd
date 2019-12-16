@@ -8,12 +8,12 @@ output: html_document
 ```{r setup, include=FALSE, echo=FALSE}
 require("knitr")
 opts_chunk$set(echo=T, tidy=T, warning=F, message=F)
-opts_knit$set(root.dir = "C:/Protraits_Joy")
+opts_knit$set(root.dir = "C:/Protraits_Joy/")
 ```
 
-## Source and Clean Data
+## Data Processing
 
-```{r Data Wrangling}
+```{r data wrangling}
 
 ### Attach packages
 
@@ -27,7 +27,7 @@ library(stringr)
 
 # Database of the parasites of wild primates, carnivores and ungulates. See metadata for more info. Data published in Stephens et al. (2017) at ttp://onlinelibrary.wiley.com/doi/10.1002/ecy.1799/suppinfo. Downloaded on 20180911. 
 
-gmpdprot <- read.csv("data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+gmpdprot <- read_csv("data/original/GMPD_datafiles/GMPD_main.csv") %>% 
   filter(ParType == "Protozoa", HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName)) %>% 
   select(hosttype=Group, hostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
          location=LocationName, lat=Latitude, long=Longitude, 
@@ -36,31 +36,31 @@ gmpdprot <- read.csv("data/original/GMPD_datafiles/GMPD_main.csv") %>%
          numhosts=HostsSampled, numsamples=NumSamples) %>% 
   mutate(ID = seq(len=2484))  # give unique ID to each GMPD record 
 
-gmpdtaxo <- read.csv("data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv") %>% # rows are unique parasite species, columns are taxonomic classifications of each species
+gmpdtaxo <- read_csv("data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv") %>% # rows are unique parasite species, columns are taxonomic classifications of each species
   filter(ParType == "Protozoa", HasBinomialName == "yes") %>% 
   select(gmpdprotname=ParasiteCorrectedName, 
          parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily) %>% 
   distinct()
 
 # Save as flat files
-#write.csv(gmpdprot, "data/modified/gmpdprot.csv")
-#write.csv(gmpdtaxo, "data/modified/gmpdtaxo.csv")
+#write_csv(gmpdprot, "data/modified/gmpdprot.csv")
+#write_csv(gmpdtaxo, "data/modified/gmpdtaxo.csv")
 
 ## Zooscores
 
 # Database of the zoonotic statuses of protozoa in GMPD. See metadata for more info. Data (unpublished) from Han lab, Cary Institute of Ecosystem Studies. Recieved from Barbara Han on 20180806.
 
-prots178 <- read.csv("data/original/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% 
-  select(protname=ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
+prots178 <- read_csv("data/original/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% 
+  select(protname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
          zscore=XC_ZooScore, cscore=XC_CScore, 
          gmpdprotname=ParasiteCorrectedName.updated, 
          tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, 
          parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
 
 # Save as flat file
-#write.csv(prots178, "data/modified/prots178.csv")
+#write_csv(prots178, "data/modified/prots178.csv")
 
-prots049 <- read.csv("data/modified/48prots.csv") %>% # 49 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
+prots049 <- read_csv("data/modified/48prots.csv") %>% # 49 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
   rename(protname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
          zscore=XC_ZooScore, cscore=XC_CScore) %>% 
   mutate(gmpdprotname=protname, tm_close=NA, tm_nonclose=NA, 
@@ -68,7 +68,7 @@ prots049 <- read.csv("data/modified/48prots.csv") %>% # 49 additional protozoa t
   left_join(gmpdtaxo)
 
 # Save as flat file
-#write.csv(prots049, "data/modified/prots049.csv")
+#write_csv(prots049, "data/modified/prots049.csv")
 
 # Join prots178 and prots049
 prots226 <- rbind(prots178, prots049)
@@ -106,7 +106,7 @@ noscores <- as.data.frame(setdiff(gmpdprot$protname, prots226$protname)) %>% ren
 ### Create protraits ----------------------------------------------------------------------------
 
 # Add prots226 data to gmpdprot to create protraits. Each row is a unique host-parasite interaction
-protraits <- left_join(prots226, gmpdprot, by = "protname") %>% 
+protraits_01 <- left_join(prots226, gmpdprot, by = "protname") %>% 
   select(ID, protname, hostname, zscore, cscore, 
          tm_close, tm_nonclose, tm_vector, tm_intermediate, 
          parphylum, parclass, parorder, parfamily,
@@ -114,47 +114,68 @@ protraits <- left_join(prots226, gmpdprot, by = "protname") %>%
          lat, long, location, numhosts, numsamples, prev)
 
 # Add binary var to protraits indicating zoonotic status of each prot spp
-for (i in 1:length(protraits$protname)) {
-  if(protraits$zscore[i] > 0){
-    protraits$zoostat[i] <- 1
+for (i in 1:length(protraits_01$protname)) {
+  if(protraits_01$zscore[i] > 0){
+    protraits_01$zoostat[i] <- 1
   } else {
-    protraits$zoostat[i] <- 0
+    protraits_01$zoostat[i] <- 0
   }
 }
 
 # Verify that protraits has 226 prot species
-length(unique(protraits$protname))
+length(unique(protraits_01$protname))
 
 # Create tbl of all unique prot spp names (n = 226)
-allprots <- as.tbl(as.data.frame(unique(protraits$protname))) %>% 
-  rename(protname = `unique(protraits$protname)`)
+allprots <- as.tbl(as.data.frame(unique(protraits_01$protname))) %>% 
+  rename(protname = `unique(protraits_01$protname)`)
 
 # Create tbl of all unique host spp names (n = 245)
-allhosts <- as.tbl(as.data.frame(unique(protraits$hostname))) %>% 
-  rename(hostname = `unique(protraits$hostname)`)
+allhosts <- as.tbl(as.data.frame(unique(protraits_01$hostname))) %>% 
+  rename(hostname = `unique(protraits_01$hostname)`)
 
 # Create tbl of all unique host-parasite interaction pairs (n = 840)
-allintrx <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl() %>% 
+allintrx <- protraits_01 %>% select(hostname, protname) %>% distinct() %>% as.tbl() %>% 
   mutate(pairname = paste(protname, ", ", hostname))
 
+
 # Save as flat files
-#write.csv(allprots, "data/modified/allprots.csv")
-#write.csv(allhosts, "data/modified/allhosts.csv")
-#write.csv(allintrx, "data/modified/allintrx.csv")
+#write_csv(allprots, "data/modified/allprots.csv")
+#write_csv(allhosts, "data/modified/allhosts.csv")
+#write_csv(allintrx, "data/modified/allintrx.csv")
+
+```
+
+## Mammal trait data
+
+```{r mammal traits}
+
+pantheria <- read.delim("data/original/PanTHERIA/pan.txt") %>% 
+  select(-c(MSW93_Order, MSW93_Family, MSW93_Genus, MSW93_Species)) %>%
+  rename(hostname = MSW93_Binomial) 
+
+phylacine <- read_csv("data/original/PHYLACINE_datafiles/Trait_data.csv")
+
+phylacine$hostname = gsub("_", " ", phylacine$Binomial.1.2)
+
+hosttraits <- left_join(allhosts, gmpdprot[,1:5])
+hosttraits <- left_join(hosttraits, pantheria)
+hosttraits <- left_join(hosttraits, phylacine)
+
+
 
 ```
 
 ## TEOW Ecoregions
 
 
-```{r Ecoregions, echo=T, tidy=T, warning=F, message=F}
+```{r ecoregions}
 
 library(sf)
 
 # Assign a ecoregion data to each host-parasite location
 
-intrxgeo <- protraits %>% select(ID, lat, long) %>% na.omit() %>% # Extract lat long coordinates for each intrx. 86 host-prot intrx do not have coordinates in GMPD
-  st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf object
+intrxpts <- protraits_01 %>% select(ID, lat, long) %>% na.omit() # Extract lat long coordinates for each intrx. 86 host-prot intrx do not have coordinates in GMPD
+intrxgeo <- intrxpts %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf object
  
 ### Import data ----------------------------------------------------------------------------
 
@@ -163,26 +184,24 @@ intrxgeo <- protraits %>% select(ID, lat, long) %>% na.omit() %>% # Extract lat 
 # Spatial polygons dataset downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
 
 teowshps <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") 
+#
+#
+## Create df with each point and corresponding TEOW vars
+#teowprot <- st_intersection(teowshps, intrxgeo) %>% 
+#  as.data.frame()
+#
+## Save as flat file
+#write_csv(teowprot, "data/modified/teowprot.csv")
 
+teowprot <- read_csv("data/modified/teowprot.csv")
 
-# Create df with each point and corresponding TEOW vars
-teowprot <- st_intersection(teowshps, intrxgeo) %>% 
-  as.data.frame()
-
-# Save as flat file
-write.csv(teowprot, "data/modified/teowprot.csv")
-
-protraits <- left_join(protraits, teowprot %>% select(ID, ECO_NAME, REALM, BIOME), by = "ID") #protraits should now have 27 vars
+protraits_02 <- left_join(protraits_01, teowprot %>% select(ID, ECO_NAME, REALM, BIOME), by = "ID") #protraits should now have 27 vars
 
 # Create df of the protraits records that did NOT overlap with TEOW polygons
-noteows <- anti_join(protraits, teowprot, by = "ID") # 160 records did not match, 86 of which do not have lat long coordinates in GMPD
+noteows <- anti_join(protraits_01, teowprot, by = "ID") # 160 records did not match, 86 of which do not have lat long coordinates in GMPD
 length(noteows$lat %>% na.omit()) # 74 records have lat/longs but still did not overlap with TEOW polygons because they were off the coast in marine ecoregions.
 
-# Plot map
-
-library(ggplot2)
-
-# plot global distribution of GMPD protozoa records across TEOW biomes
+# Plot map of global distribution of GMPD protozoa records across TEOW biomes
 
 biome_names <- c("Tropical & Subtropical Moist Broadleaf Forests", 
                  "Tropical & Subtropical Dry Broadleaf Forests", 
@@ -220,32 +239,126 @@ biome_colors <- c("#2c3100",
 # view colours
 #pie(rep(1,16), col = biome_colors, labels = biome_names)
 
-biome_map <- ggplot(ecoregions_sf) +
+biome_map <- ggplot(teowshps) +
   geom_sf(aes(fill = as.factor(BIOME))) +
   scale_fill_manual(values = biome_colors, name = "Terrestrial Biome", labels = biome_names)
 
 biome_map +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("Global distribution of protozoa records in GMPD") +
-  geom_point(data = host_par_points_df, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
-  theme(panel.background = element_rect(fill = "azure")) +
+  geom_point(data = intrxpts, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
+  theme(panel.background = element_rect(fill = "azure"), legend.position = "bottom") +
   coord_sf(crs = 4326)
 
 # plot global distribution of GMPD protozoa records by country 
 
-library(rnaturalearth)
-library(rnaturalearthdata)
-
-world <- ne_countries(scale = "medium", returnclass = "sf")
-class(world)
-
-ggplot() +
-  geom_sf(data = world, aes(fill = gdp_md_est/pop_est), color = "black") +
-  xlab("Longitude") + ylab("Latitude") +
-  ggtitle("Global distribution of protozoa records in GMPD") +
-  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-  geom_point(data = host_par_points_df, aes(x = long, y = lat)) 
+#library(rnaturalearth)
+#library(rnaturalearthdata)
+#
+#world <- ne_countries(scale = "medium", returnclass = "sf")
+#class(world)
+#
+#ggplot() +
+#  geom_sf(data = world, aes(fill = gdp_md_est/pop_est), color = "black") +
+#  xlab("Longitude") + ylab("Latitude") +
+#  ggtitle("Global distribution of protozoa records in GMPD") +
+#  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
+#  geom_point(data = host_par_points_df, aes(x = long, y = lat)) 
 
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r bipartite network}
+###Host-Prasite Bipartite Network
+
+library(igraph)
+library(bipartite)
+
+# create df from which to build network
+hostprotnetwork <- read_csv("./data/modified/allpairs.csv") %>% 
+  select(protname, hostname) %>% mutate(netID = "1")
+
+## Setup for bipartite
+
+# convert to web format needed for bipartite functions
+web <- frame2webs(hostprotnetwork, varnames = c("protname", "hostname", "netID"))
+
+# calculate bipartite network indices for all prots and hosts
+protsnet <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
+hostsnet <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
+
+# convert to bipartite network one-mode network in order to calculate indices like centrality
+as.one.mode(web[["1"]])
+
+#_____________________________________________________________________________________________
+
+## Setup for igraph
+
+# convert to graph format needed for igraph functions
+
+g <- graph.data.frame(hostprotnetwork[,1:2], directed = F)
+
+bipartite.mapping(g)  # $res tells us if the network meets the criteria for a 2-mode network ($res)
+# and $type tells us which nodes fall into each mode - FALSE for prots and TRUE for hosts
+
+# check: number of nodes should equal the total number of unique host + parasite spp.
+length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname, hostprotnetwork$hostname))) 
+
+# add the 'type' attribute to the network
+V(g)$type <- bipartite_mapping(g)$type
+
+### Visualise (not very useful because network is so large)
+#V(g)$label.color <- "black" 
+#V(g)$label.cex <- 0.65 
+#V(g)$frame.color <-  "gray"
+#V(g)$size <- 15
+#
+#plot(g, layout = layout_with_graphopt)
+#
+#plot(g, layout=layout.bipartite, vertex.size=7, vertex.label.cex=0.6)
+
+## Analysis
+
+#Used code from this tutorial: https://rpubs.com/pjmurphy/317838
+
+#From the tutorial page:
+#Igraph was not designed with two-mode networks in mind. It does, however recognize that the network is two-mode. 
+#Keep in mind, however, that when you run centrality measures on a two-mode network, igraph will be treating each 
+#of these nodes as though they are in the same mode. Igraph makes no allowance for calculating centralities that 
+#are specific to the special case of two-mode networks.
+#If you are interested in understanding the relative prominence of nodes in each mode, relative to other nodes in that mode, 
+#then the best you will be able to do in igraph will be to analyze each mode separately. 
+
+m <- as.one.mode(web[["1"]])
+mgraph <- graph.adjacency(m)
+
+#Calculate centrality
+types <- V(g)$type                 # get each vertex `type` in order to sort easily
+deg <- degree(m)
+bet <- betweenness(m)
+clos <- closeness(m)
+eig <- eigen_centrality(mgraph)$vector
+
+protsnet <- left_join(x = specieslevel(web[["1"]], level = "lower", 
+                                   index = c("normalised degree", "betweenness", "closeness")) %>% 
+                        rownames_to_column("protname"), 
+                      y = data.frame(types, deg, bet, clos, eig) %>% 
+                        rownames_to_column("protname") %>% 
+                        mutate(types = as.character(types)) %>% 
+                        filter(types == "FALSE"))
+
+hostsnet <- left_join(x = specieslevel(web[["1"]], level = "higher", 
+                                       index = c("normalised degree", "betweenness", "closeness")) %>% 
+                        rownames_to_column("hostname"), 
+                      y = data.frame(types, deg, bet, clos, eig) %>% 
+                        rownames_to_column("hostname") %>% 
+                        mutate(types = as.character(types)) %>% 
+                        filter(types == "TRUE"))
+# Save as csvs
+#write.csv(protsnet, "./data/modified/protsnet.csv")
+#write.csv(hostsnet, "./data/modified/hostsnet.csv")
+
+# Add protsnet vars to protratis
+protraits_03 <- left_join(protraits_02, protsnet, by = "protname") #protraits should now have 38 vars
+
+```
+
