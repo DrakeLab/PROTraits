@@ -1,0 +1,629 @@
+---
+title: "Characterizing the phylogenetic specialism-generalism spectrum of mammal parasites"
+author:
+- Park, A.W., Odum School of Ecology, University of Georgia, 140 E. Green Street,
+  Athens, GA 30602, USA
+- Farrell, M.J., Department of Biology, McGill University, Montreal, Quebec H3G 0B1,
+  Canada
+- Schmidt, J.P., Odum School of Ecology, University of Georgia, 140 E. Green Street,
+  Athens, GA 30602, USA
+- Huang, S., Senckenberg Biodiversity and Climate Research Center (BiK-F), Senckenberganlage
+  25, D-60325 Frankfurt (Main), Germany
+- Dallas, T.A., Department of Environmental Science and Policy, University of California,
+  One Shields Avenue, Davis, CA 95616, USA
+- Pappalardo, P., Odum School of Ecology, University of Georgia, 140 E. Green Street,
+  Athens, GA 30602, USA
+- Drake, J.M., Odum School of Ecology, University of Georgia, 140 E. Green Street,
+  Athens GA, 30602, USA
+- Stephens, P.R., Odum School of Ecology, University of Georgia, 140 E. Green Street,
+  Athens GA, 30602, USA
+- Poulin, R., Department of Zoology, University of Otago, P.O. Box 56, Dunedin 9054,
+  New Zealand
+- Nunn, C.L., Department of Evolutionary Anthropology and Duke Global Health Institute,
+  Duke University, Durham, NC 27708, USA
+- Davies, T.J., Departments of Botany, Forest & Conservation Sciences, University
+  of British Columbia, 6270 University Blvd., Vancouver, B.C., V6T 1Z4, Canada
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+```{r, echo=F, warning=F, message=F}
+#mammal supertree
+library(ape)
+treelist=read.nexus("./data/original/Park_2016/WR_2005_ST.txt")
+#best dates
+mtree=treelist[[1]]
+#dist matrix
+phydist<-cophenetic.phylo(mtree) #or can use generic cophenetic
+#which hosts are in the parasite database
+d<-read.csv("./data/original/Park_2016/GMPD_main_2016-11-28.csv",header=T)
+d<-subset(d,HostEnvironment=="terrestrial")
+keep.d<-which(names(d)%in%c("HostCorrectedName","HostOrder","ParasiteCorrectedName","Par.Type","Group"))
+d<-d[,keep.d]
+#remove rows where host is not identified to species
+d<-d[-which(d$HostCorrectedName=="no binomial name"),]
+#remove rows where parasite is not identified to species
+d<-d[-which(d$ParasiteCorrectedName=="no binomial name"),]
+d<-d[-which(d$ParasiteCorrectedName=="not identified to genus"),]
+#Sys.setlocale('LC_ALL','C') 
+d<-d[-grep("sp\\.",d$ParasiteCorrectedName),]
+## merge transmission mode data
+ptrans<-read.csv("./data/original/Park_2016/GMPD_parasite_traits_2016-11-28.csv",header=T)
+ptrans<-subset(ptrans,select=c("ParasiteCorrectedName","close","nonclose","vector","intermediate"))
+d<-merge(d,ptrans,by="ParasiteCorrectedName")
+# identify host species in gmpd
+obs.hosts<-unique(d$HostCorrectedName)
+obs.hosts<-gsub(" ","_",obs.hosts) #put in underscore for compatibility with other dataframe
+#at which locations of phydist do these hosts occur?
+idx<-which(unlist(dimnames(phydist)[1]) %in% obs.hosts)
+#pull out smaller cophenetic matrix of only these hosts
+phydist.mini<-phydist[idx,idx]
+#make a community matrix for the call to ses.mpd
+d$HostCorrectedName<-gsub(" ","_",d$HostCorrectedName)
+d$HostCorrectedName<-as.factor(d$HostCorrectedName)
+d<-droplevels(d)
+comm<-as.data.frame.matrix(table(d[,c(which(names(d)=="ParasiteCorrectedName"),which(names(d)=="HostCorrectedName"))]))
+#comm<-1*(comm>0)
+#get normalized z-score for mpd
+library(picante)
+phydist.mini<-phydist.mini[order(rownames(phydist.mini)),order(rownames(phydist.mini))]
+```
+
+```{r, echo=F, eval=F}
+nri<-ses.mpd(comm,phydist.mini,null.model="indepdentswap",runs=10,abundance.weighted=T)#change back to 1000!
+```
+
+```{r, echo=F}
+#load("get_nri.Rda") #nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000,abundance.weighted=T)
+load("get_nriABUND.Rda") #nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000)
+```
+
+```{r, echo=F, warning=F}
+# prep to merge with other dataframe that has other parasite traits
+#nri<-nri[complete.cases(nri),]  # THIS REMOVES SINGLETON PARASITES (ONLY ONE HOST) SINCE MPD STUFF IS NA
+nri$ParasiteCorrectedName<-rownames(nri)
+nri<-merge(nri,ptrans,by="ParasiteCorrectedName")
+
+ptype<-read.csv("./data/original/Park_2016/GMPD_parasite_taxonomy_2016-11-28.csv",header=T)
+ptype<-subset(ptype,select=c("ParasiteCorrectedName","ParType"))
+ptype<-ptype[!duplicated(ptype),]
+nri<-merge(nri,ptype,by="ParasiteCorrectedName")
+
+#remove rare parasite types
+nri4<-nri[-which(nri$ParType %in% c("Fungus","Prion")),]#c("Fungus","Prion")
+
+nri4$n.modes<-rowSums(cbind(nri4$close,nri4$nonclose,nri4$vector,nri4$intermediate))
+nri6<-nri4
+names(nri6)[which(names(nri6)=="ParasiteCorrectedName")]<-"para.name"
+names(nri6)[which(names(nri6)=="ParType")]<-"para.type"
+nri6$para.name<-as.character(nri6$para.name)
+nri6<-nri6[complete.cases(nri6),]
+
+nri.flat<-data.frame(para.name=character(),ntaxa=integer(),mpd.obs.z=numeric(),mpd.obs.p=numeric(),para.type=character(),tmode=character(),stringsAsFactors=FALSE)
+k<-1
+for (i in 1:dim(nri6)[1]){
+  if (nri6[i,"close"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"close";k<-k+1}
+  if (nri6[i,"nonclose"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"nonclose";k<-k+1}
+  if (nri6[i,"vector"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"vector";k<-k+1}
+  if (nri6[i,"intermediate"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"intermediate";k<-k+1}
+}
+```
+
+Fig. 1
+
+```{r, echo=FALSE, warning=F, message=F}
+library(ggplot2)
+nri.flat$para.type<-as.factor(nri.flat$para.type)
+nri.flat$tmode<-as.factor(nri.flat$tmode)
+nri.flat<-nri.flat[complete.cases(nri.flat),]
+#order factors in z score order for plotting
+ag.para.z<-aggregate(nri.flat$mpd.obs.z,by=list(nri.flat$para.type),FUN=mean)
+ag.para.z<-ag.para.z[order(ag.para.z$x,decreasing=T),]
+nri.flat$para.type<-factor(nri.flat$para.type,ag.para.z$Group.1)
+ag.tmode.z<-aggregate(nri.flat$mpd.obs.z,by=list(nri.flat$tmode),FUN=mean)
+ag.tmode.z<-ag.tmode.z[order(ag.tmode.z$x,decreasing=F),]
+nri.flat$tmode<-factor(nri.flat$tmode,ag.tmode.z$Group.1)
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
+global.median.z<-median(nri6$mpd.obs.z,na.rm=T)
+
+ggplot(nri.flat, aes(x=para.type, y=mpd.obs.z, fill=tmode)) + geom_boxplot(notch=T) + theme(axis.text.x  = element_text(angle=90, vjust=0.5)) + scale_fill_discrete(name="Transmission\nmode",labels=c("Close","Vector","Complex","Envir"))+xlab("Parasite type")+ylab("Standard effect size of mean pairwise PD")+ylim(c(-4,1))+geom_hline(yintercept=global.median.z,colour="black")
+
+#explanation for horn-shaped boxes: http://r.789695.n4.nabble.com/Strange-horns-on-notched-box-plots-td858004.html
+```
+
+```{r, echo=F, warning=F, message=F}
+sig.z<-NULL #note all significant z scores are negative (checked independently)
+for (i in unique(nri6$para.type)){
+  tmp<-subset(nri6,para.type==i)
+  sig.z<-rbind(sig.z,c(i,dim(tmp)[1],length(which(tmp$mpd.obs.p<0.05))))
+}
+sig.z<-as.data.frame(sig.z)
+names(sig.z)<-c("para.type","n","x")
+sig.z$n<-as.integer(as.character(sig.z$n))
+sig.z$x<-as.integer(as.character(sig.z$x))
+sig.z$y<-sig.z$n-sig.z$x
+sig.z$p<-sig.z$x/sig.z$n
+#prop.test(sig.z$x,sig.z$n)
+sig<-NULL
+for (i in 1:dim(sig.z)[1]){
+  for(j in 1:sig.z[i,"x"]){
+    sig<-rbind(sig,c(as.character(sig.z$para.type[i]),1))
+  }
+  for(j in 1:sig.z[i,"y"]){
+    sig<-rbind(sig,c(as.character(sig.z$para.type[i]),0))
+  }
+}
+sig<-as.data.frame(sig)
+names(sig)<-c("para.type","sig")
+sig$para.type<-factor(sig$para.type,levels=sig.z[order(sig.z$p),]$para.type)
+n4taxa<-table(sig$para.type)
+
+sig.a<-ggplot(sig,aes(x=para.type,fill=sig))+geom_bar(position="fill")+scale_fill_discrete(name="Significant")+xlab("Parasite type")+ylab("")+scale_fill_manual(values=c("gray","dodgerblue4"))+coord_flip()+theme(legend.position="none")+annotate("text",x=5,y=0.5,label=paste("n =",as.numeric(n4taxa[5])))+annotate("text",x=4,y=0.5,label=paste("n =",as.numeric(n4taxa[4])))+annotate("text",x=3,y=0.5,label=paste("n =",as.numeric(n4taxa[3])))+annotate("text",x=2,y=0.5,label=paste("n =",as.numeric(n4taxa[2])))+annotate("text",x=1,y=0.5,label=paste("n =",as.numeric(n4taxa[1])))
+```
+
+```{r, echo=F, warning=F, message=F}
+sig.z<-NULL #note all significant z scores are negative (checked independently)
+for (i in unique(nri.flat$tmode)){
+  tmp<-subset(nri.flat,tmode==i)
+  sig.z<-rbind(sig.z,c(i,dim(tmp)[1],length(which(tmp$mpd.obs.p<0.05))))
+}
+sig.z<-as.data.frame(sig.z)
+names(sig.z)<-c("tmode","n","x")
+sig.z$n<-as.integer(as.character(sig.z$n))
+sig.z$x<-as.integer(as.character(sig.z$x))
+sig.z$y<-sig.z$n-sig.z$x
+sig.z$p<-sig.z$x/sig.z$n
+#prop.test(sig.z$x,sig.z$n)
+sig<-NULL
+for (i in 1:dim(sig.z)[1]){
+  for(j in 1:sig.z[i,"x"]){
+    sig<-rbind(sig,c(as.character(sig.z$tmode[i]),1))
+  }
+  for(j in 1:sig.z[i,"y"]){
+    sig<-rbind(sig,c(as.character(sig.z$tmode[i]),0))
+  }
+}
+sig<-as.data.frame(sig)
+names(sig)<-c("tmode","sig")
+sig$tmode<-as.character(sig$tmode)
+sig$tmode[which(sig$tmode=="close")]<-"Close"
+sig$tmode[which(sig$tmode=="intermediate")]<-"Complex"
+sig$tmode[which(sig$tmode=="nonclose")]<-"Envir."
+sig$tmode[which(sig$tmode=="vector")]<-"Vector"
+
+n4tmode<-table(sig$tmode)
+sig$tmode<-factor(sig$tmode,levels=c("Close","Envir.","Complex","Vector"))
+sig.b<-ggplot(sig,aes(x=tmode,fill=sig))+geom_bar(position="fill")+xlab("Transmission mode")+ylab("Proportion of parasites significantly specialist")+scale_fill_discrete(name="Significant")+scale_fill_manual(values=c("gray","dodgerblue4"))+coord_flip()+theme(legend.position="none")+annotate("text",x=4,y=0.5,label=paste("n =",as.numeric(n4tmode[4])))+annotate("text",x=3,y=0.5,label=paste("n =",as.numeric(n4tmode[3])))+annotate("text",x=2,y=0.5,label=paste("n =",as.numeric(n4tmode[2])))+annotate("text",x=1,y=0.5,label=paste("n =",as.numeric(n4tmode[1])))
+
+```
+
+```{r, echo=F, warning=F, message=F, fig.width=10}
+library(sjPlot)
+library(sjmisc)
+nri6$para.type<-droplevels(nri6$para.type)
+
+fit <- lm(mpd.obs.z ~ para.type*close + para.type*vector + para.type*intermediate + para.type*nonclose, data = nri6)
+#summary(fit)
+
+p1<-sjp.grpfrq(nri6$mpd.obs.z,
+           nri6$para.type,
+           intr.var = nri6$close,
+           axis.titles = c("",""),
+           intr.var.labels = rep(c("0", "1"),5), 
+           type = "boxplot",ylim=c(-4,1),
+           title="Close",
+           prnt.plot=F)
+
+p2<-sjp.grpfrq(nri6$mpd.obs.z,
+           nri6$para.type,
+           intr.var = nri6$nonclose,
+           axis.titles = c("",""),
+           intr.var.labels = rep(c("0", "1"),5), 
+           type = "boxplot",ylim=c(-4,1),
+           title="Envir.",
+           prnt.plot=F)
+
+p3<-sjp.grpfrq(nri6$mpd.obs.z,
+           nri6$para.type,
+           intr.var = nri6$vector,
+           axis.titles = c("",""),
+           intr.var.labels = rep(c("0", "1"),5), 
+           type = "boxplot",ylim=c(-4,1),
+           title="Vector",
+           prnt.plot=F)
+
+p4<-sjp.grpfrq(nri6$mpd.obs.z,
+           nri6$para.type,
+           intr.var = nri6$intermediate,
+           axis.titles = c("",""),
+           intr.var.labels = rep(c("0", "1"),5), 
+           type = "boxplot",ylim=c(-4,1),
+           title="Complex",
+           prnt.plot=F)
+```
+
+Fig. 2
+
+```{r, echo=FALSE, warning=F, fig.height=4}
+zdat<-nri6[which(nri6$para.type %in% c("Virus","Helminth")),]
+zdat$para.type<-droplevels(zdat$para.type)
+#zdat$para.type <- factor(zdat$para.type, c("Virus","Protozoa","Arthropod","Bacteria","Helminth"))
+mV<-mean(zdat$mpd.obs.z[which(zdat$para.type=="Virus")],na.rm=T)
+mH<-mean(zdat$mpd.obs.z[which(zdat$para.type=="Helminth")],na.rm=T)
+ggplot(zdat)+geom_density(aes(x=mpd.obs.z,fill=para.type),alpha=0.3)+geom_vline(xintercept=mV,col=gg_color_hue(5)[4],lwd=1)+geom_vline(xintercept=mH,col=gg_color_hue(5)[1],lwd=1)+xlab("Standard effect size of mean pairwise PD")+ylab("Density")+scale_fill_manual(name="Parasite\ntype",values=gg_color_hue(5)[c(1,4)])+xlim(c(-4,2))
+```
+
+```{r, echo=F}
+source("./data/original/Park_2016/ses.maxD.R")
+source("./data/original/Park_2016/ses.mntd.to.maxD.R")
+```
+
+```{r, echo=F, eval=FALSE}
+myMaxD<-ses.maxD(comm,phydist.mini,null.model="independentswap",runs=1000)
+myRatio<-ses.mntd.to.maxD(comm,phydist.mini,null.model="independentswap",abundance.weighted=T,runs=1000)
+#myMPD<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=5)
+```
+
+```{r, echo=F}
+#load("get_myMaxD.Rda") #myMaxD<-ses.maxD(comm,phydist.mini,null.model="independentswap",runs=1000)
+#load("get_myRatio.Rda") #myRatio<-ses.mntd.to.maxD(comm,phydist.mini,null.model="independentswap",runs=1000)
+load("./data/original/Park_2016/get_myMaxD_ABUND.Rda") #myMaxD<-ses.maxD(comm,phydist.mini,null.model="independentswap",abundance.weighted=T,runs=1000)
+load("./data/original/Park_2016/get_myRatio_ABUND.Rda") #myRatio<-ses.mntd.to.maxD(comm,phydist.mini,null.model="independentswap",abundance.weighted=T,runs=1000)
+```
+
+Fig. 3
+
+```{r, echo=F, warning=F}
+auxPtype<-read.csv("./data/original/Park_2016/GMPD_parasite_taxonomy_2016-11-28.csv",header=T)
+auxPtype<-subset(auxPtype,select=c("ParasiteCorrectedName","ParType"))
+d<-merge(d,auxPtype,by="ParasiteCorrectedName")
+P.type.binom<-d[,c("ParType","ParasiteCorrectedName")]
+P.type.binom<-P.type.binom[!duplicated(P.type.binom),]
+P.type.binom<-P.type.binom[order(P.type.binom$ParasiteCorrectedName),]
+### UP TO HERE - RESOLVE MERGE ISSUE
+myMaxD$ParasiteCorrectedName<-rownames(myMaxD)
+myMaxD<-merge(myMaxD,ptype,by="ParasiteCorrectedName")
+names(myMaxD)[which(names(myMaxD)=="ParType")]<-"para.type"
+myMaxD$col.para<-"TBD"
+for (i in 1:dim(myMaxD)[1]){
+  if (myMaxD$para.type[i]=="Helminth"){myMaxD$col.para[i]<-"red"}#"orange"
+  if (myMaxD$para.type[i]=="Bacteria"){myMaxD$col.para[i]<-"orange"}#"blue"
+  if (myMaxD$para.type[i]=="Arthropod"){myMaxD$col.para[i]<-"gray20"}#"gray20"
+  if (myMaxD$para.type[i]=="Virus"){myMaxD$col.para[i]<-"blue"}#"red"
+  if (myMaxD$para.type[i]=="Fungus"){myMaxD$col.para[i]<-"chartreuse3"}#"green"
+  if (myMaxD$para.type[i]=="Protozoa"){myMaxD$col.para[i]<-"magenta"}#"magenta"
+  if (myMaxD$para.type[i]=="Prion"){myMaxD$col.para[i]<-"yellow"}#"yellow"
+}
+
+##### GGPLOT
+gg.disp<-myMaxD
+myRatio$ParasiteCorrectedName<-rownames(myRatio)
+#myRatio<-subset(myRatio,select=c("ParasiteCorrectedName","mntd.to.maxD.obs.z"))
+gg.disp<-merge(gg.disp,subset(myRatio,select=c("ParasiteCorrectedName","mntd.to.maxD.obs.z")),by="ParasiteCorrectedName")
+names(gg.disp)[which(names(gg.disp)=="mntd.to.maxD.obs.z")]<-"mntd.z"
+gg.disp<-subset(gg.disp,select=c(para.type,maxD.obs.z,mntd.z,col.para))
+names(gg.disp)<-c("para.type","span.z","mntd2span.z","my.color")
+gg.disp<-gg.disp[complete.cases(gg.disp),]
+gg.disp<-gg.disp[which(gg.disp$span.z>-10),]
+gg.disp<-gg.disp[-which(gg.disp$para.type%in%c("Fungus","Prion")),]
+gg.disp$para.type<-droplevels(gg.disp$para.type)
+circ_ecoli<-myRatio$mntd.to.maxD.obs.z[which(rownames(myRatio)=="Escherichia coli")]
+circ_tcruzi<-myRatio$mntd.to.maxD.obs.z[which(rownames(myRatio)=="Trypanosoma cruzi")]
+ann_text1<-data.frame(span.z=0.0,mntd2span.z=circ_ecoli,para.type=factor("Bacteria",levels=levels(gg.disp$para.type)),my.color="black")
+ann_text2<-data.frame(span.z=0.0,mntd2span.z=circ_tcruzi,para.type=factor("Protozoa",levels=levels(gg.disp$para.type)),my.color="black")
+ggplot(gg.disp,aes(span.z,mntd2span.z,colour=factor(my.color)))+geom_point()+facet_wrap(~para.type,nrow=2)+xlab("Span: Standard effect size of maximum pairwise PD")+ylab("Aggregation: Standard effect size of ratio of mean\nminimum pairwise PD to maximum pairwise PD")+theme(legend.position="none")+geom_segment(aes(x=-2,xend=2,y=-2,yend=-2),colour="gray50",size=0.2)+geom_segment(aes(x=2,xend=2,y=-2,yend=2),colour="gray50",size=0.2)+geom_segment(aes(x=-2,xend=2,y=2,yend=2),colour="gray50",size=0.2)+geom_segment(aes(x=-2,xend=-2,y=-2,yend=2),colour="gray50",size=0.2)+theme(panel.margin=grid::unit(0.75,"cm"))+geom_text(data=ann_text1,label="O",colour="black")+geom_text(data=ann_text2,label="O",colour="black")+scale_color_manual(values=gg_color_hue(5)[c(4,2,5,3,1)])
+```
+
+```{r,echo=F, warning=F, fig.width=8}
+#mammal supertree
+library(ape)
+library(geiger)
+treelist=read.nexus("./data/original/Park_2016/WR_2005_ST.txt")
+#best dates
+mtree=treelist[[1]]
+host.prune<-as.data.frame(rownames(phydist.mini))
+names(host.prune)<-"host.spp"
+host.prune$host.spp<-as.character(host.prune$host.spp)
+host.prune$rand<-runif(dim(host.prune)[1],0,1)
+rownames(host.prune)<-host.prune$host.spp
+host.prune<-subset(host.prune,select="rand")
+mtree2<-treedata(mtree,host.prune,warnings=F)
+orig.tip.label<-mtree2[[1]]$tip.label
+mtree2[[1]]$tip.label<-rep("",dim(host.prune)[1])
+#mtree2[[1]]$tip.label<-rep("*",399)
+
+### which hosts are the ones associated with 'single-host' parasites?
+## this analysis is sensitive to observing rare events - a point worth making. 
+H.metrics<-as.data.frame(table(d$HostCorrectedName))
+names(H.metrics)<-c("host.name","n.records")
+H.metrics$n.para<-0
+for (i in 1:dim(H.metrics)[1]){
+  p.set<-unique(d$ParasiteCorrectedName[which(d$HostCorrectedName==H.metrics$host.name[i])])
+  H.metrics$n.para[i]<-length(p.set)
+}
+library(picante)
+mtree2[[1]]$tip.label<-orig.tip.label
+my.ed<-evol.distinct(mtree2[[1]],type="equal.splits")
+names(my.ed)<-c("host.name","ed")
+H.metrics<-merge(H.metrics,my.ed)
+H.metrics$singleton<-ifelse(H.metrics$n.para==1,1,0)
+H.order.binom.tmp<-subset(d,select=c("HostCorrectedName","Group"))
+H.order.binom.tmp<-H.order.binom.tmp[!duplicated(H.order.binom.tmp),]
+names(H.order.binom.tmp)<-c("host.name","order")
+H.metrics<-merge(H.metrics,H.order.binom.tmp)
+#use terminal branch length
+terms<-mtree$edge[,2]<=Ntip(mtree)
+terminal.edges<-as.data.frame(cbind(mtree$tip.label,mtree$edge.length[terms==T]))
+names(terminal.edges)<-c("host.name","tbl")
+terminal.edges$tbl<-as.numeric(as.character(terminal.edges$tbl))
+
+H.metrics<-merge(H.metrics,terminal.edges,by="host.name")
+ev.ed<-ggplot(H.metrics,aes(x=factor(n.para),y=ed))+geom_boxplot()+xlab("Number of parasite species per host species")+ylab("Host evolutionary\ndistinctiveness")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ev.bl<-ggplot(H.metrics,aes(x=factor(n.para),y=tbl))+geom_boxplot()+xlab("Number of parasite species per host species")+ylab("Host terminal\nbranch length")+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+Fig. 4
+
+```{r,echo=F, warning=F, fig.width=10, fig.height=6, message=F}
+#identify some para with max z score and smallest mean2max ratio
+hosts.tcruzi<-unique(d$HostCorrectedName[which(d$ParasiteCorrectedName=="Trypanosoma cruzi")])
+hosts.ecoli<-unique(d$HostCorrectedName[which(d$ParasiteCorrectedName=="Escherichia coli")])
+hosts.linterrogans<-unique(d$HostCorrectedName[which(d$ParasiteCorrectedName=="Leptospira interrogans")])
+
+my.colors<-rep("white",dim(host.prune)[1])
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+# COMPARE 2 PARASITES WITH BIG SPANS WHERE ONE IS CLUMPY AND ONE IS RANDOM, AND ONE IS REGULAR
+idx1<-which(rownames(host.prune)%in%hosts.tcruzi)
+#idx2<-which(rownames(host.prune)%in%hosts.ecoli)
+idx2<-which(rownames(host.prune)%in%hosts.linterrogans)
+
+my.colors[idx1]<-gg_color_hue(5)[5]
+my.colors[idx2]<-gg_color_hue(5)[3]
+my.colors[intersect(idx1,idx2)]<-"black"
+
+#### COLOR BRANCHES BY HOST ORDER
+orig.tip.label<-as.data.frame(orig.tip.label)
+names(orig.tip.label)<-"host.name"
+library(dplyr)
+orig.tip.label<-inner_join(orig.tip.label,subset(H.metrics,select=c("host.name","order")))
+
+cladePRIMbranches<-which.edge(mtree2[[1]],which(orig.tip.label$order=="primates"))
+cladeCARNbranches<-which.edge(mtree2[[1]],which(orig.tip.label$order=="carnivores"))
+cladeUNGUbranches<-which.edge(mtree2[[1]],which(orig.tip.label$order=="ungulates"))
+
+my.edge.colors<-rep("gray20",length(mtree2[[1]]$edge.length))
+my.edge.colors[cladePRIMbranches]<-"dodgerblue3"
+my.edge.colors[cladeCARNbranches]<-"orange2"
+my.edge.colors[cladeUNGUbranches]<-"brown"
+
+mtree2[[1]]$tip.label<-rep("",dim(host.prune)[1])
+plot(mtree2[[1]],show.tip.label=T,edge.color=my.edge.colors,edge.width=0.5,direction="downwards",cex=1.0,label.offset=0,x.lim=c(0,400))
+tiplabels(pch=22,col="gray80",bg=my.colors,cex=1.5,adj=c(0,-1.5))
+```
+
+```{r, echo=F, eval=F}
+# just a simple code chunk to double check numbers of hosts belonging to primate, carnivore, perrisodactyla, artiodactyla
+# was convenient to place here as H.metrics is generated just a chunk or two earlier
+tmp<-H.metrics
+tmp$fullorder<-"TBA"
+for (i in 1:dim(tmp)[1]){
+  tmp$fullorder[i]<-subset(d,HostCorrectedName==tmp$host.name[i],select=c(HostCorrectedName,HostOrder))[1,2]
+}
+```
+
+Fig. S1
+
+```{r, echo=F, warning=F, message=F}
+library(gridExtra)
+grid.arrange(sig.a,sig.b,nrow=2)
+```
+
+Table S1
+
+```{r, echo=T}
+#simple test to motivate investigation of factors and their interaction
+basic.aov<-aov(lm(nri.flat$mpd.obs.z~nri.flat$para.type*nri.flat$tmode))
+summary(basic.aov)
+```
+
+Fig. S2
+
+```{r, echo=F, message=F, warning=F}
+library(dplyr)
+library(magrittr)
+load("get_nri.Rda")
+nri_01<-nri
+nri_01$para.name<-rownames(nri_01)
+load("get_nriABUND.Rda")
+nri_abund<-nri
+nri_abund$para.name<-rownames(nri_abund)
+corNRI<-merge(nri_01,nri_abund,by="para.name")
+P.type.binom$para.name<-P.type.binom$ParasiteCorrectedName
+corNRI<-merge(corNRI,P.type.binom)
+corNRI %>% filter(ntaxa.x>1 & ParType!="Fungus" & ParType!="Prion") %>% droplevels %>% ggplot(.,aes(x=mpd.obs.z.x,y=mpd.obs.z.y,col=ParType))+geom_point()+geom_smooth(method="lm",fill=NA)+geom_abline(slope=1,intercept=0)+xlab("z (unweighted)")+ylab("z (weighted)")+scale_color_manual(name="Parasite\ntype",values=gg_color_hue(5)[c(2,3,1,5,4)])
+```
+
+Fig. S3
+
+```{r, echo=F, warning=F}
+#plot parasite data for single-host parasites
+HP.table<-cbind(as.character(d$HostCorrectedName),as.character(d$ParasiteCorrectedName))
+HP.table<-as.data.frame(HP.table)
+HP.table<-HP.table[!duplicated(HP.table),]
+names(HP.table)<-c("host.name","para.name")
+para.nhosts<-table(HP.table$para.name)
+#prep for ggplot
+library(reshape2)
+para.nhosts<-as.data.frame(para.nhosts)
+names(para.nhosts)<-c("ParasiteCorrectedName","nhosts")
+P.metrics<-subset(d,!(ParType%in%c("Prion","Fungus")),select=c("ParasiteCorrectedName","ParType","close","nonclose","vector","intermediate"))
+P.metrics<-P.metrics[!duplicated(P.metrics),]
+P.metrics<-merge(P.metrics,para.nhosts,by="ParasiteCorrectedName")
+P.metrics<-P.metrics[complete.cases(P.metrics),]
+P.metrics$multi.host<-ifelse(P.metrics$nhosts>1,1,0)
+P.metrics.tmp<-subset(P.metrics,select=c("ParasiteCorrectedName","close","nonclose","vector","intermediate"))
+P.metrics.melt<-melt(P.metrics.tmp,id.vars="ParasiteCorrectedName")
+P.metrics.melt<-subset(P.metrics.melt,value==1)
+P.metrics.tmp<-subset(P.metrics,select=c("ParasiteCorrectedName","ParType","multi.host"))
+P.metrics.melt<-merge(P.metrics.melt,P.metrics.tmp,by="ParasiteCorrectedName")
+P.metrics.melt<-subset(P.metrics.melt,ParType!="Prion")
+P.metrics.melt$Par.Type<-droplevels(P.metrics.melt$ParType)
+P.metrics.melt$multihost.status<-as.factor(ifelse(P.metrics.melt$multi.host==0,"Single-host","Multi-host"))
+P.metrics.melt$multihost.status<-factor(P.metrics.melt$multihost.status,levels(P.metrics.melt$multihost.status)[2:1])
+P.metrics.melt<-subset(P.metrics.melt,ParType!="Fungus")
+P.metrics.melt<-droplevels(P.metrics.melt)
+P.metrics.melt$Par.Type<-factor(P.metrics.melt$Par.Type,levels(P.metrics.melt$ParType)[c(2,1,3,5,4)])
+P.metrics.melt$variable<-factor(P.metrics.melt$variable,levels(P.metrics.melt$variable)[c(1,4,3,2)])#2,1,4,3
+ggplot(P.metrics.melt,aes(ParType,fill=variable))+geom_bar()+facet_wrap(~multihost.status)+xlab("Parasite type")+scale_fill_manual(values=gg_color_hue(4)[c(1,2,3,4)],name="Transmission\nmode",labels=c("Close","Complex","Vector","Envir."))+ylab("Count")+theme(axis.text.x=element_text(angle=90,hjust=1))
+```
+
+Fig. S4
+
+```{r, warning=F,message=F, echo=F, fig.width=8}
+library(grid)
+library(gridExtra)
+grid.arrange(p1$plot+scale_fill_manual(name="Parasite\ntype",labels=c("Arthropod","Bacteria","Helminth","Protozoa","Virus"),values=gg_color_hue(5)[c(2,3,1,5,4)]), p2$plot+scale_fill_manual(name="Parasite\ntype",labels=c("Arthropod","Bacteria","Helminth","Protozoa","Virus"),values=gg_color_hue(5)[c(2,3,1,5,4)]), p3$plot+scale_fill_manual(name="Parasite\ntype",labels=c("Arthropod","Bacteria","Helminth","Protozoa","Virus"),values=gg_color_hue(5)[c(2,3,1,5,4)]), p4$plot+scale_fill_manual(name="Parasite\ntype",labels=c("Arthropod","Bacteria","Helminth","Protozoa","Virus"),values=gg_color_hue(5)[c(2,3,1,5,4)]), nrow = 2,left=textGrob("Standard effect size of mean pairwise PD",rot=90))
+```
+
+```{r, echo=FALSE, eval=F, warning=F}
+nri6$z.tax<--999
+##calc. n hosts of each order for each parasite
+nri6$n.carnivores<-0
+nri6$n.primates<-0
+nri6$n.ungulates<-0
+for (i in 1:dim(nri6)[1]){
+  this.para<-nri6$para.name[i]
+  host.set<-unique(d$HostCorrectedName[which(d$ParasiteCorrectedName==this.para)])
+  nri6$n.carnivores[i]<-sum(H.metrics$order[H.metrics$host.name %in% host.set]=="carnivores")
+  nri6$n.primates[i]<-sum(H.metrics$order[H.metrics$host.name %in% host.set]=="primates")
+  nri6$n.ungulates[i]<-sum(H.metrics$order[H.metrics$host.name %in% host.set]=="ungulates")
+}
+
+H.metrics$host.name<-as.character(H.metrics$host.name)
+for (i in 1:dim(nri6)[1]){
+  the.mpds<-NULL
+  n.reps<-1000
+  for (rep in 1:n.reps){# need to do this several times to build up distrib. (n=1000, 10 for testing)
+    this.set<-c(sample(H.metrics$host.name[H.metrics$order=="carnivores"],size=nri6$n.carnivores[i],replace=F),sample(H.metrics$host.name[H.metrics$order=="primates"],size=nri6$n.primates[i],replace=F),sample(H.metrics$host.name[H.metrics$order=="ungulates"],size=nri6$n.ungulates[i],replace=F))
+    sub.phy<-phydist.mini[which(dimnames(phydist.mini)[[1]] %in% this.set),which(dimnames(phydist.mini)[[1]] %in% this.set)]
+    the.mpds<-c(the.mpds,mean(sub.phy[lower.tri(sub.phy==T,diag=F)]))
+  }
+  nri6$z.tax[i]<-(nri6$mpd.obs[i]-mean(the.mpds))/sd(the.mpds)
+}
+
+```
+
+```{r, echo=F, eval=T}
+load("get_nri6ztax.Rda")
+```
+
+Fig. S5
+
+```{r, echo=F}
+nri6$host.orders<-"TBA"
+for (i in 1:dim(nri6)[1]){
+  if (nri6$n.carnivores[i]>0&nri6$n.primates[i]==0&nri6$n.ungulates[i]==0){nri6$host.orders[i]<-"Carnivores"}
+  else if (nri6$n.carnivores[i]==0&nri6$n.primates[i]>0&nri6$n.ungulates[i]==0){nri6$host.orders[i]<-"Primates"}
+  else if (nri6$n.carnivores[i]==0&nri6$n.primates[i]==0&nri6$n.ungulates[i]>0){nri6$host.orders[i]<-"Ungulates"}
+  else {nri6$host.orders[i]<-"Multi-order"}
+}
+ggplot(nri6,aes(x=para.type,y=z.tax,fill=para.type))+geom_boxplot()+theme(axis.text.x=element_text(angle=90,vjust=0.5))+xlab("Parasite type")+ylab("Standard effect size of mean pairwise PD")+facet_wrap(~host.orders)+scale_fill_manual(name="Parasite\ntype",labels=c("Arthropod","Bacteria","Helminth","Protozoa","Virus"),values=gg_color_hue(5)[c(2,3,1,5,4)])
+```
+
+Fig. S6
+
+```{r, echo=F}
+nri7<-nri6[which(nri6$n.modes==1),]
+nri7$tmode<-"TBA"
+for (i in 1:dim(nri7)[1]){
+  if (nri7$close[i]==1){nri7$tmode[i]<-"Close"}
+  if (nri7$nonclose[i]==1){nri7$tmode[i]<-"Envir"}
+  if (nri7$intermediate[i]==1){nri7$tmode[i]<-"Complex"}
+  if (nri7$vector[i]==1){nri7$tmode[i]<-"Vector"}
+}
+ggplot(nri7,aes(x=tmode,y=z.tax,fill=tmode))+geom_boxplot()+theme(axis.text.x=element_text(angle=90,vjust=0.5))+xlab("Transmission mode")+ylab("Standard effect size of mean pairwise PD")+facet_wrap(~host.orders)+scale_fill_manual(name="Transmission\nmode",values=gg_color_hue(4)[c(1,2,3,4)])
+```
+
+Fig. S7
+
+```{r, echo=F}
+ggplot(nri6,aes(mpd.obs.z))+geom_density(aes(fill=para.type),alpha=0.25)+scale_fill_manual(name="Parasite\ntype",values=gg_color_hue(5)[c(2,3,1,5,4)])+xlab("Standard effect size of mean pairwise PD")+ylab("Density")
+#nri6 %>% filter(para.type %in% c("Helminth","Virus")) %>% ggplot(.,aes(mpd.obs.z))+geom_density(aes(fill=para.type),alpha=0.1) # plot in main fig
+```
+
+Fig. S8
+
+```{r, echo=F, warning=F, message=F}
+gg.disp$ParasiteCorrectedName<-"tbd"
+for (i in 1:dim(gg.disp)[1]){
+  idx<-as.integer(rownames(gg.disp)[i])
+  gg.disp$ParasiteCorrectedName[i]<-myMaxD$ParasiteCorrectedName[idx]
+}
+gg.disp<-merge(gg.disp,ptrans,by="ParasiteCorrectedName")
+gg.disp$tmode<-"mixed"
+for (i in 1:dim(gg.disp)[1]){
+  if (gg.disp$close[i]==1&gg.disp$nonclose[i]==0&gg.disp$vector[i]==0&gg.disp$intermediate[i]==0){gg.disp$tmode[i]<-"close"}
+  if (gg.disp$close[i]==0&gg.disp$nonclose[i]==1&gg.disp$vector[i]==0&gg.disp$intermediate[i]==0){gg.disp$tmode[i]<-"nonclose"}
+  if (gg.disp$close[i]==0&gg.disp$nonclose[i]==0&gg.disp$vector[i]==1&gg.disp$intermediate[i]==0){gg.disp$tmode[i]<-"vector"}
+  if (gg.disp$close[i]==0&gg.disp$nonclose[i]==0&gg.disp$vector[i]==0&gg.disp$intermediate[i]==1){gg.disp$tmode[i]<-"intermediate"}
+}
+ggplot(gg.disp,aes(span.z,mntd2span.z,colour=my.color))+geom_point()+facet_wrap(~tmode,nrow=2)+xlab("Span: Standard effect size of maximum pairwise PD")+ylab("Aggregation: Standard effect size of ratio of\nmean minimum pairwise PD to maximum pairwise PD")+theme(legend.position="none")+geom_segment(aes(x=-2,xend=2,y=-2,yend=-2),colour="gray50",size=0.2)+geom_segment(aes(x=2,xend=2,y=-2,yend=2),colour="gray50",size=0.2)+geom_segment(aes(x=-2,xend=2,y=2,yend=2),colour="gray50",size=0.2)+geom_segment(aes(x=-2,xend=-2,y=-2,yend=2),colour="gray50",size=0.2)+theme(panel.margin=grid::unit(0.5,"cm"))+scale_color_manual(values=gg_color_hue(5)[c(4,2,5,3,1)])
+```
+
+Fig. S9
+
+```{r, echo=F, warning=F, message=F}
+myRatio<-inner_join(myRatio,subset(P.metrics,select=c("ParasiteCorrectedName","ParType")))
+myMaxD %<>% filter(para.type!="Fungus" & para.type!="Prion" & ntaxa>1)
+myRatio %<>% filter(ntaxa>1)
+myMaxD$para.type<-droplevels(myMaxD$para.type)
+myRatio$ParType<-droplevels(myRatio$ParType)
+
+o1<-ggplot(nri6,aes(x=para.type,y=mpd.obs,fill=para.type))+geom_boxplot()+scale_fill_manual(values=gg_color_hue(5)[c(2,3,1,5,4)])+theme(legend.position="none")+xlab("Parasite type")+ylab("Observed mean pairwise PD") + theme(axis.text.x  = element_text(angle=90, vjust=0.5))
+o2<-ggplot(myMaxD,aes(x=para.type,y=maxD.obs,fill=para.type))+geom_boxplot()+scale_fill_manual(values=gg_color_hue(5)[c(2,3,1,5,4)])+theme(legend.position="none")+xlab("Parasite type")+ylab("Observed maximum pairwise PD") + theme(axis.text.x  = element_text(angle=90, vjust=0.5))
+o3<-ggplot(myRatio,aes(x=ParType,y=mntd.to.maxD.obs,fill=ParType))+geom_boxplot()+scale_fill_manual(values=gg_color_hue(5)[c(2,3,1,5,4)])+theme(legend.position="none")+xlab("Parasite type")+ylab("Observed ratio of mean minimum pairwise PD to maximum pairwise PD") + theme(axis.text.x  = element_text(angle=90, vjust=0.5))
+
+grid.arrange(o1,o2,o3,ncol=3)
+```
+
+Fig. S10
+
+```{r, echo=F}
+grid.arrange(ev.ed,ev.bl,ncol=1)
+```
+
+Table S2
+
+```{r, echo=F, eval=T}
+library(MASS)
+VMR<-var(H.metrics$n.para)/mean(H.metrics$n.para)
+m.ed<-glm.nb(n.para~ed,data=H.metrics,link=log,maxit=100)
+m.bl<-glm.nb(n.para~tbl,data=H.metrics,link=log,maxit=100)
+m.ed2<-glm.nb(n.para~ed+n.records,data=H.metrics,link=log,maxit=100)
+m.bl2<-glm.nb(n.para~tbl+n.records,data=H.metrics,link=log,maxit=100)
+
+summary(m.ed)
+summary(m.bl)
+summary(m.ed2)
+summary(m.bl2)
+```
+
+```{r, echo=F, eval=F}
+###Lack of association between host evolutionary distinctiveness and number of parasite species is exhibited across host orders.
+
+ho.ed<-ggplot(H.metrics,aes(x=as.factor(n.para),y=ed))+geom_boxplot()+facet_wrap(~order)+theme(axis.text.x=element_text(angle=90,hjust=1))+scale_x_discrete(breaks=seq(0,130,10))+xlab("Number of parasite species per host species")+ylab("Host evolutionary\ndistinctiveness")
+ho.bl<-ggplot(H.metrics,aes(x=as.factor(n.para),y=tbl))+geom_boxplot()+facet_wrap(~order)+theme(axis.text.x=element_text(angle=90,hjust=1))+scale_x_discrete(breaks=seq(0,130,10))+xlab("Number of parasite species per host species")+ylab("Host terminal\nbranch length")
+grid.arrange(ho.ed,ho.bl,ncol=1)
+
+m.ed.order<-glm.nb(n.para~ed*order*n.records,data=H.metrics,link=log,maxit=100)
+summary(m.ed.order)
+#When separately inspecting the relationship between evolutionary distinctiveness and number of parasite species per host species within host orders (carnivores, primates, ungulates) there is no significant relationship in any host order. 
+```
