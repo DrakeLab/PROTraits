@@ -41,7 +41,7 @@ for (i in 1:length(allprots$protname)) {
   allprots$hostnumprotzoons[i] <- allhosts %>% filter(hostname %in% allprots$prothosts[[i]]) %>% 
     select(numprotzoons)
   allprots$hostzoos[i] <- allhosts %>% filter(hostname %in% allprots$prothosts[[i]]) %>% 
-    select(zoonstat)
+    select(zoores) #this gives all the zoonotic prots a 1 for prophostzoon bc all their hosts are zoores by default, must pull this out and put in an ifelse for zoonprots vs. non-zoonprots
   allprots$numhostzoons[i] <- length(which(allprots$hostzoos[[i]] >= 1))
   allprots$prophostzoon[i] <- allprots$numhostzoons[i]/allprots$numhosts[i]
 }
