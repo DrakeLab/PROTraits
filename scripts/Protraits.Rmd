@@ -287,7 +287,7 @@ protsnet <- specieslevel(web[["1"]], level = "lower", index = c("normalised degr
 hostsnet <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
 
 # convert to bipartite network one-mode network in order to calculate indices like centrality
-as.one.mode(web[["1"]])
+#as.one.mode(web[["1"]])
 
 #_____________________________________________________________________________________________
 
@@ -361,4 +361,91 @@ hostsnet <- left_join(x = specieslevel(web[["1"]], level = "higher",
 protraits_03 <- left_join(protraits_02, protsnet, by = "protname") #protraits should now have 38 vars
 
 ```
+
+```{r specialism generalism}
+
+#mammal supertree
+library(ape)
+treelist=read.nexus("data/original/Park_2016/WR_2005_ST.txt")
+#best dates
+mtree=treelist[[1]]
+#dist matrix
+phydist<-cophenetic.phylo(mtree) #or can use generic cophenetic
+#which hosts are in the parasite database
+d<-read.csv("data/original/Park_2016/GMPD_main_2016-11-28.csv",header=T)
+d<-subset(d,HostEnvironment=="terrestrial")
+keep.d<-which(names(d)%in%c("HostCorrectedName","HostOrder","ParasiteCorrectedName","Par.Type","Group"))
+d<-d[,keep.d]
+#remove rows where host is not identified to species
+d<-d[-which(d$HostCorrectedName=="no binomial name"),]
+#remove rows where parasite is not identified to species
+d<-d[-which(d$ParasiteCorrectedName=="no binomial name"),]
+d<-d[-which(d$ParasiteCorrectedName=="not identified to genus"),]
+#Sys.setlocale('LC_ALL','C') 
+d<-d[-grep("sp\\.",d$ParasiteCorrectedName),]
+## merge transmission mode data
+ptrans<-read.csv("data/original/Park_2016/GMPD_parasite_traits_2016-11-28.csv",header=T)
+ptrans<-subset(ptrans,select=c("ParasiteCorrectedName","close","nonclose","vector","intermediate"))
+d<-merge(d,ptrans,by="ParasiteCorrectedName")
+# identify host species in gmpd
+obs.hosts<-unique(d$HostCorrectedName)
+obs.hosts<-gsub(" ","_",obs.hosts) #put in underscore for compatibility with other dataframe
+#at which locations of phydist do these hosts occur?
+idx<-which(unlist(dimnames(phydist)[1]) %in% obs.hosts)
+#pull out smaller cophenetic matrix of only these hosts
+phydist.mini<-phydist[idx,idx]
+#make a community matrix for the call to ses.mpd
+d$HostCorrectedName<-gsub(" ","_",d$HostCorrectedName)
+d$HostCorrectedName<-as.factor(d$HostCorrectedName)
+d<-droplevels(d)
+comm<-as.data.frame.matrix(table(d[,c(which(names(d)=="ParasiteCorrectedName"),which(names(d)=="HostCorrectedName"))]))
+#comm<-1*(comm>0)
+#get normalized z-score for mpd
+library(picante)
+phydist.mini<-phydist.mini[order(rownames(phydist.mini)),order(rownames(phydist.mini))]
+
+# Two -------------------------------
+
+nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=10,abundance.weighted=T)#change back to 1000!
+
+#load("get_nri.Rda") #nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000,abundance.weighted=T)
+load("data/original/Park_2016/get_nriABUND.Rda") #nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000)
+
+# prep to merge with other dataframe that has other parasite traits
+#nri<-nri[complete.cases(nri),]  # THIS REMOVES SINGLETON PARASITES (ONLY ONE HOST) SINCE MPD STUFF IS NA
+nri$ParasiteCorrectedName<-rownames(nri)
+nri<-merge(nri,ptrans,by="ParasiteCorrectedName")
+
+ptype<-read.csv("data/original/Park_2016/GMPD_parasite_taxonomy_2016-11-28.csv",header=T)
+ptype<-subset(ptype,select=c("ParasiteCorrectedName","ParType"))
+ptype<-ptype[!duplicated(ptype),]
+nri<-merge(nri,ptype,by="ParasiteCorrectedName")
+
+#remove rare parasite types
+nri4<-nri[-which(nri$ParType %in% c("Fungus","Prion")),]#c("Fungus","Prion")
+
+nri4$n.modes<-rowSums(cbind(nri4$close,nri4$nonclose,nri4$vector,nri4$intermediate))
+nri6<-nri4
+names(nri6)[which(names(nri6)=="ParasiteCorrectedName")]<-"para.name"
+names(nri6)[which(names(nri6)=="ParType")]<-"para.type"
+nri6$para.name<-as.character(nri6$para.name)
+nri6<-nri6[complete.cases(nri6),]
+
+nri.flat<-data.frame(para.name=character(),ntaxa=integer(),mpd.obs.z=numeric(),mpd.obs.p=numeric(),para.type=character(),tmode=character(),stringsAsFactors=FALSE)
+k<-1
+for (i in 1:dim(nri6)[1]){
+  if (nri6[i,"close"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"close";k<-k+1}
+  if (nri6[i,"nonclose"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"nonclose";k<-k+1}
+  if (nri6[i,"vector"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"vector";k<-k+1}
+  if (nri6[i,"intermediate"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"intermediate";k<-k+1}
+}
+
+
+nri.prot <- nri %>% filter(ParType == "Protozoa") %>% select(protname = ParasiteCorrectedName, mpd.obs)
+
+write_csv(nri.prot, "data/modified/mpd_prot.csv")
+
+protraits_04 <- left_join(protraits_03, nri.prot)
+```
+
 
