@@ -1,0 +1,163 @@
+---
+title: "Protraits: data analysis"
+author: "Joy Vaz"
+date: "December 16, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+rm(list = ls())
+
+library("knitr")
+opts_chunk$set(echo=F, tidy=T, warning=F, message=F)
+opts_knit$set(root.dir = "C:/Protraits_Joy/")
+```
+
+
+```{r brt xgboost}
+
+library(Matrix)
+library(data.table)
+library(tidyverse)
+
+protraits <- read_csv("data/modified/protraits_191217") %>% 
+  select(-c(protname, zscore, cscore))
+
+# remove highly correlated vars
+
+protraits <- protraits %>% 
+  select(-c(numhosts, numgmpdrecords, 
+            betweenness, bet.uni, deg.uni))
+
+response <- "zoostat"
+
+tmp_prot <- data.table(protraits)
+
+
+```
+
+```{r train_test}
+
+library(caret)
+library(xgboost)
+
+# subset data into training vs testing 
+set.seed(191212)
+trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
+                                     list = FALSE, 
+                                     times = 1)
+tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
+tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] # create a model matrix of the training data predictor variables  
+
+
+# 5-fold cross validation to determine best model parameters (chosen by lowering test error)
+# set gamma > 0, lowered eta, to help with overfitting
+set.seed(656)
+
+cv_bst_prot <- xgb.cv(params = list(max.depth = 5, eta = 0.1, nthread = 2, 
+                                  objective = "binary:logistic", gamma = 0.3),
+                    data = sparse_matrix_prot,
+                    stratified = TRUE,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = 5, 
+                    metrics = list("error", "auc"))
+print(cv_bst_prot, verbose = T)
+
+
+bst_prot <- xgboost(sparse_matrix_prot, 
+                  label = tmp_prot_Train$zoostat,
+                  params = list(max.depth = 5, eta = 0.1, 
+                                nthread = 2, gamma = 0.3,
+                                objective = "binary:logistic", 
+                                eval_metric = list( "auc")),
+                  nrounds = 7)
+
+bst_prot$evaluation_log
+
+#change na.action back to default
+options(na.action=previous_na_action$na.action)
+```
+
+
+Variable importance plots for the model, along with partial dependence plots for the top variables.
+```{r vip, echo=F, comment=F, warning = F}
+#
+
+library(pdp)
+library(Ckmeans.1d.dp)
+
+importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot), model = bst_prot)
+
+
+xgb.plot.importance(importance_prot, rel_to_first = TRUE, xlab = "Relative importance")
+
+gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
+gg_prot
+
+# # predict values in test set (Wait to do this until model is finalized!)
+# sparse_matrix_prot_Test <- sparse.model.matrix(zoostat ~ ., data = tmp_prot_Test)[,-1] # create a model matrix of the test dataset
+# 
+# y_pred_prot <- predict(bst_prot, sparse_matrix_prot_Test) # gives error because testing data has less features than train data. Factor features in test set have less levels than those in training set, so feature names in sparse_matrix_prot@Dimnames[[2]] and sparse_matrix_prot_Test@Dimnames[[2]] are different. Need to add these features in test set and have them all be 0.
+# y_pred_prot <- ifelse (y_pred_prot > 0.5,1,0)
+# 
+# #how many are incorrectly classified?
+# test_error_prot <- 1 - sum(y_pred_post ==  tmp_prot_Test$zoostat)/length(y_pred_prot)
+# print(test_error_prot)
+# 
+
+```
+
+```{r pdps, echo=F, warning=F, message=F}
+## partial dependence plots
+
+# c-ICE curves and PDPs
+p1 <- pdp::partial(bst_prot, pred.var = "weighted.betweenness", ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p2 <- pdp::partial(bst_prot, pred.var = "bet.uni", ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p4 <- pdp::partial(bst_prot, pred.var = "betweenness", ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p6 <- pdp::partial(bst_prot, pred.var = "numhostzoons", ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p3 <- pdp::partial(bst_prot, pred.var = "eig.uni", ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p5 <- pdp::partial(bst_prot, pred.var = "tm_nonclose", ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p7 <- pdp::partial(bst_prot, pred.var = "firewood", ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+
+
+# Figure 2
+grid.arrange(p1, p2, ncol = 2)
+grid.arrange(p3, p4, p5, ncol = 3)
+grid.arrange(p6, p7, ncol = 2)
+
+
+
+```
+
+```{r corr}
+
+library(GGally)
+
+ggcorr(as.data.frame(tmp_prot_Train) , method = c("everything", "pearson"), palette = "PuOr", label_size = 2)
+
+
+```
