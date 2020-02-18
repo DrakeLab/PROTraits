@@ -1,25 +1,25 @@
 ---
-title: "Protraits"
+title: "Protraits: data preperation"
 author: "Joy Vaz"
 date: "October 16, 2019"
 output: html_document
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
-require("knitr")
-opts_chunk$set(echo=T, tidy=T, warning=F, message=F)
-opts_knit$set(root.dir = "C:/Protraits_Joy/")
+rm(list = ls())
+
+library("knitr")
+opts_chunk$set(echo=F, tidy=T, warning=F, message=F)
+opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
 ```
 
 ## Data Processing
 
-```{r data wrangling}
+```{r load data}
 
 ### Attach packages
 
-library(tidyverse) 
-library(dplyr) 
-library(stringr)
+library(tidyverse)
 
 ### Import data ----------------------------------------------------------------------------
 
@@ -27,143 +27,168 @@ library(stringr)
 
 # Database of the parasites of wild primates, carnivores and ungulates. See metadata for more info. Data published in Stephens et al. (2017) at ttp://onlinelibrary.wiley.com/doi/10.1002/ecy.1799/suppinfo. Downloaded on 20180911. 
 
-gmpdprot <- read_csv("data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+gmpdprotintrx <- read_csv("data/original/GMPD_datafiles/GMPD_main.csv") %>% 
   filter(ParType == "Protozoa", HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName)) %>% 
-  select(hosttype=Group, hostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
+  select(hosttype=Group, hostname=HostCorrectedName, 
+         hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
          location=LocationName, lat=Latitude, long=Longitude, 
          gmpdprotname=ParasiteCorrectedName, 
          prev=Prevalence, 
          numhosts=HostsSampled, numsamples=NumSamples) %>% 
-  mutate(ID = seq(len=2484))  # give unique ID to each GMPD record 
+  mutate(protname = gmpdprotname)  # give unique ID to each GMPD record 
+
+
+# Update 2 spp names to match with zooscore protnames (below)
+gmpdprotintrx$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprotintrx$protname)
+gmpdprotintrx$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprotintrx$protname)
+
+length(unique(gmpdprotintrx$protname))
+
+gmpdprotintrx <- gmpdprotintrx %>% mutate(gmpdintrxID = seq(len=nrow(gmpdprotintrx)))
+
+gmpdprotnames <- table(gmpdprotintrx$protname) %>% 
+  as.data.frame() %>% 
+  rename(protname = Var1, numgmpdrecords = Freq) %>% 
+  mutate(gmpdprotID = seq(1:length(unique(gmpdprotintrx$protname))))
+  #left_join(gmpdprot[, 13:14]) # 255 prots in GMPD and the number of records for each
+
+gmpdtms <- read_csv("data/original/GMPD_datafiles/GMPD_parasite_traits.csv") %>% 
+  select(-ParasiteTraitsCitation) %>% 
+  filter(ParasiteCorrectedName %in% gmpdprotnames$protname) %>% 
+  rename(protname = ParasiteCorrectedName,
+         tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate
+         ) %>% 
+  left_join(gmpdprotnames)
 
 gmpdtaxo <- read_csv("data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv") %>% # rows are unique parasite species, columns are taxonomic classifications of each species
   filter(ParType == "Protozoa", HasBinomialName == "yes") %>% 
   select(gmpdprotname=ParasiteCorrectedName, 
          parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily) %>% 
-  distinct()
+  mutate(protname = gmpdprotname) %>% 
+  distinct() 
 
-# Save as flat files
-#write_csv(gmpdprot, "data/modified/gmpdprot.csv")
-#write_csv(gmpdtaxo, "data/modified/gmpdtaxo.csv")
+# Update the 2 spp names to match zooscore
+gmpdtaxo$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdtaxo$protname)
+gmpdtaxo$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdtaxo$protname)
+
+gmpdtraits <- gmpdtaxo[-39, ] %>% 
+  select(-gmpdprotname) %>% 
+  distinct() %>% 
+  left_join(gmpdtms)
+
+
+# # Save as flat files
+# write_csv(gmpdprot, "data/modified/gmpdprot.csv")
+# write_csv(gmpdtaxo, "data/modified/gmpdtaxo.csv")
+# write_csv(gmpdtraits, "data/modified/gmpdtraits.csv")
 
 ## Zooscores
 
 # Database of the zoonotic statuses of protozoa in GMPD. See metadata for more info. Data (unpublished) from Han lab, Cary Institute of Ecosystem Studies. Recieved from Barbara Han on 20180806.
 
-prots178 <- read_csv("data/original/Zooscore_datafiles/Zooscore_trait_Protozoa.csv") %>% 
+prots178 <- read_csv("data/modified/Zooscore_trait_Protozoa_JV_edited.csv") %>%
   select(protname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
-         zscore=XC_ZooScore, cscore=XC_CScore, 
-         gmpdprotname=ParasiteCorrectedName.updated, 
-         tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, 
-         parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
+         zscore=XC_ZooScore, cscore=XC_CScore,
+         googlehits=Googlehits.As.of.2.8.2017., WOShits=WOShits..As.of.2.6.2017.,
+         gmpdprotname=ParasiteCorrectedName.updated) %>% 
+  mutate(whichset = "178") %>% 
+  left_join(gmpdtraits)
 
-# Save as flat file
-#write_csv(prots178, "data/modified/prots178.csv")
+# # Save as flat file
+# write_csv(prots178, "data/modified/prots178.csv")
 
-prots049 <- read_csv("data/modified/48prots.csv") %>% # 49 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
-  rename(protname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
-         zscore=XC_ZooScore, cscore=XC_CScore) %>% 
-  mutate(gmpdprotname=protname, tm_close=NA, tm_nonclose=NA, 
-         tm_vector=NA, tm_intermediate=NA) %>% 
-  left_join(gmpdtaxo)
+prots051 <- read_csv("data/original/Zooscore_datafiles/gmpdprots_201907.csv") %>% # 51 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
+  filter(have_zooscore == 1) %>% 
+  select(protname=ParasiteCorrectedName, 
+         zscore=XC_ZooScore, cscore=XC_CScore,
+         googlehits=Googlehits.As.of.2.8.2017., WOShits=WOShits..As.of.2.6.2017.) %>% 
+  mutate(gmpdprotname=protname, whichset = "051") %>% 
+  left_join(gmpdtraits)
 
-# Save as flat file
-#write_csv(prots049, "data/modified/prots049.csv")
+# # Save as flat file
+# write_csv(prots051, "data/modified/prots051.csv")
 
-# Join prots178 and prots049
-prots226 <- rbind(prots178, prots049)
+# Join prots178 and prots051
+prots229 <- rbind(prots178, prots051)
 
+# Add binary var to prots229 indicating zoonotic status of each prot spp
+for (i in 1:length(prots229$protname)) {
+  if(prots229$zscore[i] > 0){
+    prots229$zoostat[i] <- 1
+  } else {
+    prots229$zoostat[i] <- 0
+  }
+}
+```
+
+```{r clean data}
 
 ### Clean data ----------------------------------------------------------------------------
 
 ## Names
 
 # Check  for discrepencies in gmpdprotnames between the two dataframes 
-setdiff(prots226$gmpdprotname, gmpdprot$gmpdprotname) # 1 spp in prots226 does is not listed gmpdprot - this is because its host does not have a binomial name and was filtered out above. 
+setdiff(prots229$gmpdprotname, gmpdprotintrx$gmpdprotname) # 1 spp in prots227 does is not listed gmpdprot - this is because its host does not have a binomial name and was filtered out above. 
 
-# Remove T. brimonti from prots226
-prots226 <- prots226 %>% filter(!grepl("Trypanosoma brimonti", protname))
-
-# Check for discrepencies between final protnames and gmpdprotnames
-setdiff(prots226$protname, gmpdprot$gmpdprotname) # the final protnames in prots226 contains 2 corrected protnames that have been updated from the original gmpdprotname
-
-# Create protname variable in gmpd for final protnames
-gmpdprot <- gmpdprot %>% mutate(protname = gmpdprotname)
-
-# Update the 2 spp names to match zooscore
-gmpdprot$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprot$protname)
-gmpdprot$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprot$protname)
+# Remove T. brimonti from prots229 to give prots228
+prots228 <- prots229 %>% 
+  filter(!grepl("Trypanosoma brimonti", protname)) 
 
 # Verify that the protnames in both datasets are now matching
-setdiff(prots226$protname, gmpdprot$protname)
+setdiff(prots228$protname, gmpdprotintrx$protname)
 
 ## Completeness
 
-# Save a list of the gmpdprot spp that are not in prots226
-noscores <- as.data.frame(setdiff(gmpdprot$protname, prots226$protname)) %>% rename(protname = `setdiff(gmpdprot$protname, prots226$protname)`)
+# Save a list of the gmpdprot spp that are not in prots228
+noscores <- as.data.frame(setdiff(gmpdprotintrx$protname, prots228$protname)) %>% 
+  rename(protname = `setdiff(gmpdprotintrx$protname, prots228$protname)`) # Barbara: "While these species do appear in the GMPD, there are almost no records of them in the primary literature (aside from the ones that are referenced in GMPD). We did not assign ZooScore for these parasites given their data deficiency." 
+
 
 
 ### Create protraits ----------------------------------------------------------------------------
 
-# Add prots226 data to gmpdprot to create protraits. Each row is a unique host-parasite interaction
-protraits_01 <- left_join(prots226, gmpdprot, by = "protname") %>% 
-  select(ID, protname, hostname, zscore, cscore, 
-         tm_close, tm_nonclose, tm_vector, tm_intermediate, 
+protraits_01 <- prots228 %>% 
+  mutate(protID = seq(1:length(prots228$protname))) %>% 
+  select(protID, protname, zoostat, zscore, cscore, 
          parphylum, parclass, parorder, parfamily,
-         hosttype, hostorder, hostfamily, hostenv,
-         lat, long, location, numhosts, numsamples, prev)
+         tm_close, tm_nonclose, tm_vector, tm_intermediate,
+         numgmpdrecords, googlehits, WOShits) # 16 vars
 
-# Add binary var to protraits indicating zoonotic status of each prot spp
-for (i in 1:length(protraits_01$protname)) {
-  if(protraits_01$zscore[i] > 0){
-    protraits_01$zoostat[i] <- 1
-  } else {
-    protraits_01$zoostat[i] <- 0
-  }
-}
+# Add prots228 data to gmpdprot to create intrxtraits_01. Each row is a unique host-parasite record in GMPD
+intrxtraits_01 <- left_join(prots228, gmpdprotintrx, by = "protname") %>% 
+  select(gmpdintrxID, protname, zoostat, zscore, cscore, 
+         parphylum, parclass, parorder, parfamily,
+         tm_close, tm_nonclose, tm_vector, tm_intermediate, 
+         hostname, hosttype, hostorder, hostfamily, hostenv,
+         lat, long, location, numhosts, numsamples, prev,
+         numgmpdrecords,googlehits, WOShits) # 27 vars
 
-# Verify that protraits has 226 prot species
-length(unique(protraits_01$protname))
+# Verify that intrxtraits_01 has 228 prot species
+length(unique(intrxtraits_01$protname))
 
-# Create tbl of all unique prot spp names (n = 226)
-allprots <- as.tbl(as.data.frame(unique(protraits_01$protname))) %>% 
-  rename(protname = `unique(protraits_01$protname)`)
+# Create tbl of all unique prot spp names (n = 228)
+allprots <- as.tbl(as.data.frame(unique(intrxtraits_01$protname))) %>% 
+  rename(protname = `unique(intrxtraits_01$protname)`)
+
 
 # Create tbl of all unique host spp names (n = 245)
-allhosts <- as.tbl(as.data.frame(unique(protraits_01$hostname))) %>% 
-  rename(hostname = `unique(protraits_01$hostname)`)
+allhosts <- as.tbl(as.data.frame(unique(intrxtraits_01$hostname))) %>% 
+  rename(hostname = `unique(intrxtraits_01$hostname)`)
 
-# Create tbl of all unique host-parasite interaction pairs (n = 840)
-allintrx <- protraits_01 %>% select(hostname, protname) %>% distinct() %>% as.tbl() %>% 
+# Create tbl of all unique host-parasite interaction pairs (n = 842)
+allintrx_01 <- intrxtraits_01 %>% select(hostname, protname) %>% 
+  distinct() %>% 
+  as.tbl() %>% 
   mutate(pairname = paste(protname, ", ", hostname))
 
 
-# Save as flat files
-#write_csv(allprots, "data/modified/allprots.csv")
-#write_csv(allhosts, "data/modified/allhosts.csv")
-#write_csv(allintrx, "data/modified/allintrx.csv")
+# # Save as flat files
+# write_csv(allprots, "data/modified/allprots.csv")
+# write_csv(allhosts, "data/modified/allhosts.csv")
+# write_csv(allintrx, "data/modified/allintrx.csv")
 
 ```
 
-## Mammal trait data
-
-```{r mammal traits}
-
-pantheria <- read.delim("data/original/PanTHERIA/pan.txt") %>% 
-  select(-c(MSW93_Order, MSW93_Family, MSW93_Genus, MSW93_Species)) %>%
-  rename(hostname = MSW93_Binomial) 
-
-phylacine <- read_csv("data/original/PHYLACINE_datafiles/Trait_data.csv")
-
-phylacine$hostname = gsub("_", " ", phylacine$Binomial.1.2)
-
-hosttraits <- left_join(allhosts, gmpdprot[,1:5])
-hosttraits <- left_join(hosttraits, pantheria)
-hosttraits <- left_join(hosttraits, phylacine)
-
-
-
-```
 
 ## TEOW Ecoregions
 
@@ -174,7 +199,7 @@ library(sf)
 
 # Assign a ecoregion data to each host-parasite location
 
-intrxpts <- protraits_01 %>% select(ID, lat, long) %>% na.omit() # Extract lat long coordinates for each intrx. 86 host-prot intrx do not have coordinates in GMPD
+intrxpts <- intrxtraits_01 %>% select(gmpdintrxID, lat, long) %>% na.omit() # Extract lat long coordinates for each intrx. 86 host-prot intrx do not have coordinates in GMPD
 intrxgeo <- intrxpts %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf object
  
 ### Import data ----------------------------------------------------------------------------
@@ -184,21 +209,21 @@ intrxgeo <- intrxpts %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert 
 # Spatial polygons dataset downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
 
 teowshps <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") 
-#
-#
-## Create df with each point and corresponding TEOW vars
-#teowprot <- st_intersection(teowshps, intrxgeo) %>% 
-#  as.data.frame()
-#
-## Save as flat file
-#write_csv(teowprot, "data/modified/teowprot.csv")
+
+
+# Create df with each point and corresponding TEOW vars
+teowprot <- st_intersection(teowshps, intrxgeo) %>% 
+  as.data.frame()
+
+# Save as flat file
+write_csv(teowprot, "data/modified/teowprot.csv")
 
 teowprot <- read_csv("data/modified/teowprot.csv")
 
-protraits_02 <- left_join(protraits_01, teowprot %>% select(ID, ECO_NAME, REALM, BIOME), by = "ID") #protraits should now have 27 vars
+intrxtraits_02 <- left_join(intrxtraits_01, teowprot %>% select(gmpdintrxID, ECO_NAME, REALM, BIOME), by = "gmpdintrxID") # 30 vars
 
 # Create df of the protraits records that did NOT overlap with TEOW polygons
-noteows <- anti_join(protraits_01, teowprot, by = "ID") # 160 records did not match, 86 of which do not have lat long coordinates in GMPD
+noteows <- anti_join(intrxtraits_01, teowprot, by = "gmpdintrxID") # 160 records did not match, 86 of which do not have lat long coordinates in GMPD
 length(noteows$lat %>% na.omit()) # 74 records have lat/longs but still did not overlap with TEOW polygons because they were off the coast in marine ecoregions.
 
 # Plot map of global distribution of GMPD protozoa records across TEOW biomes
@@ -274,7 +299,7 @@ library(igraph)
 library(bipartite)
 
 # create df from which to build network
-hostprotnetwork <- read_csv("./data/modified/allpairs.csv") %>% 
+hostprotnetwork <- read_csv("./data/modified/allintrx.csv") %>% 
   select(protname, hostname) %>% mutate(netID = "1")
 
 ## Setup for bipartite
@@ -283,11 +308,10 @@ hostprotnetwork <- read_csv("./data/modified/allpairs.csv") %>%
 web <- frame2webs(hostprotnetwork, varnames = c("protname", "hostname", "netID"))
 
 # calculate bipartite network indices for all prots and hosts
-protsnet <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
-hostsnet <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
-
-# convert to bipartite network one-mode network in order to calculate indices like centrality
-#as.one.mode(web[["1"]])
+protsnet.bi <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality")) %>% 
+  rownames_to_column("protname") 
+hostsnet.bi <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality")) %>% 
+  rownames_to_column("hostname")
 
 #_____________________________________________________________________________________________
 
@@ -297,8 +321,7 @@ hostsnet <- specieslevel(web[["1"]], level = "higher", index = c("normalised deg
 
 g <- graph.data.frame(hostprotnetwork[,1:2], directed = F)
 
-bipartite.mapping(g)  # $res tells us if the network meets the criteria for a 2-mode network ($res)
-# and $type tells us which nodes fall into each mode - FALSE for prots and TRUE for hosts
+# bipartite.mapping(g)  # $res tells us if the network meets the criteria for a 2-mode network ($res) and $type tells us which nodes fall into each mode - FALSE for prots and TRUE for hosts
 
 # check: number of nodes should equal the total number of unique host + parasite spp.
 length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname, hostprotnetwork$hostname))) 
@@ -328,124 +351,243 @@ V(g)$type <- bipartite_mapping(g)$type
 #If you are interested in understanding the relative prominence of nodes in each mode, relative to other nodes in that mode, 
 #then the best you will be able to do in igraph will be to analyze each mode separately. 
 
-m <- as.one.mode(web[["1"]])
+m <- as.one.mode(web[["1"]]) # convert to bipartite network one-mode network in order to calculate indices like centrality
 mgraph <- graph.adjacency(m)
 
 #Calculate centrality
 types <- V(g)$type                 # get each vertex `type` in order to sort easily
-deg <- degree(m)
-bet <- betweenness(m)
-clos <- closeness(m)
-eig <- eigen_centrality(mgraph)$vector
+deg.uni <- degree(m)
+bet.uni <- betweenness(m)
+clos.uni <- closeness(m) # clos is a 0 for everything, so exclude
+eig.uni <- eigen_centrality(mgraph)$vector
 
-protsnet <- left_join(x = specieslevel(web[["1"]], level = "lower", 
-                                   index = c("normalised degree", "betweenness", "closeness")) %>% 
-                        rownames_to_column("protname"), 
-                      y = data.frame(types, deg, bet, clos, eig) %>% 
+protsnet.uni <- data.frame(types, deg.uni, bet.uni, eig.uni) %>% 
                         rownames_to_column("protname") %>% 
                         mutate(types = as.character(types)) %>% 
-                        filter(types == "FALSE"))
+                        filter(types == "FALSE")
 
-hostsnet <- left_join(x = specieslevel(web[["1"]], level = "higher", 
-                                       index = c("normalised degree", "betweenness", "closeness")) %>% 
-                        rownames_to_column("hostname"), 
-                      y = data.frame(types, deg, bet, clos, eig) %>% 
+hostsnet.uni <- data.frame(types, deg.uni, bet.uni, eig.uni) %>% 
                         rownames_to_column("hostname") %>% 
                         mutate(types = as.character(types)) %>% 
-                        filter(types == "TRUE"))
-# Save as csvs
-#write.csv(protsnet, "./data/modified/protsnet.csv")
-#write.csv(hostsnet, "./data/modified/hostsnet.csv")
+                        filter(types == "TRUE")
+
+protsnet <- left_join(x = protsnet.bi, 
+                      y = protsnet.uni %>% 
+                        select(-types))
+
+hostsnet <- left_join(x = hostsnet.bi, 
+                      y = hostsnet.uni %>% 
+                        select(-types))
+# # Save as csvs
+# write_csv(protsnet, "data/modified/protsnet.csv")
+# write_csv(hostsnet, "data/modified/hostsnet.csv")
 
 # Add protsnet vars to protratis
-protraits_03 <- left_join(protraits_02, protsnet, by = "protname") #protraits should now have 38 vars
+protraits_02 <- left_join(protraits_01, protsnet, by = "protname") #protraits should now have 24 vars
 
 ```
 
 ```{r specialism generalism}
 
-#mammal supertree
-library(ape)
-treelist=read.nexus("data/original/Park_2016/WR_2005_ST.txt")
-#best dates
-mtree=treelist[[1]]
-#dist matrix
-phydist<-cophenetic.phylo(mtree) #or can use generic cophenetic
-#which hosts are in the parasite database
-d<-read.csv("data/original/Park_2016/GMPD_main_2016-11-28.csv",header=T)
-d<-subset(d,HostEnvironment=="terrestrial")
-keep.d<-which(names(d)%in%c("HostCorrectedName","HostOrder","ParasiteCorrectedName","Par.Type","Group"))
-d<-d[,keep.d]
-#remove rows where host is not identified to species
-d<-d[-which(d$HostCorrectedName=="no binomial name"),]
-#remove rows where parasite is not identified to species
-d<-d[-which(d$ParasiteCorrectedName=="no binomial name"),]
-d<-d[-which(d$ParasiteCorrectedName=="not identified to genus"),]
-#Sys.setlocale('LC_ALL','C') 
-d<-d[-grep("sp\\.",d$ParasiteCorrectedName),]
-## merge transmission mode data
-ptrans<-read.csv("data/original/Park_2016/GMPD_parasite_traits_2016-11-28.csv",header=T)
-ptrans<-subset(ptrans,select=c("ParasiteCorrectedName","close","nonclose","vector","intermediate"))
-d<-merge(d,ptrans,by="ParasiteCorrectedName")
-# identify host species in gmpd
-obs.hosts<-unique(d$HostCorrectedName)
-obs.hosts<-gsub(" ","_",obs.hosts) #put in underscore for compatibility with other dataframe
-#at which locations of phydist do these hosts occur?
-idx<-which(unlist(dimnames(phydist)[1]) %in% obs.hosts)
-#pull out smaller cophenetic matrix of only these hosts
-phydist.mini<-phydist[idx,idx]
-#make a community matrix for the call to ses.mpd
-d$HostCorrectedName<-gsub(" ","_",d$HostCorrectedName)
-d$HostCorrectedName<-as.factor(d$HostCorrectedName)
-d<-droplevels(d)
-comm<-as.data.frame.matrix(table(d[,c(which(names(d)=="ParasiteCorrectedName"),which(names(d)=="HostCorrectedName"))]))
-#comm<-1*(comm>0)
-#get normalized z-score for mpd
-library(picante)
-phydist.mini<-phydist.mini[order(rownames(phydist.mini)),order(rownames(phydist.mini))]
+# # One --------------------
+# 
+# #mammal supertree
+# library(ape)
+# treelist=read.nexus("data/original/Park_2016/WR_2005_ST.txt")
+# #best dates
+# mtree=treelist[[1]]
+# #dist matrix
+# phydist<-cophenetic.phylo(mtree) #or can use generic cophenetic
+# #which hosts are in the parasite database
+# d<-read.csv("data/original/Park_2016/GMPD_main_2016-11-28.csv",header=T)
+# d<-subset(d,HostEnvironment=="terrestrial")
+# keep.d<-which(names(d)%in%c("HostCorrectedName","HostOrder","ParasiteCorrectedName","Par.Type","Group"))
+# d<-d[,keep.d]
+# #remove rows where host is not identified to species
+# d<-d[-which(d$HostCorrectedName=="no binomial name"),]
+# #remove rows where parasite is not identified to species
+# d<-d[-which(d$ParasiteCorrectedName=="no binomial name"),]
+# d<-d[-which(d$ParasiteCorrectedName=="not identified to genus"),]
+# #Sys.setlocale('LC_ALL','C') 
+# d<-d[-grep("sp\\.",d$ParasiteCorrectedName),]
+# ## merge transmission mode data
+# ptrans<-read.csv("data/original/Park_2016/GMPD_parasite_traits_2016-11-28.csv",header=T)
+# ptrans<-subset(ptrans,select=c("ParasiteCorrectedName","close","nonclose","vector","intermediate"))
+# d<-merge(d,ptrans,by="ParasiteCorrectedName")
+# # identify host species in gmpd
+# obs.hosts<-unique(d$HostCorrectedName)
+# obs.hosts<-gsub(" ","_",obs.hosts) #put in underscore for compatibility with other dataframe
+# #at which locations of phydist do these hosts occur?
+# idx<-which(unlist(dimnames(phydist)[1]) %in% obs.hosts)
+# #pull out smaller cophenetic matrix of only these hosts
+# phydist.mini<-phydist[idx,idx]
+# #make a community matrix for the call to ses.mpd
+# d$HostCorrectedName<-gsub(" ","_",d$HostCorrectedName)
+# d$HostCorrectedName<-as.factor(d$HostCorrectedName)
+# d<-droplevels(d)
+# comm<-as.data.frame.matrix(table(d[,c(which(names(d)=="ParasiteCorrectedName"),which(names(d)=="HostCorrectedName"))]))
+# comm<-1*(comm>0)
+# #get normalized z-score for mpd
+# library(picante)
+# phydist.mini<-phydist.mini[order(rownames(phydist.mini)),order(rownames(phydist.mini))]
+# 
+# # Two -------------------------------
+# 
+# nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=10,abundance.weighted=T)#change back to 1000!
+# 
+# #load("get_nri.Rda") #nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000,abundance.weighted=T)
+# load("data/original/Park_2016/get_nriABUND.Rda") ##nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000)
+# 
+# # prep to merge with other dataframe that has other parasite traits
+# #nri<-nri[complete.cases(nri),]  # THIS REMOVES SINGLETON PARASITES (ONLY ONE HOST) SINCE MPD STUFF IS NA
+# nri$ParasiteCorrectedName<-rownames(nri)
+# nri<-merge(nri,ptrans,by="ParasiteCorrectedName")
+# 
+# ptype<-read.csv("data/original/Park_2016/GMPD_parasite_taxonomy_2016-11-28.csv",header=T)
+# ptype<-subset(ptype,select=c("ParasiteCorrectedName","ParType"))
+# ptype<-ptype[!duplicated(ptype),]
+# nri<-merge(nri,ptype,by="ParasiteCorrectedName")
+# 
+# #remove rare parasite types
+# nri4<-nri[-which(nri$ParType %in% c("Fungus","Prion")),]#c("Fungus","Prion")
+# 
+# nri4$n.modes<-rowSums(cbind(nri4$close,nri4$nonclose,nri4$vector,nri4$intermediate))
+# nri6<-nri4
+# names(nri6)[which(names(nri6)=="ParasiteCorrectedName")]<-"para.name"
+# names(nri6)[which(names(nri6)=="ParType")]<-"para.type"
+# nri6$para.name<-as.character(nri6$para.name)
+# nri6<-nri6[complete.cases(nri6),]
+# 
+# nri.flat<-data.frame(para.name=character(),ntaxa=integer(),mpd.obs.z=numeric(),mpd.obs.p=numeric(),para.type=character(),
+#                      tmode=character(),stringsAsFactors=FALSE)
+# k<-1
+# for (i in 1:dim(nri6)[1]){
+#   if (nri6[i,"close"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-# nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[# k,"tmode"]<-"close";k<-k+1}
+#   if (nri6[i,"nonclose"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"# ]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.fl# at[k,"tmode"]<-"nonclose";k<-k+1}
+#   if (nri6[i,"vector"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<# -nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat# [k,"tmode"]<-"vector";k<-k+1}
+#   if (nri6[i,"intermediate"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.ob# s.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nr# i.flat[k,"tmode"]<-"intermediate";k<-k+1}
+# }
+# 
+# mpd_prot <- nri %>% filter(ParType == "Protozoa") %>% 
+#   rename(protname = ParasiteCorrectedName) %>% 
+#   select(protname, starts_with("mpd"))
+# 
+# write_csv(mpd_prot, "data/modified/mpd_prot.csv")
 
-# Two -------------------------------
+mpdprot <- read_csv("data/modified/mpd_prot.csv")
 
-nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=10,abundance.weighted=T)#change back to 1000!
-
-#load("get_nri.Rda") #nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000,abundance.weighted=T)
-load("data/original/Park_2016/get_nriABUND.Rda") #nri<-ses.mpd(comm,phydist.mini,null.model="independentswap",runs=1000)
-
-# prep to merge with other dataframe that has other parasite traits
-#nri<-nri[complete.cases(nri),]  # THIS REMOVES SINGLETON PARASITES (ONLY ONE HOST) SINCE MPD STUFF IS NA
-nri$ParasiteCorrectedName<-rownames(nri)
-nri<-merge(nri,ptrans,by="ParasiteCorrectedName")
-
-ptype<-read.csv("data/original/Park_2016/GMPD_parasite_taxonomy_2016-11-28.csv",header=T)
-ptype<-subset(ptype,select=c("ParasiteCorrectedName","ParType"))
-ptype<-ptype[!duplicated(ptype),]
-nri<-merge(nri,ptype,by="ParasiteCorrectedName")
-
-#remove rare parasite types
-nri4<-nri[-which(nri$ParType %in% c("Fungus","Prion")),]#c("Fungus","Prion")
-
-nri4$n.modes<-rowSums(cbind(nri4$close,nri4$nonclose,nri4$vector,nri4$intermediate))
-nri6<-nri4
-names(nri6)[which(names(nri6)=="ParasiteCorrectedName")]<-"para.name"
-names(nri6)[which(names(nri6)=="ParType")]<-"para.type"
-nri6$para.name<-as.character(nri6$para.name)
-nri6<-nri6[complete.cases(nri6),]
-
-nri.flat<-data.frame(para.name=character(),ntaxa=integer(),mpd.obs.z=numeric(),mpd.obs.p=numeric(),para.type=character(),tmode=character(),stringsAsFactors=FALSE)
-k<-1
-for (i in 1:dim(nri6)[1]){
-  if (nri6[i,"close"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"close";k<-k+1}
-  if (nri6[i,"nonclose"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"nonclose";k<-k+1}
-  if (nri6[i,"vector"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"vector";k<-k+1}
-  if (nri6[i,"intermediate"]==1){nri.flat[k,"para.name"]<-nri6[i,"para.name"];nri.flat[k,"ntaxa"]<-nri6[i,"ntaxa"];nri.flat[k,"mpd.obs.z"]<-nri6[i,"mpd.obs.z"];nri.flat[k,"mpd.obs.p"]<-nri6[i,"mpd.obs.p"];nri.flat[k,"para.type"]<-as.character(nri6[i,"para.type"]);nri.flat[k,"tmode"]<-"intermediate";k<-k+1}
-}
-
-
-nri.prot <- nri %>% filter(ParType == "Protozoa") %>% select(protname = ParasiteCorrectedName, mpd.obs)
-
-write_csv(nri.prot, "data/modified/mpd_prot.csv")
-
-protraits_04 <- left_join(protraits_03, nri.prot)
+protraits_03 <- left_join(protraits_02, mpdprot) # 30 vars
 ```
 
+## Mammal trait data
 
+```{r mammal traits}
+
+# pan <- read.delim("data/original/PanTHERIA/PanTHERIA_1-0_WR05_Aug2008.txt") 
+# # source: https://figshare.com/articles/Full_Archive/3531875
+# # metadata: http://esapubs.org/archive/ecol/E090/184/metadata.htm
+# 
+# write_csv(pan, "data/original/PanTHERIA/pan.csv")
+
+# Now edit pan.csv to replace -999 with NA in all cells, save to data/modified
+
+pantheria <- read_csv("data/modified/pan.csv") %>% 
+  rename(hostname = MSW05_Binomial,hostorder=MSW05_Order, hostfamily=MSW05_Family, 
+         hostgenus=MSW05_Genus, hostspecies=MSW05_Species) %>% 
+  mutate(AdultBodyMass_g_merge = coalesce(X5.1_AdultBodyMass_g, X5.5_AdultBodyMass_g_EXT),
+         LittersPerYear_merge = coalesce(X16.1_LittersPerYear, X16.2_LittersPerYear_EXT),
+         NeonateBodyMass_g_merge = coalesce(X5.3_NeonateBodyMass_g, X5.6_NeonateBodyMass_g_EXT),
+         WeaningBodyMass_g_merge = coalesce(X5.4_WeaningBodyMass_g, X5.7_WeaningBodyMass_g_EXT)) %>% 
+  select(-c(X5.1_AdultBodyMass_g, X5.5_AdultBodyMass_g_EXT,
+            X16.1_LittersPerYear, X16.2_LittersPerYear_EXT,
+            X5.3_NeonateBodyMass_g, X5.6_NeonateBodyMass_g_EXT,
+            X5.4_WeaningBodyMass_g, X5.7_WeaningBodyMass_g_EXT,
+            References))
+names(pantheria)
+
+newpannames <- c("ActivityCycle", "AdultForearmLen_mm", "AdultHeadBodyLen_mm", "AgeatEyeOpening_d", "AgeatFirstBirth_d", 
+  "BasalMetRate_mLO2hr", "BasalMetRateMass_g", "DietBreadth", "DispersalAge_d", "GestationLen_d", "HabitatBreadth", 
+  "HomeRange_km2", "HomeRange_Indiv_km2", "InterbirthInterval_d", "LitterSize", "MaxLongevity_m", "NeonateHeadBodyLen_mm", 
+  "PopulationDensity_n.km2", "PopulationGrpSize", "SexualMaturityAge_d", "SocialGrpSize", "TeatNumber", "Terrestriality", 
+  "TrophicLevel", "WeaningAge_d", "WeaningHeadBodyLen_mm", 
+  "GR_Area_km2", "GR_MaxLat_dd", "GR_MinLat_dd", "GR_MidRangeLat_dd", "GR_MaxLong_dd", "GR_MinLong_dd", "GR_MidRangeLong_dd", 
+  "HuPopDen_Min_n.km2", "HuPopDen_Mean_n.km2", "HuPopDen_5p_n.km2", "HuPopDen_Change", 
+  "Precip_Mean_mm", "Temp_Mean_01degC", "AET_Mean_mm", "PET_Mean_mm")
+
+colnames(pantheria)[6:46] <- newpannames
+names(pantheria)
+
+phylacine <- read_csv("data/original/PHYLACINE_datafiles/Trait_data.csv") %>% 
+  select(-c(Order.1.2, Family.1.2, Genus.1.2, Species.1.2, 
+            Life.Habit.Method, Life.Habit.Source, 
+            Mass.Method, Mass.Source, Mass.Comparison, Mass.Comparison.Source,
+            Added.IUCN.Status.1.2, Diet.Method, Diet.Source)) %>% 
+  rename(IUCN.Status = IUCN.Status.1.2)
+
+phylacine$hostname = gsub("_", " ", phylacine$Binomial.1.2)
+
+names(phylacine)
+
+hosttraits_tmp1 <- left_join(allhosts, unique(gmpdprotintrx[,1:2, 5]), by = "hostname")
+hosttraits_tmp2 <- left_join(hosttraits_tmp1, pantheria, by = "hostname")
+hosttraits_01 <- left_join(hosttraits_tmp2, phylacine %>% select(-Binomial.1.2), by = "hostname") 
+
+names(hosttraits_01)
+
+```
+
+```{r community vars}
+
+protzoos <- prots228 %>% select(protname, zoostat, zscore)
+allintrx <- read_csv("data/modified/allintrx.csv")
+hostraits_comm <- read_csv("data/modified/allhosts.csv")
+protraits_comm <- read_csv("data/modified/allprots.csv")
+
+for (i in 1:length(hostraits_comm$hostname)) {
+  hostraits_comm$hostprots[i] <- allintrx %>% filter(hostname == hostraits_comm$hostname[i]) %>% 
+    select(protname) %>% 
+    as.vector()
+  hostraits_comm$numprots[i] <- length(hostraits_comm$hostprots[[i]])
+  hostraits_comm$protzooscores[i] <- protzoos %>% filter(protname %in% hostraits_comm$hostprots[[i]]) %>% 
+    select(zscore)
+  hostraits_comm$numprotzoons[i] <- length(which(hostraits_comm$protzooscores[[i]] >= 1))
+  hostraits_comm$propprotzoon[i] <- hostraits_comm$numprotzoons[i]/hostraits_comm$numprots[i]
+  if(hostraits_comm$numprotzoons[i] > 0){
+    hostraits_comm$zoores[i] <- 1
+  } else {
+    hostraits_comm$zoores[i] <- 0
+  }
+}
+
+View(hostraits_comm)
+
+for (i in 1:length(protraits_comm$protname)) {
+  protraits_comm$prothosts[i] <- allintrx %>% filter(protname == protraits_comm$protname[i]) %>% 
+    select(hostname) %>% 
+    as.vector()
+  protraits_comm$protcomm[i] <- allintrx %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(protname) %>% distinct() 
+ # protraits_comm$protcomm2[i] <- setdiff(protraits_comm$protcomm[i], protraits_comm$protname[i])
+  protraits_comm$numhosts[i] <- length(protraits_comm$prothosts[[i]])
+  protraits_comm$protcommsize[i] <- length(protraits_comm$protcomm[[i]])
+  protraits_comm$hostnumprotzoons[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(numprotzoons) %>% as.list()
+  protraits_comm$hostzoores[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(zoores) #this gives all the zoonotic prots a 1 for prophostzoon bc all their hosts are zoores by default, must pull this out and put in an ifelse for zoonprots vs. non-zoonprots
+  protraits_comm$numhostzoores[i] <- length(which(protraits_comm$hostzoores[[i]] >= 1))
+  protraits_comm$prophostzoores[i] <- protraits_comm$numhostzoores[i]/protraits_comm$numhosts[i]
+  protraits_comm$hostpropprotzoon[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(propprotzoon)
+  }
+
+View(protraits_comm)
+
+commprot <- protraits_comm %>% 
+  select(protname, numhosts, numhostzoores, prophostzoores, protcommsize)
+
+protraits_04 <- protraits_03 %>% 
+  left_join(commprot, by ="protname") # 34 vars
+
+write_csv(protraits_04, "data/modified/protraits_191217")
+
+```
