@@ -1,7 +1,7 @@
 #xgboost github tutorial
 
-require(xgboost)
-require(methods)
+library(xgboost)
+library(methods)
 
 # we load in the agaricus dataset
 # In this example, we are aiming to predict whether a mushroom is edible
@@ -10,6 +10,7 @@ data(agaricus.test, package='xgboost')
 train <- agaricus.train
 test <- agaricus.test
 # the loaded data is stored in sparseMatrix, and label is a numeric vector in {0,1}
+
 class(train$label)
 class(train$data)
 
