@@ -64,14 +64,31 @@ for (x in 1:length(sys_names)) {
   }
 }
 
+write_csv(protraits_site, "data/modified/protraits_site.csv")
 
 # Geographic distribution (X variables - continents? subconinental divisions? column for specificity?)
 
-
+# There are only 60 lines that have this entered, so I am not including it as a variable right now.
+# Many of them are also at the genus level, so I my confidence in them is low. 
+# Instead of this, can use the GMPD lat longs to count how many ADMs at different levels? Or just continents? IDK.
+# Ask Barbara about this?
 
 # Domestic hosts (X variables - cattle, sheep, goats, dogs, cats, pigs, horses, poultry, other bovids?)
 
+dom_host_names <- c('cattle', 'sheep', 'goat', 'dog', 'cat', 'pig', 'horse', 'chicken')
 
+protraits_dom_host_names <- as.data.frame(protsentry %>% select(protname, dom_hostname))
+
+protraits_dom_host_names[, 3:10] <- 0
+colnames(protraits_dom_host_names)[3:10] <- dom_host_names
+
+for (x in 1:length(dom_host_names)) {
+  for (i in 1:nrow(protraits_dom_host_names)) {
+    protraits_dom_host_names[, dom_host_names[x]][i][grep(dom_host_names[x], protraits_dom_host_names$dom_hostname[i])] <- 1
+  }
+}
+
+write_csv(protraits_dom_host_names, "data/modified/protraits_domhosts.csv")
 
 # Transmission modes (X vars - fecal-oral, sexual, environment, ingestion, cysts, ticks, waterborne, etc.)
 
