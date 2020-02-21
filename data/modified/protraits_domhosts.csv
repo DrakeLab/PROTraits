@@ -1,0 +1,228 @@
+protname,dom_hostname,cattle,sheep,goat,dog,cat,pig,horse,chicken,V11
+Babesia bicornis,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia bigemina,"cattle, sheep, goats, horses; cattle, ox, water buffalo",1,1,1,0,1,0,1,0,5
+Babesia bovis,cattle,1,0,0,0,1,0,0,0,2
+Babesia cellii,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia cynicti,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia divergens,cattle,1,0,0,0,1,0,0,0,2
+Babesia equi,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia lotori,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia microti,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia missirolii,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia odocoilei,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia ovis,"sheep, goats",0,1,1,0,0,0,0,0,2
+Babesia pitheci,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia propitheci,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Babesia rossi,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Balantidium aragaoi,NA,0,0,0,0,0,0,0,0,0
+Balantidium coli,pigs,0,0,0,0,0,1,0,0,1
+Besnoitia tarandi,NA,0,0,0,0,0,0,0,0,0
+Blastocystis hominis,"pigs, chickens",0,0,0,0,0,1,0,1,2
+Blepharocorys jubata,NA,0,0,0,0,0,0,0,0,0
+Charonina hippopotami,NA,0,0,0,0,0,0,0,0,0
+Chilomastix mesnili,pigs,0,0,0,0,0,1,0,0,1
+Cryptosporidium parvum,cattle,1,0,0,0,1,0,0,0,2
+Cycloposthium bipalmatum,horses,0,0,0,0,0,0,1,0,1
+Cycloposthium corrugatum,horses,0,0,0,0,0,0,1,0,1
+Cycloposthium dentiferum,horses,0,0,0,0,0,0,1,0,1
+Cycloposthium edentatum,horses,0,0,0,0,0,0,1,0,1
+Cycloposthium scutigerum,horses,0,0,0,0,0,0,1,0,1
+Cyclospora cercopitheci,NA,0,0,0,0,0,0,0,0,0
+Cyclospora colobi,NA,0,0,0,0,0,0,0,0,0
+Cyclospora papionis,NA,0,0,0,0,0,0,0,0,0
+Cystoisospora felis,cat,0,0,0,0,1,0,0,0,1
+Cystoisospora ohioensis,dog,0,0,0,1,0,0,0,0,1
+Cytauxzoon felis,cat,0,0,0,0,1,0,0,0,1
+Cytauxzoon manul,NA,0,0,0,0,0,0,0,0,0
+Dientamoeba fragilis,pigs,0,0,0,0,0,1,0,0,1
+Diplodinium anacanthum,"cattle, waterbuffalo, zebu",1,0,0,0,1,0,0,0,2
+Diplodinium dentatum,NA,0,0,0,0,0,0,0,0,0
+Diploplastron affine,"cattle, sheep",1,1,0,0,1,0,0,0,3
+Eimeria auburnensis,cattle,1,0,0,0,1,0,0,0,2
+Eimeria bovis,cattle,1,0,0,0,1,0,0,0,2
+Eimeria crispus,NA,0,0,0,0,0,0,0,0,0
+Eimeria felina,cats,0,0,0,0,1,0,0,0,1
+Eimeria furonis,NA,0,0,0,0,0,0,0,0,0
+Eimeria hreindyria,NA,0,0,0,0,0,0,0,0,0
+Eimeria ictidea,NA,0,0,0,0,0,0,0,0,0
+Eimeria kamoshika,NA,0,0,0,0,0,0,0,0,0
+Eimeria macusaniensis,NA,0,0,0,0,0,0,0,0,0
+Eimeria madisonensis,NA,0,0,0,0,0,0,0,0,0
+Eimeria mayeri,NA,0,0,0,0,0,0,0,0,0
+Eimeria mccordocki,NA,0,0,0,0,0,0,0,0,0
+Eimeria melis,NA,0,0,0,0,0,0,0,0,0
+Eimeria mephitidis,NA,0,0,0,0,0,0,0,0,0
+Eimeria nuttalli,NA,0,0,0,0,0,0,0,0,0
+Eimeria odocoilei,NA,0,0,0,0,0,0,0,0,0
+Eimeria pachylepyron,NA,0,0,0,0,0,0,0,0,0
+Eimeria rangiferis,NA,0,0,0,0,0,0,0,0,0
+Eimeria serowi,NA,0,0,0,0,0,0,0,0,0
+Eimeria vulpis,NA,0,0,0,0,0,0,0,0,0
+Eimeria zuernii,cattle,1,0,0,0,1,0,0,0,2
+Elyplastron bubali,NA,0,0,0,0,0,0,0,0,0
+Endolimax nana,NA,0,0,0,0,0,0,0,0,0
+Entamoeba chattoni,NA,0,0,0,0,0,0,0,0,0
+Entamoeba coli,NA,0,0,0,0,0,0,0,0,0
+Entamoeba dispar,NA,0,0,0,0,0,0,0,0,0
+Entamoeba hartmanni,NA,0,0,0,0,0,0,0,0,0
+Entamoeba histolytica,NA,0,0,0,0,0,0,0,0,0
+Entamoeba polecki,NA,0,0,0,0,0,0,0,0,0
+Entodinium bicornutum,NA,0,0,0,0,0,0,0,0,0
+Entodinium bursa,NA,0,0,0,0,0,0,0,0,0
+Entodinium caudatum,NA,0,0,0,0,0,0,0,0,0
+Entodinium dubardi,NA,0,0,0,0,0,0,0,0,0
+Entodinium furca,NA,0,0,0,0,0,0,0,0,0
+Entodinium minimum,NA,0,0,0,0,0,0,0,0,0
+Entopolypoides macaci,NA,0,0,0,0,0,0,0,0,0
+Epidinium bulbiferum,NA,0,0,0,0,0,0,0,0,0
+Epidinium caudatum,NA,0,0,0,0,0,0,0,0,0
+Epidinium gigas,NA,0,0,0,0,0,0,0,0,0
+Eudiplodinium maggi,NA,0,0,0,0,0,0,0,0,0
+Giardia intestinalis,NA,0,0,0,0,0,0,0,0,0
+Hepatocystis cercopitheci,NA,0,0,0,0,0,0,0,0,0
+Hepatocystis foleyi,NA,0,0,0,0,0,0,0,0,0
+Hepatocystis kochi,NA,0,0,0,0,0,0,0,0,0
+Hepatocystis semnopitheci,NA,0,0,0,0,0,0,0,0,0
+Hepatocystis simiae,NA,0,0,0,0,0,0,0,0,0
+Hepatocystis taiwanensis,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon americanum,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon canis,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-1,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-2,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-3,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-4,"goat (int), dog (final)",0,0,1,1,0,0,0,0,2
+Hepatozoon JM-5,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-6,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-7,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-8,NA,0,0,0,0,0,0,0,0,0
+Hepatozoon procyonis,NA,0,0,0,0,0,0,0,0,0
+Iodamoeba butschlii,NA,0,0,0,0,0,0,0,0,0
+Isospora arctopitheci,NA,0,0,0,0,0,0,0,0,0
+Isospora canis,NA,0,0,0,0,0,0,0,0,0
+Isospora cebi,NA,0,0,0,0,0,0,0,0,0
+Isospora endocallimici,NA,0,0,0,0,0,0,0,0,0
+Isospora lutrae,NA,0,0,0,0,0,0,0,0,0
+Isospora melis,NA,0,0,0,0,0,0,0,0,0
+Isospora papionis,NA,0,0,0,0,0,0,0,0,0
+Isospora saimirae,NA,0,0,0,0,0,0,0,0,0
+Isospora sengeri,NA,0,0,0,0,0,0,0,0,0
+Isospora spilogales,NA,0,0,0,0,0,0,0,0,0
+Isospora vulpis,NA,0,0,0,0,0,0,0,0,0
+Leishmania braziliensis,rodents,0,0,0,0,0,0,0,0,0
+Leishmania chagasi,NA,0,0,0,0,0,0,0,0,0
+Leishmania donovani,"dogs, rodents",0,0,0,1,0,0,0,0,1
+Leishmania infantum,NA,0,0,0,0,0,0,0,0,0
+Leishmania shawi,NA,0,0,0,0,0,0,0,0,0
+Metadinium medium,NA,0,0,0,0,0,0,0,0,0
+Neospora caninum,NA,0,0,0,0,0,0,0,0,0
+Ostracodinium gracile,NA,0,0,0,0,0,0,0,0,0
+Ostracodinium mammosum,NA,0,0,0,0,0,0,0,0,0
+Ostracodinium trivesiculatum,NA,0,0,0,0,0,0,0,0,0
+Paraisotricha minuta,NA,0,0,0,0,0,0,0,0,0
+Paraplagiopyla kiboko,NA,0,0,0,0,0,0,0,0,0
+Parentodinium africanum,NA,0,0,0,0,0,0,0,0,0
+Parentodinium ostrea,NA,0,0,0,0,0,0,0,0,0
+Pentatrichomonas hominis,NA,0,0,0,0,0,0,0,0,0
+Plasmodium brasilianum,NA,0,0,0,0,0,0,0,0,0
+Plasmodium coatneyi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium cynomolgi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium eylesi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium falciparum,NA,0,0,0,0,0,0,0,0,0
+Plasmodium fieldi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium fragile,NA,0,0,0,0,0,0,0,0,0
+Plasmodium gaboni,NA,0,0,0,0,0,0,0,0,0
+Plasmodium georgesi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium girardi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium gonderi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium hylobati,NA,0,0,0,0,0,0,0,0,0
+Plasmodium inui,NA,0,0,0,0,0,0,0,0,0
+Plasmodium jefferyi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium knowlesi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium petersi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium pitheci,NA,0,0,0,0,0,0,0,0,0
+Plasmodium reichenowi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium rodhaini,NA,0,0,0,0,0,0,0,0,0
+Plasmodium schwetzi,NA,0,0,0,0,0,0,0,0,0
+Plasmodium shortii,NA,0,0,0,0,0,0,0,0,0
+Plasmodium simiovale,NA,0,0,0,0,0,0,0,0,0
+Plasmodium simium,NA,0,0,0,0,0,0,0,0,0
+Plasmodium vivax,NA,0,0,0,0,0,0,0,0,0
+Plasmodium youngi,NA,0,0,0,0,0,0,0,0,0
+Polyplastron multivesiculatum,NA,0,0,0,0,0,0,0,0,0
+Prototapirella gorillae,NA,0,0,0,0,0,0,0,0,0
+Retortamonas intestinalis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis alces,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis alceslatrans,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis americana,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis arctosi,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis arieticanis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis axicuonis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis camelopardalis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis capracanis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis capreolicanis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis danzani,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis dubeyella,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis elegans,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis felis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis fusiformis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis gazellae,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis giraffae,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis grueneri,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis hardangeri,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis hemioni,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis hemionilatrantis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis hominis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis kirkpatricki,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis klaseriensis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis melampi,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis mephitisi,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis mongolica,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis neurona,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis odocoileocanis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis ovalis,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis phacochoeri,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis rangi,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis scandinavica,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis sebeki,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis tarandivulpes,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis ursusi,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis woodhousei,NA,0,0,0,0,0,0,0,0,0
+Sarcocystis youngi,NA,0,0,0,0,0,0,0,0,0
+Spirodinium equi,NA,0,0,0,0,0,0,0,0,0
+Tetratoxum parvum,NA,0,0,0,0,0,0,0,0,0
+Tetratoxum unifasciculatum,NA,0,0,0,0,0,0,0,0,0
+Theileria annae,NA,0,0,0,0,0,0,0,0,0
+Theileria bicornis,NA,0,0,0,0,0,0,0,0,0
+Theileria buffeli,NA,0,0,0,0,0,0,0,0,0
+Theileria cervi,NA,0,0,0,0,0,0,0,0,0
+Theileria mutans,NA,0,0,0,0,0,0,0,0,0
+Theileria parva,cattle,1,0,0,0,1,0,0,0,2
+Toxoplasma gondii,cat,0,0,0,0,1,0,0,0,1
+Triadinium galea,NA,0,0,0,0,0,0,0,0,0
+Trichomonas intestinalis,NA,0,0,0,0,0,0,0,0,0
+Troglocorys cava,NA,0,0,0,0,0,0,0,0,0
+Troglodytella abrassarti,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma brimonti,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma brucei,"game animals, cattle",1,0,0,0,1,0,0,0,2
+Trypanosoma cervi,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma congolense,"game animals, cattle",1,0,0,0,1,0,0,0,2
+Trypanosoma cruzi,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma cyclops,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma devei,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma diasi,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma evansi,camels,0,0,0,0,0,0,0,0,0
+Trypanosoma hippicum,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma irangiense,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma lambrechti,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma lesourdi,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma minasense,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma mycetae,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma perodictici,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma pestanai,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma primatum,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma rangeli,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma sanmartini,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma simiae,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma theileri,"domestic cattle, other domesticated and wild bovids",1,0,0,0,1,0,0,0,2
+Trypanosoma venezuelense,NA,0,0,0,0,0,0,0,0,0
+Trypanosoma vivax,"game animals, cattle",1,0,0,0,1,0,0,0,2

@@ -1,0 +1,228 @@
+protname,site_system,muscular,skeletal,circulatory,respiratory,digestive,immune,urinary,nervous,endocrine,reproductive,lymphatic,integumentary,ocular,multi,V17
+Babesia bicornis,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia bigemina,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia bovis,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia cellii,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia cynicti,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia divergens,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia equi,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia lotori,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia microti,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia missirolii,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia odocoilei,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia ovis,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia pitheci,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia propitheci,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Babesia rossi,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Balantidium aragaoi,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Balantidium coli,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Besnoitia tarandi,"multi: muscular, repiratory, lymphatic, integumentary, urinary, nervous, ocular",1,0,0,0,0,0,1,1,0,0,1,1,1,1,6
+Blastocystis hominis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Blepharocorys jubata,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Charonina hippopotami,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Chilomastix mesnili,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cryptosporidium parvum,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cycloposthium bipalmatum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Cycloposthium corrugatum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Cycloposthium dentiferum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Cycloposthium edentatum,species,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Cycloposthium scutigerum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Cyclospora cercopitheci,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cyclospora colobi,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cyclospora papionis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cystoisospora felis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cystoisospora ohioensis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cytauxzoon felis,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Cytauxzoon manul,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Dientamoeba fragilis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Diplodinium anacanthum,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Diplodinium dentatum,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Diploplastron affine,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria auburnensis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria bovis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria crispus,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria felina,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria furonis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria hreindyria,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria ictidea,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria kamoshika,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria macusaniensis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria madisonensis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria mayeri,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria mccordocki,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria melis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria mephitidis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria nuttalli,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria odocoilei,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria pachylepyron,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria rangiferis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria serowi,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria vulpis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Eimeria zuernii,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Elyplastron bubali,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Endolimax nana,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Entamoeba chattoni,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Entamoeba coli,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Entamoeba dispar,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Entamoeba hartmanni,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Entamoeba histolytica,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Entamoeba polecki,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Entodinium bicornutum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Entodinium bursa,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Entodinium caudatum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Entodinium dubardi,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Entodinium furca,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Entodinium minimum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Entopolypoides macaci,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Epidinium bulbiferum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Epidinium caudatum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Epidinium gigas,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Eudiplodinium maggi,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Giardia intestinalis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Hepatocystis cercopitheci,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatocystis foleyi,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatocystis kochi,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatocystis semnopitheci,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatocystis simiae,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatocystis taiwanensis,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon americanum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon canis,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-1,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-2,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-3,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-4,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-5,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-6,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-7,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon JM-8,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Hepatozoon procyonis,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Iodamoeba butschlii,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora arctopitheci,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora canis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora cebi,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora endocallimici,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora lutrae,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora melis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora papionis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora saimirae,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora sengeri,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora spilogales,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Isospora vulpis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Leishmania braziliensis,"multi: integumentary, digestive, lymphatic, immune",0,0,0,0,1,1,0,0,0,0,1,1,0,1,4
+Leishmania chagasi,"multi: integumentary, digestive, lymphatic, immune",0,0,0,0,1,1,0,0,0,0,1,1,0,1,4
+Leishmania donovani,"multi: integumentary, digestive, lymphatic, immune",0,0,0,0,1,1,0,0,0,0,1,1,0,1,4
+Leishmania infantum,"multi: integumentary, digestive, lymphatic, immune",0,0,0,0,1,1,0,0,0,0,1,1,0,1,4
+Leishmania shawi,"multi: integumentary, digestive, lymphatic, immune",0,0,0,0,1,1,0,0,0,0,1,1,0,1,4
+Metadinium medium,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Neospora caninum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Ostracodinium gracile,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Ostracodinium mammosum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Ostracodinium trivesiculatum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Paraisotricha minuta,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Paraplagiopyla kiboko,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Parentodinium africanum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Parentodinium ostrea,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Pentatrichomonas hominis,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Plasmodium brasilianum,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium coatneyi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium cynomolgi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium eylesi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium falciparum,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium fieldi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium fragile,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium gaboni,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium georgesi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium girardi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium gonderi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium hylobati,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium inui,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium jefferyi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium knowlesi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium petersi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium pitheci,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium reichenowi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium rodhaini,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium schwetzi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium shortii,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium simiovale,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium simium,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium vivax,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Plasmodium youngi,"multi: circulatory, digestive, nervous",0,0,1,0,1,0,0,1,0,0,0,0,0,1,3
+Polyplastron multivesiculatum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Prototapirella gorillae,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Retortamonas intestinalis,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Sarcocystis alces,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis alceslatrans,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis americana,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis arctosi,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis arieticanis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis axicuonis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis camelopardalis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis capracanis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis capreolicanis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis danzani,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis dubeyella,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis elegans,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis felis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis fusiformis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis gazellae,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis giraffae,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis grueneri,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis hardangeri,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis hemioni,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis hemionilatrantis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis hominis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis kirkpatricki,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis klaseriensis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis melampi,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis mephitisi,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis mongolica,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis neurona,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis odocoileocanis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis ovalis,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis phacochoeri,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis rangi,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis scandinavica,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis sebeki,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis tarandivulpes,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis ursusi,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis woodhousei,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Sarcocystis youngi,"muscular, digestive",1,0,0,0,1,0,0,0,0,0,0,0,0,0,2
+Spirodinium equi,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Tetratoxum parvum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Tetratoxum unifasciculatum,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Theileria annae,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Theileria bicornis,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Theileria buffeli,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Theileria cervi,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Theileria mutans,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Theileria parva,circulatory,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Toxoplasma gondii,nervous,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1
+Triadinium galea,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Trichomonas intestinalis,digestive,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Troglocorys cava,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Troglodytella abrassarti,NA,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Trypanosoma brimonti,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma brucei,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma cervi,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma congolense,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma cruzi,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma cyclops,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma devei,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma diasi,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma evansi,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma hippicum,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma irangiense,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma lambrechti,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma lesourdi,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma minasense,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma mycetae,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma perodictici,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma pestanai,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma primatum,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma rangeli,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma sanmartini,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma simiae,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma theileri,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma venezuelense,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3
+Trypanosoma vivax,"circulatory, muscular, digestive",1,0,1,0,1,0,0,0,0,0,0,0,0,0,3

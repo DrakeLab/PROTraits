@@ -5,7 +5,8 @@
 ### Attach packages
 
 
-library(tidyverse) 
+library(tidyverse)
+library(dplyr)
 library(magrittr)
 
 
@@ -64,6 +65,9 @@ for (x in 1:length(sys_names)) {
   }
 }
 
+protraits_site[, 17]  <- rowSums(protraits_site[, 3:15])
+colnames(protraits_site)[, 17] <- c('num_sys')
+
 write_csv(protraits_site, "data/modified/protraits_site.csv")
 
 # Geographic distribution (X variables - continents? subconinental divisions? column for specificity?)
@@ -87,6 +91,9 @@ for (x in 1:length(dom_host_names)) {
     protraits_dom_host_names[, dom_host_names[x]][i][grep(dom_host_names[x], protraits_dom_host_names$dom_hostname[i])] <- 1
   }
 }
+
+protraits_dom_host_names[, 11]  <- rowSums(protraits_dom_host_names[, 3:10])
+colnames(protraits_dom_host_names)[, 11] <- 'num_dom_host'
 
 write_csv(protraits_dom_host_names, "data/modified/protraits_domhosts.csv")
 
