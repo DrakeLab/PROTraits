@@ -1,0 +1,247 @@
+---
+title: "Protraits: data analysis"
+author: "Joy Vaz, Tierney O'Sullivan"
+date: "December 16, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+rm(list = ls())
+
+library("knitr")
+opts_chunk$set(tidy=T, warning=F, message=F)
+opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
+```
+
+
+```{r brt xgboost}
+
+library(Matrix)
+library(data.table)
+library(tidyverse)
+
+protraits <- read_csv("data/modified/protraits_191217") %>% 
+  select(-c(protname, zscore, cscore))
+
+# remove highly correlated vars
+
+protraits <- protraits %>% 
+  select(-c(numhosts, numgmpdrecords, 
+            weighted.betweenness, bet.uni, deg.uni,
+            googlehits))
+
+tmp_prot <- data.table(protraits)
+
+
+```
+
+```{r train_test}
+
+library(caret)
+library(xgboost)
+
+# subset data into training vs testing 
+set.seed(191212)
+trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
+                                     list = FALSE, 
+                                     times = 1)
+tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
+tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] # create a model matrix of the training data predictor variables  
+
+## CV -----
+
+# 5-fold cross validation to determine best model parameters (chosen by lowering test error)
+# set gamma > 0, lowered eta, to help with overfitting
+
+# SET PARAMETERS -----
+cv_seeds <- c(2420, 706, 626, 80085, 303, 903, 4096, 779, 73, 1312, 
+              1230, 656, 1984, 1994, 1024, 2048, 1948, 616, 12, 89,
+              102, 215, 1495, 777, 9988, 5, 538, 202, 396, 1419)
+
+params <- 
+  list(list(max.depth = 3, eta = 0.10, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4),
+       # list(max.depth = 3, eta = 0.10, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.5),
+       # list(max.depth = 3, eta = 0.10, nthread = 2, objective = "binary:logistic", gamma = 0.40, alpha = 0.4),
+       list(max.depth = 3, eta = 0.05, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4),
+       list(max.depth = 3, eta = 0.01, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4)
+       )
+
+nround <- 3
+
+for (x in seq_along(params)) {
+  #names(params)[[x]] <- paste0("params", x)
+  assign(paste0("cv_log_auc_p", x), data.frame(matrix(, nrow=nround, ncol=length(cv_seeds))))
+  assign(paste0("cv_log_err_p", x), data.frame(matrix(, nrow=nround, ncol=length(cv_seeds))))
+  for (i in seq_along(cv_seeds)) {
+    set.seed(cv_seeds[i])
+    assign(paste0("cv_bst_prot_p", x), 
+         xgb.cv(params = params[[x]],
+                    data = sparse_matrix_prot,
+                    stratified = T,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = nround, 
+                    metrics = list("error", "auc"))) -> z
+    assign(paste0("cv_log_auc_p", x)[i], z[["evaluation_log"]][["test_auc_mean"]])
+    assign(paste0("cv_log_err_p", x)[i], z[["evaluation_log"]][["test_error_mean"]])
+  }
+}
+
+# solution! = don't use assign the way you are right now, add at the end. 
+
+library(ggplot2)
+
+ggplot(cv_log_auc_p4, aes(x = round)) + 
+  geom_line(aes(y = `2420`))+ 
+  geom_line(aes(y = `706`))+ 
+  geom_line(aes(y = `626`))+ 
+  geom_line(aes(y = `80085`))+ 
+  geom_line(aes(y = `303`))+ 
+  geom_line(aes(y = `903`))+ 
+  geom_line(aes(y = `4096`))+ 
+  geom_line(aes(y = `779`))+ 
+  geom_line(aes(y = `73`))+ 
+  geom_line(aes(y = `1312`))+ 
+  geom_line(aes(y = `1230`))+ 
+  geom_line(aes(y = `656`))+ 
+  geom_line(aes(y = `1984`))+ 
+  geom_line(aes(y = `1994`))+ 
+  geom_line(aes(y = `1024`))+ 
+  geom_line(aes(y = `2048`))+ 
+  geom_line(aes(y = `1948`))+ 
+  geom_line(aes(y = `616`))+ 
+  geom_line(aes(y = `12`))+ 
+  geom_line(aes(y = `89`))+ 
+  geom_line(aes(y = `102`))+ 
+  geom_line(aes(y = `215`))+ 
+  geom_line(aes(y = `1495`))+ 
+  geom_line(aes(y = `777`))+ 
+  geom_line(aes(y = `9988`))+ 
+  geom_line(aes(y = `5`))+ 
+  geom_line(aes(y = `538`))+ 
+  geom_line(aes(y = `202`))+ 
+  geom_line(aes(y = `396`))+ 
+  geom_line(aes(y = `1419`))
+p
+
+#------------
+
+set.seed(2148)
+cv_bst_prot <- xgb.cv(params = params1,
+                    data = sparse_matrix_prot,
+                    stratified = TRUE,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = 60, 
+                    metrics = list("error", "auc"))
+
+max(cv_bst_prot[["evaluation_log"]][["test_auc_mean"]])
+
+
+
+print(cv_bst_prot, verbose = T)
+
+
+bst_prot <- xgboost(sparse_matrix_prot, 
+                  label = tmp_prot_Train$zoostat,
+                  params = list(max.depth = 5, eta = 0.1, 
+                                nthread = 2, gamma = 0.35, alpha = 0.3,
+                                objective = "binary:logistic", 
+                                eval_metric = list( "auc")),
+                  nrounds = 55)
+
+bst_prot$evaluation_log
+
+#change na.action back to default
+options(na.action=previous_na_action$na.action)
+```
+
+
+Variable importance plots for the model, along with partial dependence plots for the top variables.
+```{r vip, echo=F, comment=F, warning = F}
+#
+
+library(pdp)
+library(Ckmeans.1d.dp)
+
+importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot), model = bst_prot)
+
+
+xgb.plot.importance(importance_prot, rel_to_first = TRUE, xlab = "Relative importance")
+
+gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
+gg_prot
+
+# # predict values in test set (Wait to do this until model is finalized!)
+# sparse_matrix_prot_Test <- sparse.model.matrix(zoostat ~ ., data = tmp_prot_Test)[,-1] # create a model matrix of the test dataset
+# 
+# y_pred_prot <- predict(bst_prot, sparse_matrix_prot_Test) # gives error because testing data has less features than train data. Factor features in test set have less levels than those in training set, so feature names in sparse_matrix_prot@Dimnames[[2]] and sparse_matrix_prot_Test@Dimnames[[2]] are different. Need to add these features in test set and have them all be 0.
+# y_pred_prot <- ifelse (y_pred_prot > 0.5,1,0)
+# 
+# #how many are incorrectly classified?
+# test_error_prot <- 1 - sum(y_pred_post ==  tmp_prot_Test$zoostat)/length(y_pred_prot)
+# print(test_error_prot)
+# 
+
+```
+
+```{r pdps, echo=F, warning=F, message=F}
+## partial dependence plots
+
+important_vars <- importance_prot$Feature
+
+v <- importance_prot$Feature
+length(v)
+
+# c-ICE curves and PDPs
+
+
+p1 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[1]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p2 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[2]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p3 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[3]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p4 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[4]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p5 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[5]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p6 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[6]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p7 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[7]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+
+
+# Figure 2
+grid.arrange(p1, p2, ncol = 2)
+grid.arrange(p3, p4, p5, ncol = 3)
+grid.arrange(p6, p7, ncol = 2)
+
+
+
+```
+
+```{r corr}
+
+library(GGally)
+
+ggcorr(as.data.frame(tmp_prot_Train) , method = c("everything", "pearson"), palette = "PuOr", label_size = 1)
+
+
+```
