@@ -196,27 +196,27 @@ allintrx_01 <- intrxtraits_01 %>% select(hostname, protname) %>%
 ```{r ecoregions}
 
 library(sf)
-
-# Assign a ecoregion data to each host-parasite location
-
-intrxpts <- intrxtraits_01 %>% select(gmpdintrxID, lat, long) %>% na.omit() # Extract lat long coordinates for each intrx. 86 host-prot intrx do not have coordinates in GMPD
-intrxgeo <- intrxpts %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf object
- 
-### Import data ----------------------------------------------------------------------------
-
-## WWF Terrestrial Ecoregions of the World (TEOW)
-
-# Spatial polygons dataset downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
-
-teowshps <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") 
-
-
-# Create df with each point and corresponding TEOW vars
-teowprot <- st_intersection(teowshps, intrxgeo) %>% 
-  as.data.frame()
-
-# Save as flat file
-write_csv(teowprot, "data/modified/teowprot.csv")
+# 
+# # Assign a ecoregion data to each host-parasite location
+# 
+# intrxpts <- intrxtraits_01 %>% select(gmpdintrxID, lat, long) %>% na.omit() # Extract lat long coordinates for each intrx. 86 # host-prot intrx do not have coordinates in GMPD
+# intrxgeo <- intrxpts %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf object
+#  
+# ### Import data ----------------------------------------------------------------------------
+# 
+# ## WWF Terrestrial Ecoregions of the World (TEOW)
+# 
+# # Spatial polygons dataset downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
+# 
+# teowshps <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") 
+# 
+# 
+# # Create df with each point and corresponding TEOW vars
+# teowprot <- st_intersection(teowshps, intrxgeo) %>% 
+#   as.data.frame()
+# 
+# # Save as flat file
+# write_csv(teowprot, "data/modified/teowprot.csv")
 
 teowprot <- read_csv("data/modified/teowprot.csv")
 
@@ -294,93 +294,97 @@ biome_map +
 
 ```{r bipartite network}
 ###Host-Prasite Bipartite Network
+# 
+# library(igraph)
+# library(bipartite)
+# 
+# # create df from which to build network
+# hostprotnetwork <- read_csv("./data/modified/allintrx.csv") %>% 
+#   select(protname, hostname) %>% mutate(netID = "1")
+# 
+# ## Setup for bipartite
+# 
+# # convert to web format needed for bipartite functions
+# web <- frame2webs(hostprotnetwork, varnames = c("protname", "hostname", "netID"))
+# 
+# # calculate bipartite network indices for all prots and hosts
+# protsnet.bi <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion # generality")) %>% 
+#   rownames_to_column("protname") 
+# hostsnet.bi <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion # generality")) %>% 
+#   rownames_to_column("hostname")
+# 
+# #_____________________________________________________________________________________________
+# 
+# ## Setup for igraph
+# 
+# # convert to graph format needed for igraph functions
+# 
+# g <- graph.data.frame(hostprotnetwork[,1:2], directed = F)
+# 
+# # bipartite.mapping(g)  # $res tells us if the network meets the criteria for a 2-mode network ($res) and $type tells us which # nodes fall into each mode - FALSE for prots and TRUE for hosts
+# 
+# # check: number of nodes should equal the total number of unique host + parasite spp.
+# length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname, hostprotnetwork$hostname))) 
+# 
+# # add the 'type' attribute to the network
+# V(g)$type <- bipartite_mapping(g)$type
+# 
+# ### Visualise (not very useful because network is so large)
+# #V(g)$label.color <- "black" 
+# #V(g)$label.cex <- 0.65 
+# #V(g)$frame.color <-  "gray"
+# #V(g)$size <- 15
+# #
+# #plot(g, layout = layout_with_graphopt)
+# #
+# #plot(g, layout=layout.bipartite, vertex.size=7, vertex.label.cex=0.6)
+# 
+# ## Analysis
+# 
+# #Used code from this tutorial: https://rpubs.com/pjmurphy/317838
+# 
+# #From the tutorial page:
+# #Igraph was not designed with two-mode networks in mind. It does, however recognize that the network is two-mode. 
+# #Keep in mind, however, that when you run centrality measures on a two-mode network, igraph will be treating each 
+# #of these nodes as though they are in the same mode. Igraph makes no allowance for calculating centralities that 
+# #are specific to the special case of two-mode networks.
+# #If you are interested in understanding the relative prominence of nodes in each mode, relative to other nodes in that mode, 
+# #then the best you will be able to do in igraph will be to analyze each mode separately. 
+# 
+# m <- as.one.mode(web[["1"]]) # convert to bipartite network one-mode network in order to calculate indices like centrality
+# mgraph <- graph.adjacency(m)
+# 
+# #Calculate centrality
+# types <- V(g)$type                 # get each vertex `type` in order to sort easily
+# deg.uni <- degree(m)
+# bet.uni <- betweenness(m)
+# clos.uni <- closeness(m) # clos is a 0 for everything, so exclude
+# eig.uni <- eigen_centrality(mgraph)$vector
+# 
+# protsnet.uni <- data.frame(types, deg.uni, bet.uni, eig.uni) %>% 
+#                         rownames_to_column("protname") %>% 
+#                         mutate(types = as.character(types)) %>% 
+#                         filter(types == "FALSE")
+# 
+# hostsnet.uni <- data.frame(types, deg.uni, bet.uni, eig.uni) %>% 
+#                         rownames_to_column("hostname") %>% 
+#                         mutate(types = as.character(types)) %>% 
+#                         filter(types == "TRUE")
+# 
+# protsnet <- left_join(x = protsnet.bi, 
+#                       y = protsnet.uni %>% 
+#                         select(-types))
+# 
+# hostsnet <- left_join(x = hostsnet.bi, 
+#                       y = hostsnet.uni %>% 
+#                         select(-types))
+# # # Save as csvs
+# # write_csv(protsnet, "data/modified/protsnet.csv")
+# # write_csv(hostsnet, "data/modified/hostsnet.csv")
 
-library(igraph)
-library(bipartite)
+# Read in protsnet.csv that was generated and saved by the code above that is commented out
 
-# create df from which to build network
-hostprotnetwork <- read_csv("./data/modified/allintrx.csv") %>% 
-  select(protname, hostname) %>% mutate(netID = "1")
-
-## Setup for bipartite
-
-# convert to web format needed for bipartite functions
-web <- frame2webs(hostprotnetwork, varnames = c("protname", "hostname", "netID"))
-
-# calculate bipartite network indices for all prots and hosts
-protsnet.bi <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality")) %>% 
-  rownames_to_column("protname") 
-hostsnet.bi <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality")) %>% 
-  rownames_to_column("hostname")
-
-#_____________________________________________________________________________________________
-
-## Setup for igraph
-
-# convert to graph format needed for igraph functions
-
-g <- graph.data.frame(hostprotnetwork[,1:2], directed = F)
-
-# bipartite.mapping(g)  # $res tells us if the network meets the criteria for a 2-mode network ($res) and $type tells us which nodes fall into each mode - FALSE for prots and TRUE for hosts
-
-# check: number of nodes should equal the total number of unique host + parasite spp.
-length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname, hostprotnetwork$hostname))) 
-
-# add the 'type' attribute to the network
-V(g)$type <- bipartite_mapping(g)$type
-
-### Visualise (not very useful because network is so large)
-#V(g)$label.color <- "black" 
-#V(g)$label.cex <- 0.65 
-#V(g)$frame.color <-  "gray"
-#V(g)$size <- 15
-#
-#plot(g, layout = layout_with_graphopt)
-#
-#plot(g, layout=layout.bipartite, vertex.size=7, vertex.label.cex=0.6)
-
-## Analysis
-
-#Used code from this tutorial: https://rpubs.com/pjmurphy/317838
-
-#From the tutorial page:
-#Igraph was not designed with two-mode networks in mind. It does, however recognize that the network is two-mode. 
-#Keep in mind, however, that when you run centrality measures on a two-mode network, igraph will be treating each 
-#of these nodes as though they are in the same mode. Igraph makes no allowance for calculating centralities that 
-#are specific to the special case of two-mode networks.
-#If you are interested in understanding the relative prominence of nodes in each mode, relative to other nodes in that mode, 
-#then the best you will be able to do in igraph will be to analyze each mode separately. 
-
-m <- as.one.mode(web[["1"]]) # convert to bipartite network one-mode network in order to calculate indices like centrality
-mgraph <- graph.adjacency(m)
-
-#Calculate centrality
-types <- V(g)$type                 # get each vertex `type` in order to sort easily
-deg.uni <- degree(m)
-bet.uni <- betweenness(m)
-clos.uni <- closeness(m) # clos is a 0 for everything, so exclude
-eig.uni <- eigen_centrality(mgraph)$vector
-
-protsnet.uni <- data.frame(types, deg.uni, bet.uni, eig.uni) %>% 
-                        rownames_to_column("protname") %>% 
-                        mutate(types = as.character(types)) %>% 
-                        filter(types == "FALSE")
-
-hostsnet.uni <- data.frame(types, deg.uni, bet.uni, eig.uni) %>% 
-                        rownames_to_column("hostname") %>% 
-                        mutate(types = as.character(types)) %>% 
-                        filter(types == "TRUE")
-
-protsnet <- left_join(x = protsnet.bi, 
-                      y = protsnet.uni %>% 
-                        select(-types))
-
-hostsnet <- left_join(x = hostsnet.bi, 
-                      y = hostsnet.uni %>% 
-                        select(-types))
-# # Save as csvs
-# write_csv(protsnet, "data/modified/protsnet.csv")
-# write_csv(hostsnet, "data/modified/hostsnet.csv")
+protsnet <- read_csv("data/modified/protsnet.csv")
 
 # Add protsnet vars to protratis
 protraits_02 <- left_join(protraits_01, protsnet, by = "protname") #protraits should now have 24 vars
@@ -541,7 +545,13 @@ names(hosttraits_01)
 protzoos <- prots228 %>% select(protname, zoostat, zscore)
 allintrx <- read_csv("data/modified/allintrx.csv")
 hostraits_comm <- read_csv("data/modified/allhosts.csv")
-protraits_comm <- read_csv("data/modified/allprots.csv")
+
+hosttraits_02 <- left_join(as.tbl(x = cbind(hosttraits_01 %>% 
+                                      select(hostname, HomeRange_km2, HomeRange_Indiv_km2, LitterSize, PopulationDensity_n.km2,
+                                             PopulationGrpSize, SocialGrpSize, TrophicLevel, HuPopDen_Mean_n.km2,
+                                             starts_with("Diet")))))
+protraits_comm <- read_csv("data/modified/allprots.csv") %>% 
+  mutate(zoostat = protzoos$zoostat)
 
 for (i in 1:length(hostraits_comm$hostname)) {
   hostraits_comm$hostprots[i] <- allintrx %>% filter(hostname == hostraits_comm$hostname[i]) %>% 
