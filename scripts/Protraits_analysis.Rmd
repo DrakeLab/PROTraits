@@ -10,11 +10,13 @@ rm(list = ls())
 
 library("knitr")
 opts_chunk$set(tidy=T, warning=F, message=F)
-opts_knit$set(root.dir = "/home/drakelab/Dropbox/joyvaz/PROTraits/")
+# opts_knit$set(root.dir = "/home/drakelab/Dropbox/joyvaz/PROTraits/") # HMM left
+# opts_knit$set(root.dir = "/home/jvaz/Projects/PROTraits/") # HMM right
+# opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy") # My PC
 ```
 
 
-```{r brt xgboost, echo=FALSE}
+```{r brt xgboost, include=FALSE}
 
 library(Matrix)
 library(data.table)
@@ -38,7 +40,17 @@ tmp_prot <- data.table(protraits)
 
 ```
 
-```{r train_test, echo=FALSE}
+
+```{r corr}
+
+library(GGally)
+
+ggcorr(as.data.frame(tmp_prot_Train) , method = c("everything", "pearson"), palette = "PuOr", label_size = 1)
+
+
+```
+
+```{r train_test, include=FALSE}
 
 library(caret)
 library(xgboost)
@@ -73,9 +85,17 @@ hyper_grid <- expand.grid(
   alpha = c(0.3, 0.4, 0.5),        # L1 regularization term on weight (analogous to Lasso regression)
   subsample = c(0.65, 0.8, 1), 
   colsample_bytree = c(0.7, 0.8, 0.9),
-  optimal_trees = 0,               # placeholder
-  min_RMSE = 0,                    # placeholder
-  max_AUC = 0                      # placeholder
+  optimal_trees = 0,               
+  max_AUC_train <- 0,
+  max_AUC_test <- 0,
+  max_AUC_diff <- 0,
+  optimal_trees <- 0,
+  min_RMSE_train <- 0,
+  min_RMSE_test <- 0,
+  min_RMSE_diff <- 0,
+  min_err_train <- 0,
+  min_err_test <- 0,
+  min_error_diff <- 0
 )
 
 # lambda - L2 regularization term on weights (analogous to Ridge regression)
@@ -114,15 +134,67 @@ for(i in 1:nrow(hyper_grid)) {
   )
   
   # add min training error and trees to grid
+  hyper_grid$max_AUC_train[i] <- max(xgb.tune[["evaluation_log"]][["train_auc_mean"]])
+  hyper_grid$max_AUC_test[i] <- max(xgb.tune[["evaluation_log"]][["test_auc_mean"]])
+  hyper_grid$max_AUC_diff[i] <- hyper_grid$max_AUC_train[i] - hyper_grid$max_AUC_test[i]
   hyper_grid$optimal_trees[i] <- which.min(xgb.tune[["evaluation_log"]][["test_rmse_mean"]])
-  hyper_grid$min_RMSE[i] <- min(xgb.tune[["evaluation_log"]][["test_rmse_mean"]])
-  hyper_grid$max_AUC[i] <- max(xgb.tune[["evaluation_log"]][["test_auc_mean"]])
+  hyper_grid$min_RMSE_train[i] <- min(xgb.tune[["evaluation_log"]][["train_rmse_mean"]])
+  hyper_grid$min_RMSE_test[i] <- min(xgb.tune[["evaluation_log"]][["test_rmse_mean"]])
+  hyper_grid$min_RMSE_diff[i] <- hyper_grid$min_RMSE_test[i] - hyper_grid$min_RMSE_train[i]
+  hyper_grid$min_err_train[i] <- max(xgb.tune[["evaluation_log"]][["train_error_mean"]])
+  hyper_grid$min_err_test[i] <- max(xgb.tune[["evaluation_log"]][["test_error_mean"]])
+  hyper_grid$min_error_diff[i] <- hyper_grid$min_error_test[i] - hyper_grid$min_error_train[i]
 }
 
-hyper_grid %>%
-  dplyr::arrange(min_RMSE) %>%
+#change na.action back to default
+options(na.action=previous_na_action$na.action)
+
+#change na.action back to default
+options(na.action=previous_na_action$na.action)
+
+```
+
+```{r grid search results}
+
+
+hyper_grid %>% as.tbl() %>%
+  dplyr::arrange(max_AUC_test) %>%
+  tail(10)
+
+hyper_grid %>% as.tbl() %>% 
+  dplyr::arrange(min_RMSE_test) %>%
   head(10)
 
+hyper_grid %>% as.tbl() %>% 
+  dplyr::arrange(min_RMSE_test) %>%
+  head(10)
+
+
+```
+
+```{r train_test, include=FALSE}
+
+xgb.tune.p1 <- xgb.cv(
+    eta = 0.,
+    max_depth = ,
+    min_child_weight = ,
+    gamma = ,
+    alpha = ,
+    subsample = ,
+    colsample_bytree = ,
+    data = sparse_matrix_prot,
+    stratified = TRUE,
+    label = tmp_prot_Train$zoostat,
+    nrounds = 1000,
+    nfold = 5,
+    objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
+    verbose = 0,                   # silent
+    early_stopping_rounds = 15,    # stop if no improvement for 15 consecutive trees
+    metrics = list("error", "auc", "rmse")
+  )
+```
+
+```{r plots, echo=FALSE}
 
 # PLOT --------
 
@@ -138,35 +210,35 @@ library(ggplot2)
 cv_log_auc_p3$round <- as.numeric(rownames(cv_log_auc_p1))
 
 p <- ggplot(cv_log_auc_p3, aes(x = round)) + 
-  geom_line(aes(y = `2420`))+ 
-  geom_line(aes(y = `706`))+ 
-  geom_line(aes(y = `626`))+ 
-  geom_line(aes(y = `80085`))+ 
-  geom_line(aes(y = `303`))+ 
-  geom_line(aes(y = `903`))+ 
-  geom_line(aes(y = `4096`))+ 
-  geom_line(aes(y = `779`))+ 
-  geom_line(aes(y = `73`))+ 
-  geom_line(aes(y = `1312`))+ 
-  geom_line(aes(y = `1230`))+ 
-  geom_line(aes(y = `656`))+ 
-  geom_line(aes(y = `1984`))+ 
-  geom_line(aes(y = `1994`))+ 
-  geom_line(aes(y = `1024`))+ 
-  geom_line(aes(y = `2048`))+ 
-  geom_line(aes(y = `1948`))+ 
-  geom_line(aes(y = `616`))+ 
-  geom_line(aes(y = `12`))+ 
-  geom_line(aes(y = `89`))+ 
-  geom_line(aes(y = `102`))+ 
-  geom_line(aes(y = `215`))+ 
-  geom_line(aes(y = `1495`))+ 
-  geom_line(aes(y = `777`))+ 
-  geom_line(aes(y = `9988`))+ 
-  geom_line(aes(y = `5`))+ 
-  geom_line(aes(y = `538`))+ 
-  geom_line(aes(y = `202`))+ 
-  geom_line(aes(y = `396`))+ 
+  geom_line(aes(y = `2420`)) + 
+  geom_line(aes(y = `706`)) + 
+  geom_line(aes(y = `626`)) + 
+  geom_line(aes(y = `80085`)) + 
+  geom_line(aes(y = `303`)) + 
+  geom_line(aes(y = `903`)) + 
+  geom_line(aes(y = `4096`)) + 
+  geom_line(aes(y = `779`)) + 
+  geom_line(aes(y = `73`)) + 
+  geom_line(aes(y = `1312`)) + 
+  geom_line(aes(y = `1230`)) + 
+  geom_line(aes(y = `656`)) + 
+  geom_line(aes(y = `1984`)) + 
+  geom_line(aes(y = `1994`)) + 
+  geom_line(aes(y = `1024`)) + 
+  geom_line(aes(y = `2048`)) + 
+  geom_line(aes(y = `1948`)) + 
+  geom_line(aes(y = `616`)) + 
+  geom_line(aes(y = `12`)) + 
+  geom_line(aes(y = `89`)) + 
+  geom_line(aes(y = `102`)) + 
+  geom_line(aes(y = `215`)) + 
+  geom_line(aes(y = `1495`)) + 
+  geom_line(aes(y = `777`)) + 
+  geom_line(aes(y = `9988`)) + 
+  geom_line(aes(y = `5`)) + 
+  geom_line(aes(y = `538`)) + 
+  geom_line(aes(y = `202`)) + 
+  geom_line(aes(y = `396`)) + 
   geom_line(aes(y = `1419`))
 p
 
@@ -200,8 +272,6 @@ bst_prot <- xgboost(sparse_matrix_prot,
 
 #change na.action back to default
 options(na.action=previous_na_action$na.action)
-
->>>>>>> 18211856b78255eb7f313b0271c3ecbf4227b2d8
 
 #change na.action back to default
 options(na.action=previous_na_action$na.action)
@@ -281,15 +351,6 @@ grid.arrange(p3, p4, p5, ncol = 3)
 grid.arrange(p6, p7, ncol = 2)
 
 grid.arrange(p1, p2, p3, ncol = 3)
-
-
-```
-
-```{r corr}
-
-library(GGally)
-
-ggcorr(as.data.frame(tmp_prot_Train) , method = c("everything", "pearson"), palette = "PuOr", label_size = 1)
 
 
 ```
