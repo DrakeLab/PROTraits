@@ -20,7 +20,7 @@ library(Matrix)
 library(data.table)
 library(tidyverse)
 
-protraits <- read_csv("data/modified/protraits_191217") %>% 
+protraits <- read_csv("data/modified/protraits_20200225") %>% 
   select(-c(protname, zscore, cscore))
 
 # remove highly correlated vars
@@ -59,13 +59,26 @@ sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_T
 # 5-fold cross validation to determine best model parameters (chosen by lowering test error)
 # set gamma > 0, lowered eta, to help with overfitting
 
-params1 <- list(max.depth = 3, eta = 0.1, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4)
+params <- list(max.depth = 3, eta = 0.1, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4)
 params2 <- list(max.depth = 3, eta = 0.1, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.5)
 params3 <- list(max.depth = 3, eta = 0.1, nthread = 2, objective = "binary:logistic", gamma = 0.4, alpha = 0.4)
 params4 <- list(max.depth = 3, eta = 0.05, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4)
 
 nparams <- 4
 params.list <- c(1:nparams)
+
+xgb.tune.p1 <- xgb.cv(
+    max.depth = 3, eta = 0.1, nthread = 2, gamma = 0.35, alpha = 0.4,
+    data = sparse_matrix_prot,
+    stratified = TRUE,
+    label = tmp_prot_Train$zoostat,
+    nrounds = 1000,
+    nfold = 5,
+    objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
+    verbose = 0,                   # silent
+    early_stopping_rounds = 15,     # stop if no improvement for 15 consecutive trees
+    metrics = list("error", "auc", "rmse")
+  )
 
 
 for (p in 1:nparams) {
@@ -99,69 +112,69 @@ for (i in 1:length(cv_seeds)) {
   cv_log_auc_p1[i] <- cv_bst_prot_p1[["evaluation_log"]][["test_auc_mean"]]
   cv_log_error_p1[i] <- cv_bst_prot_p1[["evaluation_log"]][["test_error_mean"]]
 }
-# 
-# cv_log_auc_p2 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_auc_p2) <- cv_seeds
-# 
-# cv_log_error_p2 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_error_p2) <- cv_seeds
-# 
-# #P2--------
-# 
-# for (i in 1:length(cv_seeds)) {
-#   set.seed(cv_seeds[i])
-#   cv_bst_prot_p2 <- xgb.cv(params = params2,
-#                     data = sparse_matrix_prot,
-#                     stratified = T,
-#                     label =  tmp_prot_Train$zoostat,
-#                     nfold = 5, 
-#                     nrounds = nround, 
-#                     metrics = list("error", "auc"))
-#   cv_log_auc_p2[i] <- cv_bst_prot_p2[["evaluation_log"]][["test_auc_mean"]]
-#   cv_log_error_p2[i] <- cv_bst_prot_p2[["evaluation_log"]][["test_error_mean"]]
-# }
-# 
-# cv_log_auc_p3 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_auc_p3) <- cv_seeds
-# 
-# cv_log_error_p3 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_error_p3) <- cv_seeds
-# 
-# #P3--------
-# 
-# for (i in 1:length(cv_seeds)) {
-#   set.seed(cv_seeds[i])
-#   cv_bst_prot_p3 <- xgb.cv(params = params3,
-#                     data = sparse_matrix_prot,
-#                     stratified = T,
-#                     label =  tmp_prot_Train$zoostat,
-#                     nfold = 5, 
-#                     nrounds = nround, 
-#                     metrics = list("error", "auc"))
-#   cv_log_auc_p3[i] <- cv_bst_prot_p3[["evaluation_log"]][["test_auc_mean"]]
-#   cv_log_error_p3[i] <- cv_bst_prot_p3[["evaluation_log"]][["test_error_mean"]]
-# }
-# 
-# cv_log_auc_p4 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_auc_p4) <- cv_seeds
-# 
-# #P4--------
-# 
-# cv_log_error_p4 <- data.frame(matrix(, nrow=200, ncol=numseed))
-# colnames(cv_log_error_p4) <- cv_seeds
-# 
-# for (i in 1:length(cv_seeds)) {
-#   set.seed(cv_seeds[i])
-#   cv_bst_prot_p4 <- xgb.cv(params = params4,
-#                     data = sparse_matrix_prot,
-#                     stratified = T,
-#                     label =  tmp_prot_Train$zoostat,
-#                     nfold = 5, 
-#                     nrounds = 200, 
-#                     metrics = list("error", "auc"))
-#   cv_log_auc_p4[i] <- cv_bst_prot_p4[["evaluation_log"]][["test_auc_mean"]]
-#   cv_log_error_p4[i] <- cv_bst_prot_p4[["evaluation_log"]][["test_error_mean"]]
-# }
+
+cv_log_auc_p2 <- data.frame(matrix(, nrow=nround, ncol=numseed))
+colnames(cv_log_auc_p2) <- cv_seeds
+
+cv_log_error_p2 <- data.frame(matrix(, nrow=nround, ncol=numseed))
+colnames(cv_log_error_p2) <- cv_seeds
+
+#P2--------
+
+for (i in 1:length(cv_seeds)) {
+  set.seed(cv_seeds[i])
+  cv_bst_prot_p2 <- xgb.cv(params = params2,
+                    data = sparse_matrix_prot,
+                    stratified = T,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = nround, 
+                    metrics = list("error", "auc"))
+  cv_log_auc_p2[i] <- cv_bst_prot_p2[["evaluation_log"]][["test_auc_mean"]]
+  cv_log_error_p2[i] <- cv_bst_prot_p2[["evaluation_log"]][["test_error_mean"]]
+}
+
+cv_log_auc_p3 <- data.frame(matrix(, nrow=nround, ncol=numseed))
+colnames(cv_log_auc_p3) <- cv_seeds
+
+cv_log_error_p3 <- data.frame(matrix(, nrow=nround, ncol=numseed))
+colnames(cv_log_error_p3) <- cv_seeds
+
+#P3--------
+
+for (i in 1:length(cv_seeds)) {
+  set.seed(cv_seeds[i])
+  cv_bst_prot_p3 <- xgb.cv(params = params3,
+                    data = sparse_matrix_prot,
+                    stratified = T,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = nround, 
+                    metrics = list("error", "auc"))
+  cv_log_auc_p3[i] <- cv_bst_prot_p3[["evaluation_log"]][["test_auc_mean"]]
+  cv_log_error_p3[i] <- cv_bst_prot_p3[["evaluation_log"]][["test_error_mean"]]
+}
+
+cv_log_auc_p4 <- data.frame(matrix(, nrow=nround, ncol=numseed))
+colnames(cv_log_auc_p4) <- cv_seeds
+
+#P4--------
+
+cv_log_error_p4 <- data.frame(matrix(, nrow=200, ncol=numseed))
+colnames(cv_log_error_p4) <- cv_seeds
+
+for (i in 1:length(cv_seeds)) {
+  set.seed(cv_seeds[i])
+  cv_bst_prot_p4 <- xgb.cv(params = params4,
+                    data = sparse_matrix_prot,
+                    stratified = T,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = 200, 
+                    metrics = list("error", "auc"))
+  cv_log_auc_p4[i] <- cv_bst_prot_p4[["evaluation_log"]][["test_auc_mean"]]
+  cv_log_error_p4[i] <- cv_bst_prot_p4[["evaluation_log"]][["test_error_mean"]]
+}
 
 ## 2---
 
