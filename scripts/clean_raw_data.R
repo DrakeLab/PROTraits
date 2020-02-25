@@ -6,7 +6,6 @@
 
 
 library(tidyverse)
-library(dplyr)
 library(magrittr)
 
 
@@ -20,6 +19,7 @@ protsentry <- read_csv("data/original/protsentry.csv") %>%
             ParasiteCorrectedName.updated, ParasiteReportedName,
             ParPhylum, ParClass, ParOrder, ParFamily))
 
+# This area commented out bc resulting dfs have been saved as csvs, don't need to run all over agian ---
 
 ### Clean up variable columns --------------
 
@@ -31,10 +31,11 @@ protsentry[protsentry == "NF"] <- NA
 ## Turn "yes" and "no" into 0 and 1 respectively (intracellular, dom_host, flagella, cyst, sexual, etc.)
 
 protsentry[protsentry == "yes"] <- 1
+protsentry[protsentry == "both"] <- 1
 protsentry[protsentry == "no"] <- 0
 
-## Create individual columns for the factor variables (site_system, geo_dist, dom_host_name, tramission, etc.) ------------
-
+# ## Create individual columns for the factor variables (site_system, geo_dist, dom_host_name, tramission, etc.) ------------
+# 
 # Body Systems (14 vars)
 
 protraits_site <- as.data.frame(protsentry %>% select(protname, site_system))
@@ -59,24 +60,28 @@ sys_names <- c(
 protraits_site[, 3:16] <- 0
 colnames(protraits_site)[3:16] <- sys_names
 
+
 for (x in 1:length(sys_names)) {
   for (i in 1:nrow(protraits_site)) {
     protraits_site[, sys_names[x]][i][grep(sys_names[x], protraits_site$site_system[i])] <- 1
+    if(is.na(protraits_site$site_system[i])){
+      protraits_site[i, 3:16] <- NA
+    }
   }
 }
 
-protraits_site[, 17]  <- rowSums(protraits_site[, 3:15])
-colnames(protraits_site)[, 17] <- c('num_sys')
+protraits_site$numsys  <- rowSums(protraits_site[, 3:15])
 
+# 
 write_csv(protraits_site, "data/modified/protraits_site.csv")
-
-# Geographic distribution (X variables - continents? subconinental divisions? column for specificity?)
-
-# There are only 60 lines that have this entered, so I am not including it as a variable right now.
-# Many of them are also at the genus level, so I my confidence in them is low. 
-# Instead of this, can use the GMPD lat longs to count how many ADMs at different levels? Or just continents? IDK.
-# Ask Barbara about this?
-
+# 
+# # Geographic distribution (X variables - continents? subconinental divisions? column for specificity?)
+# 
+# # There are only 60 lines that have this entered, so I am not including it as a variable right now.
+# # Many of them are also at the genus level, so I my confidence in them is low. 
+# # Instead of this, can use the GMPD lat longs to count how many ADMs at different levels? Or just continents? IDK.
+# # Ask Barbara about this?
+# 
 # Domestic hosts (X variables - cattle, sheep, goats, dogs, cats, pigs, horses, poultry, other bovids?)
 
 dom_host_names <- c('cattle', 'sheep', 'goat', 'dog', 'cat', 'pig', 'horse', 'chicken')
@@ -89,26 +94,48 @@ colnames(protraits_dom_host_names)[3:10] <- dom_host_names
 for (x in 1:length(dom_host_names)) {
   for (i in 1:nrow(protraits_dom_host_names)) {
     protraits_dom_host_names[, dom_host_names[x]][i][grep(dom_host_names[x], protraits_dom_host_names$dom_hostname[i])] <- 1
+    if(is.na(protraits_dom_host_names$dom_hostname[i])){
+      protraits_dom_host_names[i, 3:10] <- NA
+    }
   }
 }
 
-protraits_dom_host_names[, 11]  <- rowSums(protraits_dom_host_names[, 3:10])
-colnames(protraits_dom_host_names)[, 11] <- 'num_dom_host'
+protraits_dom_host_names$numdomhosts  <- rowSums(protraits_dom_host_names[, 3:10])
 
+# 
 write_csv(protraits_dom_host_names, "data/modified/protraits_domhosts.csv")
+
+# ---
 
 # Transmission modes (X vars - fecal-oral, sexual, environment, ingestion, cysts, ticks, waterborne, etc.)
 
 
 
-# Columns to add up factor vars (num dom hosts, num sites, num continents, num tms etc.)
+# Columns to add up factor vars (num dom hosts, num sites, etc.) - DONE (see above)
 
 
-# Filter data based on specificity (genus vs. species)
+# Filter data based on specificity (genus vs. species) - LATER
 
 
 ### Save final df
 
 # Select all clean columns, remove raw data entered, save a a final copy that can be merged with the main protraits df in data_wrangling.R
+
+protraits_sitesys <- read_csv("data/modified/protraits_site.csv") %>% 
+  select(-site_system)
+protraits_domhosts <- read_csv("data/modified/protraits_domhosts.csv") %>% 
+  select(-dom_hostname)
+
+protraits_raw_01 <- protsentry %>% 
+  select(c(protname, type = Type, intra_extra, dom_host, flagella, cyst, sexual)) # 7 vars
+
+protraits_raw_02 <- left_join(protraits_raw_01, protraits_domhosts) # 16 vars
+protraits_raw_03 <- left_join(protraits_raw_02, protraits_sitesys) # 31 vars
+
+### Save final df
+
+# write_csv(protraits_raw_03, "data/modified/protsentry_clean.csv")
+
+
 
 
