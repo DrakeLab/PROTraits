@@ -21,7 +21,7 @@ library(data.table)
 library(tidyverse)
 library(magrittr)
 
-protraits <- read_csv("/home/drakelab/joyvaz/PROTraits/data/modified/protraits_20200225") %>% 
+protraits <- read_csv("data/modified/protraits_20200225") %>% 
   select(-c(protname, zscore, cscore))
 
 # remove highly correlated vars
@@ -61,7 +61,6 @@ sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_T
 
 # 5-fold cross validation to determine best model parameters (chosen by lowering test error)
 # set gamma > 0, lowered eta, to help with overfitting
-
 
 # Grid search ----
 
@@ -125,6 +124,84 @@ hyper_grid %>%
   head(10)
 
 
+# PLOT --------
+
+for (j in 1:length(cv_seeds)) {
+  cv_log_auc_p1$round <- rownames(cv_log_auc_p1)
+  ggplot(cv_log_auc_p1, aes(x=round)) + 
+  geom_line(aes(y = cv_log_auc_p1[j]))
+  
+}
+
+library(ggplot2)
+
+cv_log_auc_p3$round <- as.numeric(rownames(cv_log_auc_p1))
+
+p <- ggplot(cv_log_auc_p3, aes(x = round)) + 
+  geom_line(aes(y = `2420`))+ 
+  geom_line(aes(y = `706`))+ 
+  geom_line(aes(y = `626`))+ 
+  geom_line(aes(y = `80085`))+ 
+  geom_line(aes(y = `303`))+ 
+  geom_line(aes(y = `903`))+ 
+  geom_line(aes(y = `4096`))+ 
+  geom_line(aes(y = `779`))+ 
+  geom_line(aes(y = `73`))+ 
+  geom_line(aes(y = `1312`))+ 
+  geom_line(aes(y = `1230`))+ 
+  geom_line(aes(y = `656`))+ 
+  geom_line(aes(y = `1984`))+ 
+  geom_line(aes(y = `1994`))+ 
+  geom_line(aes(y = `1024`))+ 
+  geom_line(aes(y = `2048`))+ 
+  geom_line(aes(y = `1948`))+ 
+  geom_line(aes(y = `616`))+ 
+  geom_line(aes(y = `12`))+ 
+  geom_line(aes(y = `89`))+ 
+  geom_line(aes(y = `102`))+ 
+  geom_line(aes(y = `215`))+ 
+  geom_line(aes(y = `1495`))+ 
+  geom_line(aes(y = `777`))+ 
+  geom_line(aes(y = `9988`))+ 
+  geom_line(aes(y = `5`))+ 
+  geom_line(aes(y = `538`))+ 
+  geom_line(aes(y = `202`))+ 
+  geom_line(aes(y = `396`))+ 
+  geom_line(aes(y = `1419`))
+p
+
+#------------
+
+set.seed(2145)
+cv_bst_prot <- xgb.cv(params = params1,
+                    data = sparse_matrix_prot,
+                    stratified = TRUE,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = 60, 
+                    metrics = list("error", "auc"))
+
+max(cv_bst_prot[["evaluation_log"]][["test_auc_mean"]])
+
+
+
+print(cv_bst_prot, verbose = T)
+
+
+bst_prot <- xgboost(sparse_matrix_prot, 
+                  label = tmp_prot_Train$zoostat,
+                  params = list(max.depth = 5, eta = 0.1, 
+                                nthread = 2, gamma = 0.35, alpha = 0.3,
+                                objective = "binary:logistic", 
+                                eval_metric = list( "auc")),
+                  nrounds = 55)
+
+# bst_prot$evaluation_log
+
+#change na.action back to default
+options(na.action=previous_na_action$na.action)
+
+>>>>>>> 18211856b78255eb7f313b0271c3ecbf4227b2d8
 
 #change na.action back to default
 options(na.action=previous_na_action$na.action)
