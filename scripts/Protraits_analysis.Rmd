@@ -10,7 +10,7 @@ rm(list = ls())
 
 library("knitr")
 opts_chunk$set(tidy=T, warning=F, message=F)
-opts_knit$set(root.dir = "C:/Protraits_Joy/")
+opts_knit$set(root.dir = "/home/drakelab/Dropbox/joyvaz/PROTraits/")
 ```
 
 
@@ -18,9 +18,11 @@ opts_knit$set(root.dir = "C:/Protraits_Joy/")
 
 library(Matrix)
 library(data.table)
-library(tidyverse)
+# library(tidyverse)
+library(dplyr)
+library(magrittr)
 
-protraits <- read_csv("data/modified/protraits_20200225.csv") %>% 
+protraits <- read_csv("data/modified/protraits_20200225") %>% 
   select(-c(protname, zscore, cscore))
 
 # remove highly correlated vars
@@ -56,112 +58,71 @@ options(na.action='na.pass')
 
 sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] # create a model matrix of the training data predictor variables  
 
+## Cross Validation -----
+
 # 5-fold cross validation to determine best model parameters (chosen by lowering test error)
 # set gamma > 0, lowered eta, to help with overfitting
 
-params1 <- list(max.depth = 3, eta = 0.1, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4)
-params2 <- list(max.depth = 3, eta = 0.1, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.5)
-params3 <- list(max.depth = 3, eta = 0.1, nthread = 2, objective = "binary:logistic", gamma = 0.4, alpha = 0.4)
-params4 <- list(max.depth = 3, eta = 0.05, nthread = 2, objective = "binary:logistic", gamma = 0.35, alpha = 0.4)
 
-nparams <- 4
-params.list <- c(1:nparams)
+# Grid search ----
 
+# create hyperparameter grid
+hyper_grid <- expand.grid(
+  eta = c(0.01, 0.05, 0.1, 0.3),   # analogous to learning rate in GBM
+  max_depth = c(1, 3, 5),          # maximum depth of a tree, used to control over-fitting
+  min_child_weight = c(1, 2, 3),   # minimum sum of weights of all observations required in a child, similar to min_child_leaf in GBM
+  gamma = c(0.35, 0.4, 0.5),       # specifies the minimum loss reduction required to make a split
+  alpha = c(0.3, 0.4, 0.5),        # L1 regularization term on weight (analogous to Lasso regression)
+  subsample = c(0.65, 0.8, 1), 
+  colsample_bytree = c(0.7, 0.8, 0.9),
+  optimal_trees = 0,               # placeholder
+  min_RMSE = 0                     # placeholder
+)
 
-for (p in 1:nparams) {
-    params.list[p] <- paste("params", p, sep = "")
+# lambda - L2 regularization term on weights (analogous to Ridge regression)
+
+nrow(hyper_grid)
+
+# grid search 
+for(i in 1:nrow(hyper_grid)) {
+  
+  # create parameter list
+  params <- list(
+    eta = hyper_grid$eta[i],
+    max_depth = hyper_grid$max_depth[i],
+    min_child_weight = hyper_grid$min_child_weight[i],
+    gamma = hyper_grid$gamma[i],
+    alpha = hyper_grid$alpha[i],
+    subsample = hyper_grid$subsample[i],
+    colsample_bytree = hyper_grid$colsample_bytree[i]
+  )
+  
+  # reproducibility
+  set.seed(2145)
+  
+  # train model
+  xgb.tune <- xgb.cv(
+    params = params,
+    data = features_train,
+    label = response_train,
+    nrounds = 500,
+    nfold = 5,
+    objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
+    verbose = 0,                   # silent
+    early_stopping_rounds = 15     # stop if no improvement for 15 consecutive trees
+  )
+  
+  # add min training error and trees to grid
+  hyper_grid$optimal_trees[i] <- which.min(xgb.tune$evaluation_log$test_rmse_mean)
+  hyper_grid$min_RMSE[i] <- min(xgb.tune$evaluation_log$test_rmse_mean)
 }
 
-cv_seeds <- c(2420, 706, 626, 80085, 303, 903, 4096, 779, 73, 1312, 
-              1230, 656, 1984, 1994, 1024, 2048, 1948, 616, 12, 89,
-              102, 215, 1495, 777, 9988, 5, 538, 202, 396, 1419)
+hyper_grid %>%
+  dplyr::arrange(min_RMSE) %>%
+  head(10)
 
-numseed <- length(cv_seeds)
-nround <- 100
 
-cv_log_auc_p1 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-colnames(cv_log_auc_p1) <- cv_seeds
 
-cv_log_error_p1 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-colnames(cv_log_error_p1) <- cv_seeds
-
-#P1--------
-
-for (i in 1:length(cv_seeds)) {
-  set.seed(cv_seeds[i])
-  cv_bst_prot_p1 <- xgb.cv(params = params1,
-                    data = sparse_matrix_prot,
-                    stratified = T,
-                    label =  tmp_prot_Train$zoostat,
-                    nfold = 5, 
-                    nrounds = nround, 
-                    metrics = list("error", "auc"))
-  cv_log_auc_p1[i] <- cv_bst_prot_p1[["evaluation_log"]][["test_auc_mean"]]
-  cv_log_error_p1[i] <- cv_bst_prot_p1[["evaluation_log"]][["test_error_mean"]]
-}
-# 
-# cv_log_auc_p2 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_auc_p2) <- cv_seeds
-# 
-# cv_log_error_p2 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_error_p2) <- cv_seeds
-# 
-# #P2--------
-# 
-# for (i in 1:length(cv_seeds)) {
-#   set.seed(cv_seeds[i])
-#   cv_bst_prot_p2 <- xgb.cv(params = params2,
-#                     data = sparse_matrix_prot,
-#                     stratified = T,
-#                     label =  tmp_prot_Train$zoostat,
-#                     nfold = 5, 
-#                     nrounds = nround, 
-#                     metrics = list("error", "auc"))
-#   cv_log_auc_p2[i] <- cv_bst_prot_p2[["evaluation_log"]][["test_auc_mean"]]
-#   cv_log_error_p2[i] <- cv_bst_prot_p2[["evaluation_log"]][["test_error_mean"]]
-# }
-# 
-# cv_log_auc_p3 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_auc_p3) <- cv_seeds
-# 
-# cv_log_error_p3 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_error_p3) <- cv_seeds
-# 
-# #P3--------
-# 
-# for (i in 1:length(cv_seeds)) {
-#   set.seed(cv_seeds[i])
-#   cv_bst_prot_p3 <- xgb.cv(params = params3,
-#                     data = sparse_matrix_prot,
-#                     stratified = T,
-#                     label =  tmp_prot_Train$zoostat,
-#                     nfold = 5, 
-#                     nrounds = nround, 
-#                     metrics = list("error", "auc"))
-#   cv_log_auc_p3[i] <- cv_bst_prot_p3[["evaluation_log"]][["test_auc_mean"]]
-#   cv_log_error_p3[i] <- cv_bst_prot_p3[["evaluation_log"]][["test_error_mean"]]
-# }
-# 
-# cv_log_auc_p4 <- data.frame(matrix(, nrow=nround, ncol=numseed))
-# colnames(cv_log_auc_p4) <- cv_seeds
-# 
-# #P4--------
-# 
-# cv_log_error_p4 <- data.frame(matrix(, nrow=200, ncol=numseed))
-# colnames(cv_log_error_p4) <- cv_seeds
-# 
-# for (i in 1:length(cv_seeds)) {
-#   set.seed(cv_seeds[i])
-#   cv_bst_prot_p4 <- xgb.cv(params = params4,
-#                     data = sparse_matrix_prot,
-#                     stratified = T,
-#                     label =  tmp_prot_Train$zoostat,
-#                     nfold = 5, 
-#                     nrounds = 200, 
-#                     metrics = list("error", "auc"))
-#   cv_log_auc_p4[i] <- cv_bst_prot_p4[["evaluation_log"]][["test_auc_mean"]]
-#   cv_log_error_p4[i] <- cv_bst_prot_p4[["evaluation_log"]][["test_error_mean"]]
-# }
 
 # PLOT --------
 
@@ -239,64 +200,6 @@ bst_prot <- xgboost(sparse_matrix_prot,
 
 #change na.action back to default
 options(na.action=previous_na_action$na.action)
-
-# GRID search ----
-
-# create hyperparameter grid
-hyper_grid <- expand.grid(
-  eta = c(0.01, 0.05, 0.1, 0.3),   # analogous to learning rate in GBM
-  max_depth = c(1, 3, 5),          # maximum depth of a tree, used to control over-fitting
-  min_child_weight = c(1, 2, 3),   # minimum sum of weights of all observations required in a child, similar to min_child_leaf in GBM
-  gamma = c(0.35, 0.4, 0.5),       # specifies the minimum loss reduction required to make a split
-  alpha = c(0.3, 0.4, 0.5),        # L1 regularization term on weight (analogous to Lasso regression)
-  subsample = c(0.65, 0.8, 1), 
-  colsample_bytree = c(0.7, 0.8, 0.9),
-  optimal_trees = 0,               # placeholder
-  min_RMSE = 0                     # placeholder
-)
-
-# lambda - L2 regularization term on weights (analogous to Ridge regression)
-
-nrow(hyper_grid)
-
-# grid search 
-for(i in 1:nrow(hyper_grid)) {
-  
-  # create parameter list
-  params <- list(
-    eta = hyper_grid$eta[i],
-    max_depth = hyper_grid$max_depth[i],
-    min_child_weight = hyper_grid$min_child_weight[i],
-    gamma = hyper_grid$gamma[i],
-    alpha = hyper_grid$alpha[i],
-    subsample = hyper_grid$subsample[i],
-    colsample_bytree = hyper_grid$colsample_bytree[i]
-  )
-  
-  # reproducibility
-  set.seed(2145)
-  
-  # train model
-  xgb.tune <- xgb.cv(
-    params = params,
-    data = features_train,
-    label = response_train,
-    nrounds = 500,
-    nfold = 5,
-    objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
-    verbose = 0,                   # silent
-    early_stopping_rounds = 15     # stop if no improvement for 15 consecutive trees
-  )
-  
-  # add min training error and trees to grid
-  hyper_grid$optimal_trees[i] <- which.min(xgb.tune$evaluation_log$test_rmse_mean)
-  hyper_grid$min_RMSE[i] <- min(xgb.tune$evaluation_log$test_rmse_mean)
-}
-
-hyper_grid %>%
-  dplyr::arrange(min_RMSE) %>%
-  head(10)
-
 
 
 ```
