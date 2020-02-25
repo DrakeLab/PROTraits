@@ -15,11 +15,12 @@ opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
 
 ## Data Processing
 
-```{r load data}
+```{r load data, include=FALSE, echo=FALSE}
 
 ### Attach packages
 
 library(tidyverse)
+library(magrittr)
 
 ### Import data ----------------------------------------------------------------------------
 
@@ -121,7 +122,7 @@ for (i in 1:length(prots229$protname)) {
 }
 ```
 
-```{r clean data}
+```{r clean data, include=FALSE, echo=FALSE}
 
 ### Clean data ----------------------------------------------------------------------------
 
@@ -193,7 +194,7 @@ allintrx_01 <- intrxtraits_01 %>% select(hostname, protname) %>%
 ## TEOW Ecoregions
 
 
-```{r ecoregions}
+```{r ecoregions, include=FALSE, echo=FALSE}
 
 library(sf)
 # 
@@ -226,57 +227,57 @@ intrxtraits_02 <- left_join(intrxtraits_01, teowprot %>% select(gmpdintrxID, ECO
 noteows <- anti_join(intrxtraits_01, teowprot, by = "gmpdintrxID") # 160 records did not match, 86 of which do not have lat long coordinates in GMPD
 length(noteows$lat %>% na.omit()) # 74 records have lat/longs but still did not overlap with TEOW polygons because they were off the coast in marine ecoregions.
 
-# Plot map of global distribution of GMPD protozoa records across TEOW biomes
-
-biome_names <- c("Tropical & Subtropical Moist Broadleaf Forests", 
-                 "Tropical & Subtropical Dry Broadleaf Forests", 
-                 "Tropical & Subtropical Coniferous Forests", 
-                 "Temperate Broadleaf & Mixed Forests", 
-                 "Temperate Conifer Forests", 
-                 "Boreal Forests/Taiga", 
-                 "Tropical & Subtropical Grasslands, Savannas & Shrublands", 
-                 "Temperate Grasslands, Savannas & Shrublands", 
-                 "Flooded Grasslands & Savannas", 
-                 "Montane Grasslands & Shrublands", 
-                 "Tundra", 
-                 "Mediterranean Forests, Woodlands & Scrub", 
-                 "Deserts & Xeric Shrublands", 
-                 "Mangroves", 
-                 "Lake", 
-                 "Rock & Ice")
-
-biome_colors <- c("#2c3100",
-                  "#707d37",
-                  "#1a4910",
-                  "#437c44",
-                  "#00765a",
-                  "#008fac",
-                  "#843a29",
-                  "#9f8075",
-                  "#6e480e",
-                  "#312c1e",
-                  "#015281",
-                  "#5c2f00",
-                  "#a68052",
-                  "#7b6f29",
-                  "#017db5",
-                  "#00325f")
-# view colours
-#pie(rep(1,16), col = biome_colors, labels = biome_names)
-
-biome_map <- ggplot(teowshps) +
-  geom_sf(aes(fill = as.factor(BIOME))) +
-  scale_fill_manual(values = biome_colors, name = "Terrestrial Biome", labels = biome_names)
-
-biome_map +
-  xlab("Longitude") + ylab("Latitude") +
-  ggtitle("Global distribution of protozoa records in GMPD") +
-  geom_point(data = intrxpts, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
-  theme(panel.background = element_rect(fill = "azure"), legend.position = "bottom") +
-  coord_sf(crs = 4326)
-
+# # Plot map of global distribution of GMPD protozoa records across TEOW biomes
+# 
+# biome_names <- c("Tropical & Subtropical Moist Broadleaf Forests", 
+#                  "Tropical & Subtropical Dry Broadleaf Forests", 
+#                  "Tropical & Subtropical Coniferous Forests", 
+#                  "Temperate Broadleaf & Mixed Forests", 
+#                  "Temperate Conifer Forests", 
+#                  "Boreal Forests/Taiga", 
+#                  "Tropical & Subtropical Grasslands, Savannas & Shrublands", 
+#                  "Temperate Grasslands, Savannas & Shrublands", 
+#                  "Flooded Grasslands & Savannas", 
+#                  "Montane Grasslands & Shrublands", 
+#                  "Tundra", 
+#                  "Mediterranean Forests, Woodlands & Scrub", 
+#                  "Deserts & Xeric Shrublands", 
+#                  "Mangroves", 
+#                  "Lake", 
+#                  "Rock & Ice")
+# 
+# biome_colors <- c("#2c3100",
+#                   "#707d37",
+#                   "#1a4910",
+#                   "#437c44",
+#                   "#00765a",
+#                   "#008fac",
+#                   "#843a29",
+#                   "#9f8075",
+#                   "#6e480e",
+#                   "#312c1e",
+#                   "#015281",
+#                   "#5c2f00",
+#                   "#a68052",
+#                   "#7b6f29",
+#                   "#017db5",
+#                   "#00325f")
+# # view colours
+# #pie(rep(1,16), col = biome_colors, labels = biome_names)
+# 
+# biome_map <- ggplot(teowshps) +
+#   geom_sf(aes(fill = as.factor(BIOME))) +
+#   scale_fill_manual(values = biome_colors, name = "Terrestrial Biome", labels = biome_names)
+# 
+# biome_map +
+#   xlab("Longitude") + ylab("Latitude") +
+#   ggtitle("Global distribution of protozoa records in GMPD") +
+#   geom_point(data = intrxpts, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
+#   theme(panel.background = element_rect(fill = "azure"), legend.position = "bottom") +
+#   coord_sf(crs = 4326)
+#
 # plot global distribution of GMPD protozoa records by country 
-
+#
 #library(rnaturalearth)
 #library(rnaturalearthdata)
 #
@@ -292,7 +293,7 @@ biome_map +
 
 ```
 
-```{r bipartite network}
+```{r bipartite network, include=FALSE, echo=FALSE}
 ###Host-Prasite Bipartite Network
 # 
 # library(igraph)
@@ -485,7 +486,7 @@ protraits_03 <- left_join(protraits_02, mpdprot) # 30 vars
 
 ## Mammal trait data
 
-```{r mammal traits}
+```{r mammal traits, include=FALSE, echo=FALSE}
 
 # pan <- read.delim("data/original/PanTHERIA/PanTHERIA_1-0_WR05_Aug2008.txt") 
 # # source: https://figshare.com/articles/Full_Archive/3531875
@@ -540,64 +541,76 @@ names(hosttraits_01)
 
 ```
 
-```{r community vars}
+```{r community vars, include=FALSE, echo=FALSE}
+# 
+# protzoos <- prots228 %>% select(protname, zoostat, zscore)
+# allintrx <- read_csv("data/modified/allintrx.csv")
+# hostraits_comm <- read_csv("data/modified/allhosts.csv")
+# 
+# hosttraits_02 <- left_join(as.tbl(x = cbind(hosttraits_01 %>% 
+#                                       select(hostname, HomeRange_km2, HomeRange_Indiv_km2, 
+#                                              LitterSize, PopulationDensity_n.km2,
+#                                              PopulationGrpSize, SocialGrpSize, TrophicLevel, HuPopDen_Mean_n.km2,
+#                                              starts_with("Diet")))))
+# protraits_comm <- read_csv("data/modified/allprots.csv") %>% 
+#   mutate(zoostat = protzoos$zoostat)
+# 
+# for (i in 1:length(hostraits_comm$hostname)) {
+#   hostraits_comm$hostprots[i] <- allintrx %>% filter(hostname == hostraits_comm$hostname[i]) %>% 
+#     select(protname) %>% 
+#     as.vector()
+#   hostraits_comm$numprots[i] <- length(hostraits_comm$hostprots[[i]])
+#   hostraits_comm$protzooscores[i] <- protzoos %>% filter(protname %in% hostraits_comm$hostprots[[i]]) %>% 
+#     select(zscore)
+#   hostraits_comm$numprotzoons[i] <- length(which(hostraits_comm$protzooscores[[i]] >= 1))
+#   hostraits_comm$propprotzoon[i] <- hostraits_comm$numprotzoons[i]/hostraits_comm$numprots[i]
+#   if(hostraits_comm$numprotzoons[i] > 0){
+#     hostraits_comm$zoores[i] <- 1
+#   } else {
+#     hostraits_comm$zoores[i] <- 0
+#   }
+# }
+# 
+# View(hostraits_comm)
+# 
+# for (i in 1:length(protraits_comm$protname)) {
+#   protraits_comm$prothosts[i] <- allintrx %>% filter(protname == protraits_comm$protname[i]) %>% 
+#     select(hostname) %>% 
+#     as.vector()
+#   protraits_comm$protcomm[i] <- allintrx %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+#     select(protname) %>% distinct() 
+#  # protraits_comm$protcomm2[i] <- setdiff(protraits_comm$protcomm[i], protraits_comm$protname[i])
+#   protraits_comm$numhosts[i] <- length(protraits_comm$prothosts[[i]])
+#   protraits_comm$protcommsize[i] <- length(protraits_comm$protcomm[[i]])
+#   protraits_comm$hostnumprotzoons[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+#     select(numprotzoons) %>% as.list()
+#   protraits_comm$hostzoores[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+#     select(zoores) #this gives all the zoonotic prots a 1 for prophostzoon bc all their hosts are zoores by default, 
+# must pull this out and put in an ifelse for zoonprots vs. non-zoonprots
+#   protraits_comm$numhostzoores[i] <- length(which(protraits_comm$hostzoores[[i]] >= 1))
+#   protraits_comm$prophostzoores[i] <- protraits_comm$numhostzoores[i]/protraits_comm$numhosts[i]
+#   protraits_comm$hostpropprotzoon[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+#     select(propprotzoon)
+#   }
+# 
+# View(protraits_comm)
+# 
+# commprot <- protraits_comm %>% 
+#   select(protname, numhosts, numhostzoores, prophostzoores, protcommsize)
+# 
+# protraits_04 <- protraits_03 %>% 
+#   left_join(commprot, by ="protname") # 34 vars
+# 
+# write_csv(protraits_04, "data/modified/protraits_04")
 
-protzoos <- prots228 %>% select(protname, zoostat, zscore)
-allintrx <- read_csv("data/modified/allintrx.csv")
-hostraits_comm <- read_csv("data/modified/allhosts.csv")
+```
 
-hosttraits_02 <- left_join(as.tbl(x = cbind(hosttraits_01 %>% 
-                                      select(hostname, HomeRange_km2, HomeRange_Indiv_km2, LitterSize, PopulationDensity_n.km2,
-                                             PopulationGrpSize, SocialGrpSize, TrophicLevel, HuPopDen_Mean_n.km2,
-                                             starts_with("Diet")))))
-protraits_comm <- read_csv("data/modified/allprots.csv") %>% 
-  mutate(zoostat = protzoos$zoostat)
+```{r manually entered data, include=FALSE, echo=FALSE}
 
-for (i in 1:length(hostraits_comm$hostname)) {
-  hostraits_comm$hostprots[i] <- allintrx %>% filter(hostname == hostraits_comm$hostname[i]) %>% 
-    select(protname) %>% 
-    as.vector()
-  hostraits_comm$numprots[i] <- length(hostraits_comm$hostprots[[i]])
-  hostraits_comm$protzooscores[i] <- protzoos %>% filter(protname %in% hostraits_comm$hostprots[[i]]) %>% 
-    select(zscore)
-  hostraits_comm$numprotzoons[i] <- length(which(hostraits_comm$protzooscores[[i]] >= 1))
-  hostraits_comm$propprotzoon[i] <- hostraits_comm$numprotzoons[i]/hostraits_comm$numprots[i]
-  if(hostraits_comm$numprotzoons[i] > 0){
-    hostraits_comm$zoores[i] <- 1
-  } else {
-    hostraits_comm$zoores[i] <- 0
-  }
-}
+protsentry_clean <- read_csv("data/modified/protsentry_clean.csv")
 
-View(hostraits_comm)
+protraits_05 <- left_join(protraits_04, protsentry_clean) # 64 vars
 
-for (i in 1:length(protraits_comm$protname)) {
-  protraits_comm$prothosts[i] <- allintrx %>% filter(protname == protraits_comm$protname[i]) %>% 
-    select(hostname) %>% 
-    as.vector()
-  protraits_comm$protcomm[i] <- allintrx %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-    select(protname) %>% distinct() 
- # protraits_comm$protcomm2[i] <- setdiff(protraits_comm$protcomm[i], protraits_comm$protname[i])
-  protraits_comm$numhosts[i] <- length(protraits_comm$prothosts[[i]])
-  protraits_comm$protcommsize[i] <- length(protraits_comm$protcomm[[i]])
-  protraits_comm$hostnumprotzoons[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-    select(numprotzoons) %>% as.list()
-  protraits_comm$hostzoores[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-    select(zoores) #this gives all the zoonotic prots a 1 for prophostzoon bc all their hosts are zoores by default, must pull this out and put in an ifelse for zoonprots vs. non-zoonprots
-  protraits_comm$numhostzoores[i] <- length(which(protraits_comm$hostzoores[[i]] >= 1))
-  protraits_comm$prophostzoores[i] <- protraits_comm$numhostzoores[i]/protraits_comm$numhosts[i]
-  protraits_comm$hostpropprotzoon[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-    select(propprotzoon)
-  }
-
-View(protraits_comm)
-
-commprot <- protraits_comm %>% 
-  select(protname, numhosts, numhostzoores, prophostzoores, protcommsize)
-
-protraits_04 <- protraits_03 %>% 
-  left_join(commprot, by ="protname") # 34 vars
-
-write_csv(protraits_04, "data/modified/protraits_191217")
-
+# write_csv(protraits_05, "data/modified/protraits_05")
+# write_csv(protraits_05, "data/modified/protraits_20200224")
 ```
