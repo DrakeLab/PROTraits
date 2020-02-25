@@ -127,22 +127,23 @@ allpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl()
 #write.csv(allpairs, "./data/modified/allpairs.csv")
 #write.csv(allhosts, "./data/modified/allhosts.csv")
 
+## Commented the following section out bc manually entered raw data (protsentry) has been processed in clean_raw_data.R
 
-## Manually entered data
-
-rawprots <- read.csv("./data/original/protsentry.csv") %>% 
-  select(protname = ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, Type,
-         intra = intra_extra, bodysystem = site_system, continent = geo_dist,
-         domestic = dom_host, domestic_name = dom_hostname, flagella, sexual)
-
-View(rawprots)
-
-bodysystems <- c("muscular", "skeletal", "circulatory", "respiratory", "digestive", "immune", "urinary", 
-                 "nervous", "endocrine", "reproductive", "lymphatic", "integumentary", "ocular")
-
-recode(rawprots$domestic, "yes" = 1, "no" = 0)
-recode(rawprots$flagella, "yes" = 1, "no" = 0)
-recode(rawprots$sexual, "yes" = 1, "both" = 1, "no" = 0)
-
-library(BRRR)
-skrrrahh("flava")
+# ## Manually entered data
+# 
+# rawprots <- read.csv("./data/original/protsentry.csv") %>% 
+#   select(protname = ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, Type,
+#          intra = intra_extra, bodysystem = site_system, continent = geo_dist,
+#          domestic = dom_host, domestic_name = dom_hostname, flagella, sexual)
+# 
+# View(rawprots)
+# 
+# bodysystems <- c("muscular", "skeletal", "circulatory", "respiratory", "digestive", "immune", "urinary", 
+#                  "nervous", "endocrine", "reproductive", "lymphatic", "integumentary", "ocular")
+# 
+# recode(rawprots$domestic, "yes" = 1, "no" = 0)
+# recode(rawprots$flagella, "yes" = 1, "no" = 0)
+# recode(rawprots$sexual, "yes" = 1, "both" = 1, "no" = 0)
+# 
+# library(BRRR)
+# skrrrahh("flava")
