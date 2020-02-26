@@ -10,6 +10,8 @@ rm(list = ls())
 
 library("knitr")
 opts_chunk$set(tidy=T, warning=F, message=F)
+
+# # 3 different paths for the 3 different computer used for this analysis. 
 # opts_knit$set(root.dir = "/home/drakelab/Dropbox/joyvaz/PROTraits/") # HMM left
 # opts_knit$set(root.dir = "/home/jvaz/Projects/PROTraits/") # HMM right
 # opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy") # My PC
@@ -98,11 +100,13 @@ hyper_grid <- expand.grid(
   min_error_diff <- 0
 )
 
-# lambda - L2 regularization term on weights (analogous to Ridge regression)
+# lambda - L2 regularization term on weights (analogous to Ridge regression) - add this to parameters?
 
 nrow(hyper_grid)
 
 # grid search 
+
+# Put this loop in a loop to cycle through different seeds, tune parameters based on averages across seeds? idk, I'm tired.
 for(i in 1:nrow(hyper_grid)) {
   
   # create parameter list
@@ -129,7 +133,7 @@ for(i in 1:nrow(hyper_grid)) {
     nfold = 5,
     objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
     verbose = 0,                   # silent
-    early_stopping_rounds = 15,     # stop if no improvement for 15 consecutive trees
+    early_stopping_rounds = 25,     # stop if no improvement for 25 consecutive trees
     metrics = list("error", "auc", "rmse")
   )
   
@@ -146,16 +150,20 @@ for(i in 1:nrow(hyper_grid)) {
   hyper_grid$min_error_diff[i] <- hyper_grid$min_error_test[i] - hyper_grid$min_error_train[i]
 }
 
-#change na.action back to default
+# added columns to calculate difference between training and test metrics to evaluate over-fitting
+
+#c hange na.action back to default
 options(na.action=previous_na_action$na.action)
 
-#change na.action back to default
+# change na.action back to default
 options(na.action=previous_na_action$na.action)
 
 ```
 
 ```{r grid search results}
 
+
+#this arrange thing doesn't seem to be working
 
 hyper_grid %>% as.tbl() %>%
   dplyr::arrange(max_AUC_test) %>%
@@ -174,6 +182,8 @@ hyper_grid %>% as.tbl() %>%
 
 ```{r train_test, include=FALSE}
 
+# Use this to fine tune parameters, save outputs from different tests. 
+
 xgb.tune.p1 <- xgb.cv(
     eta = 0.,
     max_depth = ,
@@ -187,7 +197,7 @@ xgb.tune.p1 <- xgb.cv(
     label = tmp_prot_Train$zoostat,
     nrounds = 1000,
     nfold = 5,
-    objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
+    objective = "binary:logistic", # logistic regression for binary classification, returns predicted probability
     verbose = 0,                   # silent
     early_stopping_rounds = 15,    # stop if no improvement for 15 consecutive trees
     metrics = list("error", "auc", "rmse")
