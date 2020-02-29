@@ -479,9 +479,10 @@ protraits_02 <- left_join(protraits_01, protsnet, by = "protname") #protraits sh
 # 
 # write_csv(mpd_prot, "data/modified/mpd_prot.csv")
 
-mpdprot <- read_csv("data/modified/mpd_prot.csv")
+mpdprot <- read_csv("data/modified/mpd_prot.csv") %>% 
+  select(-mpd.rand.mean) # mpd.rand.mean has NaNs :(
 
-protraits_03 <- left_join(protraits_02, mpdprot) # 30 vars
+protraits_03 <- left_join(protraits_02, mpdprot) # 29 vars
 ```
 
 ## Mammal trait data
@@ -542,66 +543,70 @@ names(hosttraits_01)
 ```
 
 ```{r community vars, include=FALSE, echo=FALSE}
-# 
-# protzoos <- prots228 %>% select(protname, zoostat, zscore)
-# allintrx <- read_csv("data/modified/allintrx.csv")
-# hostraits_comm <- read_csv("data/modified/allhosts.csv")
-# 
-# hosttraits_02 <- left_join(as.tbl(x = cbind(hosttraits_01 %>% 
-#                                       select(hostname, HomeRange_km2, HomeRange_Indiv_km2, 
-#                                              LitterSize, PopulationDensity_n.km2,
-#                                              PopulationGrpSize, SocialGrpSize, TrophicLevel, HuPopDen_Mean_n.km2,
-#                                              starts_with("Diet")))))
-# protraits_comm <- read_csv("data/modified/allprots.csv") %>% 
-#   mutate(zoostat = protzoos$zoostat)
-# 
-# for (i in 1:length(hostraits_comm$hostname)) {
-#   hostraits_comm$hostprots[i] <- allintrx %>% filter(hostname == hostraits_comm$hostname[i]) %>% 
-#     select(protname) %>% 
-#     as.vector()
-#   hostraits_comm$numprots[i] <- length(hostraits_comm$hostprots[[i]])
-#   hostraits_comm$protzooscores[i] <- protzoos %>% filter(protname %in% hostraits_comm$hostprots[[i]]) %>% 
-#     select(zscore)
-#   hostraits_comm$numprotzoons[i] <- length(which(hostraits_comm$protzooscores[[i]] >= 1))
-#   hostraits_comm$propprotzoon[i] <- hostraits_comm$numprotzoons[i]/hostraits_comm$numprots[i]
-#   if(hostraits_comm$numprotzoons[i] > 0){
-#     hostraits_comm$zoores[i] <- 1
-#   } else {
-#     hostraits_comm$zoores[i] <- 0
-#   }
-# }
-# 
-# View(hostraits_comm)
-# 
-# for (i in 1:length(protraits_comm$protname)) {
-#   protraits_comm$prothosts[i] <- allintrx %>% filter(protname == protraits_comm$protname[i]) %>% 
-#     select(hostname) %>% 
-#     as.vector()
-#   protraits_comm$protcomm[i] <- allintrx %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-#     select(protname) %>% distinct() 
-#  # protraits_comm$protcomm2[i] <- setdiff(protraits_comm$protcomm[i], protraits_comm$protname[i])
-#   protraits_comm$numhosts[i] <- length(protraits_comm$prothosts[[i]])
-#   protraits_comm$protcommsize[i] <- length(protraits_comm$protcomm[[i]])
-#   protraits_comm$hostnumprotzoons[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-#     select(numprotzoons) %>% as.list()
-#   protraits_comm$hostzoores[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-#     select(zoores) #this gives all the zoonotic prots a 1 for prophostzoon bc all their hosts are zoores by default, 
-# must pull this out and put in an ifelse for zoonprots vs. non-zoonprots
-#   protraits_comm$numhostzoores[i] <- length(which(protraits_comm$hostzoores[[i]] >= 1))
-#   protraits_comm$prophostzoores[i] <- protraits_comm$numhostzoores[i]/protraits_comm$numhosts[i]
-#   protraits_comm$hostpropprotzoon[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
-#     select(propprotzoon)
-#   }
-# 
-# View(protraits_comm)
-# 
-# commprot <- protraits_comm %>% 
-#   select(protname, numhosts, numhostzoores, prophostzoores, protcommsize)
-# 
-# protraits_04 <- protraits_03 %>% 
-#   left_join(commprot, by ="protname") # 34 vars
-# 
-# write_csv(protraits_04, "data/modified/protraits_04")
+
+protzoos <- prots228 %>% select(protname, zoostat, zscore)
+allintrx <- read_csv("data/modified/allintrx.csv")
+hostraits_comm <- read_csv("data/modified/allhosts.csv")
+
+hosttraits_02 <- left_join(as.tbl(x = cbind(hosttraits_01 %>% 
+                                      select(hostname, HomeRange_km2, HomeRange_Indiv_km2, 
+                                             LitterSize, PopulationDensity_n.km2,
+                                             PopulationGrpSize, SocialGrpSize, TrophicLevel, HuPopDen_Mean_n.km2,
+                                             starts_with("Diet")))))
+protraits_comm <- read_csv("data/modified/allprots.csv") %>% 
+  mutate(zoostat = protzoos$zoostat)
+
+for (i in 1:length(hostraits_comm$hostname)) {
+  hostraits_comm$hostprots[i] <- allintrx %>% filter(hostname == hostraits_comm$hostname[i]) %>% 
+    select(protname) %>% 
+    as.vector()
+  hostraits_comm$numprots[i] <- length(hostraits_comm$hostprots[[i]])
+  hostraits_comm$protzooscores[i] <- protzoos %>% filter(protname %in% hostraits_comm$hostprots[[i]]) %>% 
+    select(zscore)
+  hostraits_comm$numprotzoons[i] <- length(which(hostraits_comm$protzooscores[[i]] >= 1))
+  hostraits_comm$propprotzoon[i] <- hostraits_comm$numprotzoons[i]/hostraits_comm$numprots[i]
+  if(hostraits_comm$numprotzoons[i] > 0){
+    hostraits_comm$zoores[i] <- 1
+  } else {
+    hostraits_comm$zoores[i] <- 0
+  }
+}
+
+View(hostraits_comm)
+
+for (i in 1:length(protraits_comm$protname)) {
+  protraits_comm$prothosts[i] <- allintrx %>% filter(protname == protraits_comm$protname[i]) %>% 
+    select(hostname) %>% 
+    as.vector() 
+ # protraits_comm$protcomm2[i] <- setdiff(protraits_comm$protcomm[i], protraits_comm$protname[i])
+  protraits_comm$numhosts[i] <- length(protraits_comm$prothosts[[i]])
+  protraits_comm$protcomm[i] <- allintrx %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(protname) %>% distinct()
+  protraits_comm$protcommsize[i] <- length(protraits_comm$protcomm[[i]])
+  protraits_comm$protcommzooscores[i] <- protzoos %>% filter(protname %in% protraits_comm$protcomm[[i]]) %>% 
+    select(zscore)
+  protraits_comm$numprotcommzoon[i] <- length(which(protraits_comm$protcommzooscores[[i]] >= 1))
+  protraits_comm$propprotcommzoon[i] <- protraits_comm$numprotcommzoon[i]/protraits_comm$protcommsize[i]
+  protraits_comm$hostnumprotzoons[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(numprotzoons) %>% as.list()
+  protraits_comm$hostzoores[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(zoores) # this gives all the zoonotic prots a 1 for prophostzoon bc all their hosts are zoores by default,
+                    # must pull this out and put in an ifelse for zoonprots vs. non-zoonprots
+  protraits_comm$numhostzoores[i] <- length(which(protraits_comm$hostzoores[[i]] >= 1))
+  protraits_comm$prophostzoores[i] <- protraits_comm$numhostzoores[i]/protraits_comm$numhosts[i]
+  protraits_comm$hostpropprotzoon[i] <- hostraits_comm %>% filter(hostname %in% protraits_comm$prothosts[[i]]) %>% 
+    select(propprotzoon)
+  }
+
+View(protraits_comm)
+
+commprot <- protraits_comm %>% 
+  select(protname, numhosts, numhostzoores, prophostzoores, protcommsize, propprotcommzoon)
+
+protraits_04 <- protraits_03 %>% 
+  left_join(commprot, by ="protname") # 34 vars
+
+write_csv(protraits_04, "data/modified/protraits_04")
 
 ```
 
@@ -612,5 +617,5 @@ protsentry_clean <- read_csv("data/modified/protsentry_clean.csv")
 protraits_05 <- left_join(protraits_04, protsentry_clean) # 64 vars
 
 # write_csv(protraits_05, "data/modified/protraits_05")
-# write_csv(protraits_05, "data/modified/protraits_20200224")
+# write_csv(protraits_05, "data/modified/protraits_20200225")
 ```
