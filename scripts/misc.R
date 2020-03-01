@@ -23,6 +23,15 @@ protraits <- protraits %>%
 tmp_prot <- data.table(protraits)
 
 
+# grid search results log ------------
+
+# Save output from 2020.02.25 grid search. Since it's somehow still in the environment right now. 
+
+write_csv(hyper_grid, "data/modified/gridsearch_results_20200225")
+
+# code has since been changed, and I don't remember if I saved and committed the code used to produce this,
+# so may or may not be able to retrieve the code that produced this. parameter rander to
+
 #-------
 
 cv_bst_prot <- xgb.cv(params = list(max.depth = 5, eta = 0.1, nthread = 2, 
