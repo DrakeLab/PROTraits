@@ -10,7 +10,34 @@ library(magrittr)
 
 ### Load data
 
-## GMPD data 
+## GMPD data # rows are records of host-par associations. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
+gmpdpars_all <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv")
+length(unique(gmpdpars_all$ParasiteCorrectedName)) # 2412 unique pars
+
+gmpdpars_binomialpars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+  filter(HasBinomialName == "yes")
+length(unique(gmpdpars_binomial$ParasiteCorrectedName)) # 2031 unique pars after filtering out pars with no binomial name
+
+gmpdpars_binomialhostspars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+  filter(HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName))
+length(unique(gmpdpars_binomialhostspars$ParasiteCorrectedName)) # 1988 unique pars after filtering out hosts and pars with no binomial name
+
+
+zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") 
+length(unique(zooscore_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)) # 2022 unique pars
+
+zooscore_GMPD <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
+  filter(!Non.GMPD == "1")
+length(unique(zooscore_GMPD$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)) # 1992 unique pars
+
+setdiff(gmpdpars_binomial$ParasiteCorrectedName, 
+        zooscoreGMPD_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final) # 547 pars are in GMPD but not zooscored (?)
+setdiff(zooscoreGMPD_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final,
+        gmpdpars_binomial$ParasiteCorrectedName) # 538 pars are in GMPD but not zooscored (?)
+intersect(gmpdpars_binomial$ParasiteCorrectedName, 
+          zooscoreGMPD_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final) #1484 in common WHYYY
+
+
 
 #
 gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% # rows are observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
