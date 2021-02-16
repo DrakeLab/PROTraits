@@ -18,15 +18,17 @@ opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
 
 library(Matrix)
 library(data.table)
-library(tidyverse)
+library(tidyr)
+library(dplyr)
+library(magrittr)
 
-protraits <- read_csv("data/modified/protraits_20200225") %>% 
-  select(-c(protname, zscore, cscore))
+protraits <- read.csv("data/modified/protraits_20200225")[, -1] %>% as_tibble() %>% 
+  dplyr::select(-c(protname, zscore, cscore))
 
 # remove highly correlated vars
 
 protraits <- protraits %>% 
-  select(-c(numhosts, numgmpdrecords, 
+  dplyr::select(-c(numhosts, numgmpdrecords, 
             weighted.betweenness, bet.uni, deg.uni,
             googlehits))
 
