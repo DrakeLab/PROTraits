@@ -185,8 +185,10 @@ allpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl()
 
 allFinalWOS <- allFinalWOS %>% rownames_to_column()
 
-hostpairtraits <- allFinalWOS %>% rename(hostname = rowname)
+allFinalWOS <- allFinalWOS %>% rename(hostname = rowname)
+
+hostpairtraits <- allFinalWOS
 
 hostpairtraits <- left_join(allpairs, hostpairtraits, by = "hostname")
 
-hostpairtraits %>% group_by(protname) %>% summarise(mean(c(degree, close, between, eigen))) %>% View()
+prothosttraits <- hostpairtraits %>% group_by(protname) %>% summarise_if(is.numeric, mean, na.rm = TRUE)
