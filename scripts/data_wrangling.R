@@ -14,28 +14,33 @@ library(magrittr)
 gmpdpars_all <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv")
 length(unique(gmpdpars_all$ParasiteCorrectedName)) # 2412 unique pars
 
-gmpdpars_binomialpars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+gmpdpars_binomialpars <- gmpdpars_all %>% 
   filter(HasBinomialName == "yes")
-length(unique(gmpdpars_binomial$ParasiteCorrectedName)) # 2031 unique pars after filtering out pars with no binomial name
+length(unique(gmpdpars_binomialpars$ParasiteCorrectedName)) # 2031 unique pars after filtering out pars with no binomial name
 
-gmpdpars_binomialhostspars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+gmpdpars_binomialhostspars <- gmpdpars_all %>% 
   filter(HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName))
 length(unique(gmpdpars_binomialhostspars$ParasiteCorrectedName)) # 1988 unique pars after filtering out hosts and pars with no binomial name
 
 
-zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") 
-length(unique(zooscore_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)) # 2022 unique pars
+zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
+  rename(ParasiteCorrectedName=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)
+length(unique(zooscore_all$ParasiteCorrectedName)) # 2022 unique pars
 
-zooscore_GMPD <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
+levels(zooscore_all$Non.GMPD)
+table(zooscore_all$Non.GMPD) # 1047 pars are in GMPD, 31 pars are not, 945 pars have no value
+
+zooscore_GMPD <- zooscore_all %>% 
   filter(!Non.GMPD == "1")
-length(unique(zooscore_GMPD$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)) # 1992 unique pars
+zooscore_GMPD <- zooscore_GMPD[-985, ] # remove row that has "Meningonema_peruzzii_transmission" in the Non.GMPD column
+length(unique(zooscore_GMPD$ParasiteCorrectedName)) # 1991 unique pars
 
-setdiff(gmpdpars_binomial$ParasiteCorrectedName, 
-        zooscoreGMPD_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final) # 547 pars are in GMPD but not zooscored (?)
-setdiff(zooscoreGMPD_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final,
-        gmpdpars_binomial$ParasiteCorrectedName) # 538 pars are in GMPD but not zooscored (?)
-intersect(gmpdpars_binomial$ParasiteCorrectedName, 
-          zooscoreGMPD_all$ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final) #1484 in common WHYYY
+setdiff(gmpdpars_binomialpars$ParasiteCorrectedName, 
+        zooscore_GMPD$ParasiteCorrectedName) # 547 pars are in GMPD but not zooscored (?)
+setdiff(zooscore_GMPD$ParasiteCorrectedName,
+        gmpdpars_binomialpars$ParasiteCorrectedName) # 538 pars are in GMPD but not zooscored (?)
+intersect(gmpdpars_binomialpars$ParasiteCorrectedName, 
+          zooscore_GMPD$ParasiteCorrectedName) #1482 zooscored out of 2031
 
 
 
@@ -121,7 +126,8 @@ setdiff(prots226$protname, gmpdprot$protname)
 ## Completeness
 
 # Save a list of the gmpdprot spp that are not in prots226
-noscores <- as.data.frame(setdiff(gmpdprot$protname, prots226$protname)) %>% rename(protname = `setdiff(gmpdprot$protname, prots226$protname)`)
+noscores <- as.data.frame(setdiff(gmpdprot$protname, prots226$protname)) %>% 
+  rename(protname = `setdiff(gmpdprot$protname, prots226$protname)`)
 
 
 ### Create
