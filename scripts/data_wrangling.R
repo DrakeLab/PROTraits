@@ -180,3 +180,13 @@ allpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl()
 # 
 # library(BRRR)
 # skrrrahh("flava")
+
+## Mammal traits
+
+allFinalWOS <- allFinalWOS %>% rownames_to_column()
+
+hostpairtraits <- allFinalWOS %>% rename(hostname = rowname)
+
+hostpairtraits <- left_join(allpairs, hostpairtraits, by = "hostname")
+
+hostpairtraits %>% group_by(protname) %>% summarise(mean(c(degree, close, between, eigen))) %>% View()
