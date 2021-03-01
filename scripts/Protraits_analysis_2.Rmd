@@ -21,16 +21,20 @@ library(data.table)
 library(tidyr)
 library(dplyr)
 library(magrittr)
+library(caret)
+library(mlbench)
+
 
 protraits <- read.csv("data/modified/protraits_20200225")[, -1] %>% as_tibble() %>% 
-  dplyr::select(-c(protname, zscore, cscore))
+  dplyr::select(-c(protname, zscore, cscore, googlehits))
 
-# remove highly correlated vars
 
-protraits <- protraits %>% 
-  dplyr::select(-c(numhosts, numgmpdrecords, 
-            weighted.betweenness, bet.uni, deg.uni,
-            googlehits))
+# # remove highly correlated vars
+# 
+# protraits <- protraits %>% 
+#   dplyr::select(-c(numhosts, numgmpdrecords, 
+#             weighted.betweenness, bet.uni, deg.uni,
+#             googlehits))
 
 tmp_prot <- data.table(protraits)
 
@@ -41,6 +45,8 @@ tmp_prot <- data.table(protraits)
 
 library(caret)
 library(xgboost)
+library(tictoc)
+library(BRRR)
 
 # subset data into training vs testing 
 set.seed(191212)
@@ -49,6 +55,10 @@ trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65,
                                      times = 1)
 tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
 tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+
+
+
 
 # in order for model matrix to work properly, need to set na.action to pass
 previous_na_action <- options('na.action')
@@ -69,18 +79,36 @@ params4 <- list(max.depth = 3, eta = 0.05, nthread = 2, objective = "binary:logi
 nparams <- 4
 params.list <- c(1:nparams)
 
+tic()
 xgb.tune.p1 <- xgb.cv(
     max.depth = 3, eta = 0.1, nthread = 2, gamma = 0.35, alpha = 0.4,
     data = sparse_matrix_prot,
     stratified = TRUE,
     label = tmp_prot_Train$zoostat,
-    nrounds = 1000,
+    nrounds = 250,
     nfold = 5,
     objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
-    verbose = 0,                   # silent
-    early_stopping_rounds = 15,     # stop if no improvement for 15 consecutive trees
+    # verbose = 0,                   # silent
+    # early_stopping_rounds = 50,     # stop if no improvement for 15 consecutive trees
     metrics = list("error", "auc", "rmse")
   )
+toc()
+
+xgb.tune.p1$evaluation_log$test_auc_mean %>% plot()
+
+xgb.tune.p1$evaluation_log$test_error_mean %>% plot()
+
+cv_bst_prot <- xgb.cv(params = list(max.depth = 5, eta = 0.1, nthread = 2, 
+                                  objective = "binary:logistic", gamma = 0.35, alpha = 0.3),
+                    data = sparse_matrix_prot,
+                    stratified = T,
+                    label =  tmp_prot_Train$zoostat,
+                    nfold = 5, 
+                    nrounds = 50, 
+                    metrics = list("error", "auc"))
+
+
+skrrrahh("soulja")
 
 
 for (p in 1:nparams) {
@@ -281,6 +309,8 @@ bst_prot <- xgboost(sparse_matrix_prot,
                   nrounds = 55)
 
 bst_prot$evaluation_log
+
+
 
 
 # PLOT --------
