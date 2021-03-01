@@ -1,0 +1,246 @@
+---
+title: "Protraits: BRT model training"
+author: "Joy Vaz"
+date: "February 25, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+rm(list = ls())
+
+library("knitr")
+opts_chunk$set(tidy=T, warning=F, message=F)
+opts_knit$set(root.dir = "/home/drakelab/Dropbox/joyvaz/PROTraits/")
+```
+
+
+```{r load_packages, echo=FALSE}
+
+library(Matrix)
+library(data.table)
+library(tidyverse)
+library(magrittr)
+library(GGally)
+library(caret)
+library(xgboost)
+library(pdp)
+library(Ckmeans.1d.dp)
+
+```
+
+```{r get_data, echo=FALSE}
+
+# Import dataset
+protraits <- read_csv("/home/drakelab/joyvaz/PROTraits/data/modified/protraits_20200225") %>% 
+  select(-c(protname, zscore, cscore))
+
+
+# Plot correlation matrix
+ggcorr(as.data.frame(tmp_prot_Train) , method = c("everything", "pearson"), palette = "PuOr", label_size = 1)
+
+
+# Remove highly correlated vars
+protraits <- protraits %>% 
+  select(-c(numhosts, numgmpdrecords, 
+            weighted.betweenness, bet.uni, deg.uni,
+            googlehits))
+
+response <- "zoostat" # Response variable is whether protozoal parasite is zoonotic or not
+
+tmp_prot <- data.table(protraits)
+
+
+```
+
+```{r split_data, echo=FALSE}
+
+# Partition data into training and testing sets
+set.seed(191212)
+trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
+                                     list = FALSE, 
+                                     times = 1)
+tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
+tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+# Set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+# Create a model matrix of the training data 
+sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] 
+
+
+```
+
+```{r tune_params, echo=FALSE}
+
+# Create hyperparameter grid
+hyper_grid <- expand.grid(
+  eta = c(0.01, 0.05, 0.1, 0.3),   # analogous to learning rate in GBM
+  max_depth = c(1, 3, 5),          # maximum depth of a tree, used to control overfitting
+  min_child_weight = c(1, 2, 3),   # minimum sum of weights of all obs required in a child, similar to min_child_leaf in GBM
+  gamma = c(0.35, 0.4, 0.5),       # specifies the minimum loss reduction required to make a split
+  alpha = c(0.3, 0.4, 0.5),        # L1 regularization term on weight (analogous to Lasso regression)
+  # lambda = 0                     # L2 regularization term on weights (analogous to Ridge regression) 
+  subsample = c(0.65, 0.8, 1), 
+  colsample_bytree = c(0.7, 0.8, 0.9),
+  optimal_trees = 0,               # placeholder
+  max_AUC_train = 0,               # placeholder  
+  max_AUC_test = 0,                # placeholder
+  max_AUC_diff = 0,                # placeholder  
+  min_RMSE_train = 0,              # placeholder  
+  min_RMSE_test = 0,               # placeholder  
+  min_RMSE_diff = 0,               # placeholder  
+  min_err_train = 0,               # placeholder  
+  min_err_test = 0,                # placeholder  
+  min_error_diff = 0               # placeholder  
+)
+
+nrow(hyper_grid)
+
+
+# Perform grid search
+for(i in 1:nrow(hyper_grid)) {
+  
+  # Create parameter list
+  params <- list(
+    eta = hyper_grid$eta[i],
+    max_depth = hyper_grid$max_depth[i],
+    min_child_weight = hyper_grid$min_child_weight[i],
+    gamma = hyper_grid$gamma[i],
+    alpha = hyper_grid$alpha[i],
+    subsample = hyper_grid$subsample[i],
+    colsample_bytree = hyper_grid$colsample_bytree[i]
+  )
+  
+  set.seed(2048)
+  
+  # 5-fold cross validation
+  xgb.tune <- xgb.cv(
+    params = params,
+    data = sparse_matrix_prot,
+    stratified = TRUE,
+    label = tmp_prot_Train$zoostat,
+    nrounds = 500,
+    nfold = 5,
+    objective = "binary:logistic", #logistic regression for binary classification, returns predicted probability
+    verbose = 0,                   # silent
+    early_stopping_rounds = 15,    # stop if no improvement for 15 consecutive trees
+    metrics = list("error", "auc", "rmse")
+  )
+   
+  # Add values for optim trees, min train and test errors, max train and test AUCs, and train-test diffs to grid
+  hyper_grid$optimal_trees[i] <- which.min(xgb.tune[["evaluation_log"]][["test_rmse_mean"]])
+  hyper_grid$max_AUC_train[i] <- max(xgb.tune[["evaluation_log"]][["train_auc_mean"]])
+  hyper_grid$max_AUC_test[i] <- max(xgb.tune[["evaluation_log"]][["test_auc_mean"]])
+  hyper_grid$max_AUC_diff[i] <- hyper_grid$max_AUC_train[i] - hyper_grid$max_AUC_test[i]
+  hyper_grid$min_RMSE_train[i] <- min(xgb.tune[["evaluation_log"]][["train_rmse_mean"]])
+  hyper_grid$min_RMSE_test[i] <- min(xgb.tune[["evaluation_log"]][["test_rmse_mean"]])
+  hyper_grid$min_RMSE_diff[i] <- hyper_grid$min_RMSE_test[i] - hyper_grid$min_RMSE_train[i]
+  hyper_grid$min_err_train[i] <- max(xgb.tune[["evaluation_log"]][["train_error_mean"]])
+  hyper_grid$min_err_test[i] <- max(xgb.tune[["evaluation_log"]][["test_error_mean"]])
+  hyper_grid$min_error_diff[i] <- hyper_grid$min_error_test[i] - hyper_grid$min_error_train[i]
+}
+
+# Inspect grid search outputs
+hyper_grid %>%
+  dplyr::arrange(max_AUC_test) %>%
+  tail(10)
+
+hyper_grid %>%
+  dplyr::arrange(min_RMSE_test) %>%
+  head(10)
+
+hyper_grid %>%
+  dplyr::arrange(min_err_test) %>%
+  head(10)
+
+# Determine best model parameters
+best_eta <-  
+best_max_depth <-  
+best_min_child_weight <-  
+best_gamma <-  
+best_alpha <-  
+best_nrounds <-         # based on optimal number of trees
+  
+```
+
+
+```{r train_model}
+
+# Fit model to training data
+
+bst_prot <- xgboost(sparse_matrix_prot, 
+                  label = tmp_prot_Train$zoostat,
+                  params = list(eta = best_eta,
+                                max_depth = best_max_depth,
+                                min_child_weight = best_min_child_weight,
+                                gamma = best_gamma,
+                                alpha = best_alpha),
+                  nrounds = best_nrounds)
+
+bst_prot$evaluation_log
+
+# Change na.action back to default
+options(na.action=previous_na_action$na.action)
+
+```
+
+```{r vip, echo=F, comment=F, warning = F}
+
+# Plot variable importance plots for the model
+
+importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot), model = bst_prot)
+
+
+xgb.plot.importance(importance_prot, rel_to_first = TRUE, xlab = "Relative importance")
+
+gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
+gg_prot
+
+```
+
+```{r pdp, echo=F, warning=F, message=F}
+
+## Choose the most important variables
+
+important_vars <- importance_prot$Feature
+
+v <- importance_prot$Feature
+length(v)
+
+# Create partial pependence plots (PDP) with individual conditional expectation (ICE) curves
+
+p1 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[1]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p2 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[2]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p3 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[3]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p4 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[4]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p5 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[5]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p6 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[6]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p7 <- pdp::partial(bst_prot, pred.var = as.character(important_vars[7]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+
+
+# Plot
+
+grid.arrange(p1, p2, ncol = 2)
+grid.arrange(p3, p4, p5, ncol = 3)
+grid.arrange(p6, p7, ncol = 2)
+
+```
