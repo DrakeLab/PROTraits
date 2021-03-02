@@ -140,6 +140,16 @@ protraits <- left_join(prots226, gmpdprot, by = "protname") %>%
          hosttype, hostorder, hostfamily, hostenv,
          lat, long, location, numhosts, numsamples, prev)
 
+ung_protraits <- protraits %>% filter(hosttype == "ungulates") %>% distinct(protname, .keep_all = T)
+table(ung_protraits$zoostat) %>% print() # 6/103 zoonotic, 97/103 non-zoonotic
+
+car_protraits <- protraits %>% filter(hosttype == "carnivores") %>% distinct(protname, .keep_all = T)
+table(car_protraits$zoostat) %>% print() # 3/54 zoonotic, 51/54 non-zoonotic
+
+pri_protraits <- protraits %>% filter(hosttype == "primates") %>% distinct(protname, .keep_all = T)
+table(pri_protraits$zoostat) %>% print() # 12/90 zoonotic, 78/90 non-zoonotic
+
+
 # Check if protraits_zooscored has 226 prot species
 length(unique(protraits$protname))
 
@@ -154,6 +164,16 @@ allhosts <- as.tbl(as.data.frame(unique(protraits$hostname))) %>%
 # create tbl listing all unique hp pairs (n = 840)
 allpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl() %>% 
   mutate(pairname = paste(protname, ", ", hostname))
+
+ung_protraits <- protraits %>% filter(hosttype == "ungulates") %>% distinct(protname, .keep_all = T)
+table(ung_protraits$zoostat) %>% print() # 6/103 zoonotic, 97/103 non-zoonotic
+
+car_protraits <- protraits %>% filter(hosttype == "carnivores") %>% distinct(protname, .keep_all = T)
+table(car_protraits$zoostat) %>% print() # 3/54 zoonotic, 51/54 non-zoonotic
+
+pri_protraits <- protraits %>% filter(hosttype == "primates") %>% distinct(protname, .keep_all = T)
+table(pri_protraits$zoostat) %>% print() # 12/90 zoonotic, 78/90 non-zoonotic
+
 
 # Save as csvs
 #write.csv(allprots, "./data/modified/allprots.csv")
