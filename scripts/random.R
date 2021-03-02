@@ -1,3 +1,5 @@
+# I think I made this for Daniel Harris when he asked for help on how to calculate the distance btwn lat long pairs
+
 long1 <- gmpdprot$long[1:1242]
 lat1 <- gmpdprot$lat[1:1242]
 long2 <- gmpdprot$long[1243:2484]

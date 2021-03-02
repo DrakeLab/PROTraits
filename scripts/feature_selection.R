@@ -1,12 +1,9 @@
 
 
-read.csv("https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.csv")
-
 set.seed(7)
 # load the library
-library(mlbench)
-library(caret)
 library(tidyverse)
+library(magrittr)
 
 # calculate correlation matrix
 data <- select_if(protraits, is.numeric)[-1]
@@ -19,6 +16,10 @@ corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variab
 
 corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
 
+# look at combinations of variables that have a PCC > 0.75 and choose whether to keep some or not
+
+
+
 # # calculate correlation matrix
 # data <- select_if(protraits, is.numeric)[-1]
 # correlationMatrix <- cor(data, use = "pairwise.complete.obs")
@@ -28,6 +29,14 @@ corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))
 # highlyCorrelated <- findCorrelation(correlationMatrix, cutoff=0.7, names = T)
 # # print indexes of highly correlated attributes
 # print(highlyCorrelated)
+
+# The printed output (these are the variables it recommends that I should take out):
+# [1] "numhostzoores"        "normalised.degree"    "deg.uni"              "numhosts"             "bet.uni"             
+# [6] "numgmpdrecords"       "betweenness"          "eig.uni"              "weighted.betweenness" "endocrine"           
+# [11] "reproductive"         "numsys"               "respiratory"          "lymphatic"            "mpd.obs"             
+# [16] "goat"                 "circulatory"          "tm_nonclose"          "closeness"            "numdomhosts"         
+# [21] "mpd.obs.rank"         "cattle"               "mpd.obs.z"            "integumentary"        "ocular" 
+
 # corrplot(correlationMatrix, method="number", is.corr=T)
 
 # # From Michelle (see slack)
