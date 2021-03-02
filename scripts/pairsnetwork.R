@@ -20,7 +20,15 @@ allhosts <- read.csv("./data/modified/allhosts.csv", row.names = 1, stringsAsFac
              zoores = NA)
 
 allprots <- read.csv("./data/modified/allprots.csv", stringsAsFactors = F) %>% 
-  left_join(protzoos[, c(1, 13)], by = "protname")
+  left_join(protzoos[, c(1, 13)], by = "protname") %>% 
+  add_column(prothosts = NA, 
+             numhosts = NA,
+             protcomm = NA,
+             protcommsize = NA,
+             hostnumprotzoons = NA,
+             hostzoos = NA,
+             numhostzoons = NA,
+             prophostzoon = NA)
 
 for (i in 1:nrow(allhosts)) {
   allhosts$hostprots[i] <- allpairs %>% filter(hostname == allhosts$hostname[i]) %>% 
@@ -38,21 +46,21 @@ for (i in 1:nrow(allhosts)) {
   }
 }
 
-for (i in 1:nrow(allprots))) {
+for (i in 1:nrow(allprots)) {
   allprots$prothosts[i] <- allpairs %>% filter(protname == allprots$protname[i]) %>% 
-    select(hostname) %>% 
-    as.vector()
-  allprots$protcomm[i] <- allpairs %>% filter(hostname %in% allprots$prothosts[[i]]) %>% 
-    select(protname, -starts_with(allprots$protname[i])) %>% distinct() %>% 
-    as.vector()
+    select(hostname) %>% as.vector()
   allprots$numhosts[i] <- length(allprots$prothosts[[i]])
+  allprots$protcomm[i] <- allpairs %>% filter(hostname %in% allprots$prothosts[[i]], !grepl(allprots$protname[i], protname)) %>% 
+    distinct(protname) %>% as.vector()
   allprots$protcommsize[i] <- length(allprots$protcomm[[i]])
   allprots$hostnumprotzoons[i] <- allhosts %>% filter(hostname %in% allprots$prothosts[[i]]) %>% 
     select(numprotzoons)
-  allprots$hostzoos[i] <- allhosts %>% filter(hostname %in% allprots$prothosts[[i]]) %>% 
-    select(zoores) #this gives all the zoonotic prots a 1 for prophostzoon bc all their hosts are zoores by default, must pull this out and put in an ifelse for zoonprots vs. non-zoonprots
-  allprots$numhostzoons[i] <- length(which(allprots$hostzoos[[i]] >= 1))
+  allprots$hostzoos[i] <- allhosts %>% filter(hostname %in% allprots$prothosts[[i]], numprotzoons > 1) %>% 
+    select(hostname) 
+  allprots$numhostzoons[i] <- length(allprots$hostzoos[[i]])
   allprots$prophostzoon[i] <- allprots$numhostzoons[i]/allprots$numhosts[i]
 }
+
+# need to add proportion of protcomm that is zoonotic!
 
 protraits <- protraits %>% left_join(protsnet[,c(1, 3:11)], by ="protname") #protraits should now have 46 vars
