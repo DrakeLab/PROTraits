@@ -19,6 +19,7 @@ allhosts <- read.csv("./data/modified/allhosts.csv", row.names = 1, stringsAsFac
              propprotzoon = NA,
              zoores = NA)
 
+# WHY DOES ALL PROTS HAVE 228 AND NOT 226 PROTS!! ToT - fix this
 allprots <- read.csv("./data/modified/allprots.csv", stringsAsFactors = F) %>% 
   left_join(protzoos[, c(1, 13)], by = "protname") %>% 
   add_column(prothosts = NA, 
@@ -53,6 +54,7 @@ for (i in 1:nrow(allprots)) {
   allprots$protcomm[i] <- allpairs %>% filter(hostname %in% allprots$prothosts[[i]], !grepl(allprots$protname[i], protname)) %>% 
     distinct(protname) %>% as.vector()
   allprots$protcommsize[i] <- length(allprots$protcomm[[i]])
+  # need to add proportion of protcomm that is zoonotic!
   allprots$hostnumprotzoons[i] <- allhosts %>% filter(hostname %in% allprots$prothosts[[i]]) %>% 
     select(numprotzoons)
   allprots$hostzoos[i] <- allhosts %>% filter(hostname %in% allprots$prothosts[[i]], numprotzoons > 1) %>% 
@@ -61,6 +63,11 @@ for (i in 1:nrow(allprots)) {
   allprots$prophostzoon[i] <- allprots$numhostzoons[i]/allprots$numhosts[i]
 }
 
-# need to add proportion of protcomm that is zoonotic!
+# select which vars you want to go into protraits and add join them
 
 protraits <- protraits %>% left_join(protsnet[,c(1, 3:11)], by ="protname") #protraits should now have 46 vars
+
+
+# ALL PARS COMMUNITY! ------------
+
+
