@@ -19,6 +19,7 @@ gmpdpars_all <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>%
          gmpdparname=ParasiteCorrectedName, HasBinomialName, ParType)
 length(unique(gmpdpars_all$gmpdparname)) # 2412 unique pars
 
+gmpdpars_all$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdpars_all$gmpdparname)
 
 gmpdpars_binomialpars <- gmpdpars_all %>% 
   filter(HasBinomialName == "yes")
@@ -46,32 +47,36 @@ zooscore_all$zscore[111]  <- 3
 #' Other errors:
 #' Entamoeba histolytica is misspelled
 #' Trypanosoma brucei is zoonotic (at least two subspecies of it are) Source: CDC https://www.cdc.gov/parasites/sleepingsickness/gen_info/faqs.html
+#' Isospora canis and Isospora belli should be Cystoisospora ____ instead
 
 # correct E. histolytica spelling
-
 zooscore_all$gmpdparname <- gsub("Entamoemba histolytica", "Entamoeba histolytica", zooscore_all$gmpdparname)
 
 # correct T. brucei zscore
 zooscore_all %>% rownames_to_column() %>% filter(gmpdparname == "Trypanosoma brucei") # row number 1929
-# replace Ascaris suum zscore with the correct one
+# replace zscore with the correct one
 zooscore_all$zscore[1929]  <- 3
 
+# Correct genus name
+zooscore_all$gmpdparname <- gsub("Isospora canis", "Cystoisospora canis", zooscore_all$gmpdparname)
+zooscore_all$gmpdparname <- gsub("Isospora belli", "Cystoisospora belli", zooscore_all$gmpdparname)
+zooscore_all$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", zooscore_all$gmpdparname)
 
 #see if any zscores are missing
 table(zooscore_all$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # sum is 1992 which means each row has a zscore
 
 setdiff(gmpdpars_binomialhostspars$gmpdparname, 
-        zooscore_all$gmpdparname) %>% sort() # 526
+        zooscore_all$gmpdparname) %>% sort() # 524
 setdiff(zooscore_all$gmpdparname,
-        gmpdpars_binomialhostspars$gmpdparname) # 520 (i guess the zooscores file had more pars from outside gmpd???)
+        gmpdpars_binomialhostspars$gmpdparname) # 517 (i guess the zooscores file had more pars from outside gmpd???)
 intersect(gmpdpars_binomialhostspars$gmpdparname, 
-          zooscore_all$gmpdparname) #1472 
+          zooscore_all$gmpdparname) #1474
 
 # add zscores to gmpd
 gmpd_zooscored <- left_join(gmpdpars_binomialhostspars, zooscore_all, by = "gmpdparname")
 
 # see how many have zscores
-table(gmpd_zooscored$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # 13677/19333 rows have a zscore
+table(gmpd_zooscored$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # 13681/19333 rows have a zscore
 
 setdiff(gmpd_zooscored$gmpdparname, gmpdpars_binomialhostspars$gmpdparname)
 
@@ -81,7 +86,7 @@ completeFun <- function(data, desiredCols) {
   return(data[completeVec, ])
 }
 
-gmpd_zooscored <- completeFun(gmpd_zooscored, "zscore") # 13677 obs YAAAY :)
+gmpd_zooscored <- completeFun(gmpd_zooscored, "zscore") # 13681 obs YAAAY :)
 
 setdiff(gmpd_zooscored$gmpdparname, gmpdpars_binomialhostspars$gmpdparname)
 
@@ -103,10 +108,13 @@ table(gmpd_zooscored$zoostat)
 
 # write.csv(gmpd_zooscored, "./data/modified/gmpd_zooscored.csv")
 
-
+gmpd_zooscored %>% distinct(gmpdparname, .keep_all = T) %>% filter(ParType == "Protozoa") %>% select(gmpdparname)
 #
 
-gmpdprot <- gmpd_zooscored %>% filter(ParType == "Protozoa") %>% rename(gmpdprotname = gmpdparname)
+# PROTS ------
+gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
+
+gmpdprot <- gmpd_zooscored %>% filter(ParType == "Protozoa") %>% rename(gmpdprotname = gmpdparname, prothostname = gmpdhostname)
 
 #
 gmpdtaxo <- read.csv("./data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv") %>% # rows are unique parasite species, columns are taxonomic classifications of each species
@@ -118,6 +126,8 @@ gmpdtaxo <- read.csv("./data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv"
 # Save as csvs
 #write.csv(gmpdprot, "./data/modified/gmpdprot.csv")
 #write.csv(gmpdtaxo, "./data/modified/gmpdtaxo.csv")
+
+
 
 
 ## Load protozoa zooscores data and subset relevant portions
@@ -133,97 +143,83 @@ prots178 <- read.csv("./data/original/Zooscore_datafiles/Zooscore_trait_Protozoa
 #write.csv(prots178, "./data/modified/prots178.csv")
 
 # 
-prots049 <- read.csv("./data/modified/48prots.csv") %>% # 49 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
-  rename(protname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, 
-         zscore=XC_ZooScore, cscore=XC_CScore) %>% 
-  mutate(gmpdprotname=protname, tm_close=NA, tm_nonclose=NA, 
-         tm_vector=NA, tm_intermediate=NA) %>% 
-  left_join(gmpdtaxo)
+prots051 <- read.csv("./data/modified/prots051.csv") %>% # 51 additional protozoa that have zooscores but no tranmission mode traits recorded in GMPD_parasite_traits.csv, plus E. histolytica which got added to this list instead of the original 178.
+  select(protname, 
+         zscore, cscore,
+         gmpdprotname, 
+         tm_close, tm_nonclose, tm_vector, tm_intermediate,
+         parphylum, parclass, parorder, parfamily)
 
 #write.csv(prots049, "./data/modified/prots049.csv")
 
 # join the two datasets
-names(prots178) == names(prots049)
+names(prots178) == names(prots051)
 
-prots227 <- rbind(prots178, prots049)
+prots229 <- rbind(prots178, prots051)
 
 # assign zoostat
 
-table(prots227$zscore)
+table(prots229$zscore)
 
-for (i in 1:length(prots227$protname)) {
-  if(prots227$zscore[i] > 0) {
-    prots227$zoostat[i] <- 1
+for (i in 1:length(prots229$protname)) {
+  if(prots229$zscore[i] > 0) {
+    prots229$zoostat[i] <- 1
   } else {
-    prots227$zoostat[i] <- 0
+    prots229$zoostat[i] <- 0
   }
 }
 
-table(prots227$zoostat)
+table(prots229$zoostat)
 
 ### Clean data
 
 ## Names
 
 # Check  for discrepencies in gmpdprotnames between the two dataframes 
-setdiff(prots227$gmpdprotname, gmpdprot$gmpdprotname) 
+setdiff(prots229$protname, gmpdprot$gmpdprotname) 
 
-#' 3 spp in prots227 does is not listed gmpdprot: "Cystoisospora canis"   "Trypanosoma brimonti"  "Entamoeba histolytica"
-#' Cystoisospora canis is missing from gmpd_zooscored for some reason,
+#' 3 spp in prots227 does is not listed gmpdprot: "Cystoisospora canis"  "Trypanosoma brimonti" "Cystoisospora belli"
+#' gmpdprot has outdated names. replace Isospora with Cystoisospora
 #' Trypanosoma brimonti has one host with no binomial name and was thus excluded
-#' Entamoeba histolytical has a typo in 
-#  
+  
+prots229$protname <- gsub("Isospora canis", "Cystoisospora canis", prots229$protname)
 
-# Remove T. brimonti from prots226
-prots226 <- prots227 %>% filter(!grepl("Trypanosoma brimonti", protname))
+# Remove T. brimonti from prots229
+prots228 <- prots229 %>% filter(!grepl("Trypanosoma brimonti", protname))
 
 # Check for discrepencies between final protnames and gmpdprotnames
-setdiff(prots226$protname, gmpdprot$gmpdprotname) # the final protnames in prots226 contains 2 corrected protnames that have been updated from the original gmpdprotname
+setdiff(prots228$protname, gmpdprot$gmpdprotname) # the final protnames in prots226 contains 2 corrected protnames that have been updated from the original gmpdprotname
 
 # Create protname variable in gmpd for final protnames
 gmpdprot <- gmpdprot %>% mutate(protname = gmpdprotname)
 
-# Update the 2 spp names to match zooscore
-gmpdprot$protname <- gsub("Cystoisospora canis", "Isospora canis", gmpdprot$protname)
-gmpdprot$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprot$protname)
-
 # Verify that the protnames in both datasets are now matching
-setdiff(prots226$protname, gmpdprot$protname)
+intersect(prots228$protname, gmpdprot$protname) %>% length()
 
 # write.csv(prots226, "./data/modified/prots226.csv")
-
-## Completeness
-
-# Save a list of the 29 gmpdprot spp that are not in prots226
-noscores <- as.data.frame(setdiff(gmpdprot$protname, prots226$protname)) %>% 
-  rename(protname = `setdiff(gmpdprot$protname, prots226$protname)`)
-
 
 ### Create
 
 # Add prots226 data to gmpdprot to create protraits
-protraits <- left_join(prots226, gmpdprot, by = "protname") %>% 
-  select(ID, protname, hostname, zoostat, zscore, cscore, 
-         tm_close, tm_nonclose, tm_vector, tm_intermediate, 
-         parphylum, parclass, parorder, parfamily,
-         hosttype, hostorder, hostfamily, hostenv,
-         lat, long, location)
+protraits <- prots228 %>% 
+  select(-c(zscore, cscore, zoostat, gmpdprotname)) %>% 
+  left_join(gmpdprot, by = "protname")
 
 
-
-
-# Check if protraits_zooscored has 226 prot species
+# Check if protraits_zooscored has 228 prot species
 length(unique(protraits$protname))
 
-# create tbl listing all unique prot spp (n = 226)
+protraits %>% distinct(protname, .keep_all = T) %>% select(zoostat) %>% table()
+
+# create tbl listing all unique prot spp (n = 228)
 allprots <- protraits %>% distinct(protname)
 
 # create tbl listing all unique prot host spp (n = 245)
-allprothosts <- protraits %>% distinct(hostname)
+allprothosts <- protraits %>% distinct(prothostname)
 
 # create tbl listing all unique host-prot pairs (n = 840)
-allprotpairs <- protraits %>% select(hostname, protname) %>% distinct() %>% as.tbl() %>% 
-  mutate(pairname = paste(protname, ", ", hostname))
+allprotpairs <- protraits %>% select(prothostname, protname) %>% distinct() %>% as.tbl() %>% 
+  mutate(pairname = paste(protname, ", ", prothostname))
 
 # Split my mammal order
 
@@ -270,12 +266,12 @@ sum(nrow(ung_protraits), nrow(car_protraits), nrow(pri_protraits)) == protraits 
 
 ## Mammal traits
 
-allFinalWOS <- allFinalWOS %>% rownames_to_column()
-
-allFinalWOS <- allFinalWOS %>% rename(hostname = rowname)
-
-hostpairtraits <- allFinalWOS
-
-hostpairtraits <- left_join(allprotpairs, hostpairtraits, by = "hostname")
-
-prothosttraits <- hostpairtraits %>% group_by(protname) %>% summarise_if(is.numeric, mean, na.rm = TRUE)
+# allFinalWOS <- allFinalWOS %>% rownames_to_column()
+# 
+# allFinalWOS <- allFinalWOS %>% rename(hostname = rowname)
+# 
+# hostpairtraits <- allFinalWOS
+# 
+# hostpairtraits <- left_join(allprotpairs, hostpairtraits, by = "hostname")
+# 
+# prothosttraits <- hostpairtraits %>% group_by(protname) %>% summarise_if(is.numeric, mean, na.rm = TRUE)
