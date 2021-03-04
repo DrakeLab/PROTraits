@@ -11,38 +11,45 @@ library(magrittr)
 ### Load data
 
 ## GMPD data # rows are records of host-par associations. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
-gmpdpars_all <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv")
-length(unique(gmpdpars_all$ParasiteCorrectedName)) # 2412 unique pars
+gmpdpars_all <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% rename(gmpdhostname = HostCorrectedName, gmpdparname = ParasiteCorrectedName)
+length(unique(gmpdpars_all$gmpdparname)) # 2412 unique pars
 
 gmpdpars_binomialpars <- gmpdpars_all %>% 
   filter(HasBinomialName == "yes")
-length(unique(gmpdpars_binomialpars$ParasiteCorrectedName)) # 2031 unique pars after filtering out pars with no binomial name
+length(unique(gmpdpars_binomialpars$gmpdparname)) # 2031 unique pars after filtering out pars with no binomial name
 
 gmpdpars_binomialhostspars <- gmpdpars_all %>% 
-  filter(HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName))
-length(unique(gmpdpars_binomialhostspars$ParasiteCorrectedName)) # 1988 unique pars after filtering out hosts and pars with no binomial name
+  filter(HasBinomialName == "yes", !grepl("no binomial name", gmpdhostname))
+length(unique(gmpdpars_binomialhostspars$gmpdparname)) # 1988 unique pars after filtering out hosts and pars with no binomial name
 
 
 zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
-  rename(ParasiteCorrectedName=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final)
-length(unique(zooscore_all$ParasiteCorrectedName)) # 2022 unique pars
+  filter(!Non.GMPD == "1") %>% 
+  select(gmpdparname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, zscore=XC_ZooScore)
 
-levels(zooscore_all$Non.GMPD)
-table(zooscore_all$Non.GMPD) # 1047 pars are in GMPD, 31 pars are not, 945 pars have no value
+length(unique(zooscore_all$gmpdparname)) # 1992 unique pars, but there are 1993 rows
+# find duplicate parasite
+table(zooscore_all$gmpdparname) %>% as.data.frame() %>% filter(Freq == 2) # Ascaris suum has two entries (rows 111 and 112) and they are almost identical but the zscores differ. Row 111 says 2 while row 112 says 1. I looked it up and I actually think it should be a 3 (tranmissible to other humans). Source: https://www.cdc.gov/parasites/ascariasis/prevent.html
+# remove row with duplicate
+zooscore_all <- zooscore_all %>% distinct(gmpdparname, .keep_all = T)
+# get rownumber of Ascaris suum
+zooscore_all %>% rownames_to_column() %>% filter(gmpdparname == "Ascaris suum") # row number 111
+# replace Ascaris suum zscore with the correct one
+zooscore_all[111, 2]  <- 3 
+#see if any zscores are missing
+table(zooscore_all$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # sum is 1992 so we all good
 
-zooscore_GMPD <- zooscore_all %>% 
-  filter(!Non.GMPD == "1")
-zooscore_GMPD <- zooscore_GMPD[-985, ] # remove row that has "Meningonema_peruzzii_transmission" in the Non.GMPD column
-length(unique(zooscore_GMPD$ParasiteCorrectedName)) # 1991 unique pars
+setdiff(gmpdpars_binomialhostspars$parname, 
+        zooscore_all$gmpdparname) # 0
+setdiff(zooscore_all$gmpdparname,
+        gmpdpars_binomialhostspars$parname) # 1992
+intersect(gmpdpars_binomialhostspars$gmpdparname, 
+          zooscore_all$gmpdparname) #1471 (???)
 
-setdiff(gmpdpars_binomialpars$ParasiteCorrectedName, 
-        zooscore_GMPD$ParasiteCorrectedName) # 547 pars are in GMPD but not zooscored (?)
-setdiff(zooscore_GMPD$ParasiteCorrectedName,
-        gmpdpars_binomialpars$ParasiteCorrectedName) # 538 pars are in GMPD but not zooscored (?)
-intersect(gmpdpars_binomialpars$ParasiteCorrectedName, 
-          zooscore_GMPD$ParasiteCorrectedName) #1482 zooscored out of 2031
-
-
+# add zscores to gmpd
+gmpd_zooscored <- left_join(zooscore_all, gmpdpars_binomialpars, by = "gmpdparname")
+#see if any zscores are missing
+table(gmpd_zooscored$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # sum is 1992 so we all good
 
 #
 gmpdprot <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% # rows are observations of parasite(ParasiteCorrectedName) occurance in a host(HostCorrectedName) for wild primates, carnivores and ungulates. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
@@ -123,6 +130,8 @@ gmpdprot$protname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdprot
 # Verify that the protnames in both datasets are now matching
 setdiff(prots226$protname, gmpdprot$protname)
 
+#write.csv(prots226, "./data/modified/prots226.csv")
+
 ## Completeness
 
 # Save a list of the gmpdprot spp that are not in prots226
@@ -176,9 +185,9 @@ table(pri_protraits$zoostat) %>% print() # 12/90 zoonotic, 78/90 non-zoonotic
 
 
 # Save as csvs
-#write.csv(allprots, "./data/modified/allprots.csv")
-#write.csv(allpairs, "./data/modified/allpairs.csv")
-#write.csv(allhosts, "./data/modified/allhosts.csv")
+# write.csv(allprots, "./data/modified/allprots.csv")
+# write.csv(allpairs, "./data/modified/allpairs.csv")
+# write.csv(allhosts, "./data/modified/allhosts.csv")
 
 ## Commented the following section out bc manually entered raw data (protsentry) has been processed in clean_raw_data.R
 
