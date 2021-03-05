@@ -167,10 +167,21 @@ allhosttraits <- read.csv("./data/modified/allhosttraits.csv")[-1]
 allprothosts <- read.csv("./data/modified/allprothosts.csv")[-1] %>% rename(hostname = prothostname)
 allprotpairs <- read.csv("./data/modified/allprotpairs.csv")[-1] %>% rename(hostname = prothostname)
 
-# Change non-numeric host trait vars into numeric
+# Let's add host network stuff that I calculated! (because why tf not)
+
+prothostsnet <- read.csv("./data/modified/prothostsnet.csv")[-1] %>% rename(hostname = prothostname) %>% 
+  select(-types)
+allhosttraits <- allhosttraits %>% left_join(prothostsnet)
+
+# Add host community vars!
+hostcommtraits <- read.csv("./data/modified/hostcomm_allpars.csv")
+allhosttraits <- allhosttraits %>% left_join(hostcommtraits)
+
+
+# Change host trait vars of the factor class into numeric
 
 select_if(allhosttraits, is.numeric) %>% names()
-select_if(allhosttraits, is.factor) %>% names()
+select_if(allhosttraits, is.factor) %>% names() # "Island.Endemicity" "IUCN.Status"
 
 #Island
 allhosttraits$Island.Endemicity %>% levels()
@@ -188,14 +199,13 @@ allhosttraits$IUCN.Status %>% table()
 
 allhosttraits$IUCN.Status <- allhosttraits$IUCN.Status %>% as.numeric()
 
+# check if all numeric
+select_if(allhosttraits, is.numeric) %>% names() # 53/54 vars - all numeric except for protname, which is good
+
 # Join to make host-par pair dataframe
 
 allprothosttraits <- left_join(allprothosts, allhosttraits)
 allprotpairtraits <- left_join(allprotpairs, allhosttraits)
-
-
-
-allhosttraits$IUCN.Status <- allprotpairtraits$IUCN.Status %>% as.numeric()
 
 prothosttraits_agg <- allprotpairtraits %>% group_by(protname) %>% summarise_if(is.numeric, median, na.rm = TRUE)
 
@@ -207,4 +217,6 @@ prothosttraits_agg %>% as.data.frame() %>% summarise_all(function(x) mean(!is.na
 # SAVE
 
 # write.csv(prothosttraits_agg, "./data/modified/allprothosttraits.csv")
+
+
 
