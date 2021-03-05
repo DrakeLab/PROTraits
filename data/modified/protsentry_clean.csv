@@ -98,7 +98,7 @@ Hepatozoon JM-8,Sporozoan,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N
 Hepatozoon procyonis,Sporozoan,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Iodamoeba butschlii,Amoeba,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
 Isospora arctopitheci,Sporozoan,1,NA,0,1,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
-Isospora canis,Sporozoan,1,1,0,1,1,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+Cystoisospora canis,Sporozoan,1,1,0,1,1,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
 Isospora cebi,Sporozoan,1,NA,0,1,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
 Isospora endocallimici,Sporozoan,1,NA,0,1,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
 Isospora lutrae,Sporozoan,1,NA,0,1,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
@@ -202,7 +202,6 @@ Triadinium galea,Ciliate,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,N
 Trichomonas intestinalis,Flagellate,0,NA,1,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
 Troglocorys cava,Ciliate,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Troglodytella abrassarti,Ciliate,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Trypanosoma brimonti,Flagellate,0,NA,1,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,1,0,1,0,1,0,0,0,0,0,0,0,0,1,3
 Trypanosoma brucei,Flagellate,0,1,1,0,1,1,0,0,0,1,0,0,0,2,1,0,1,0,1,0,0,0,0,0,0,0,0,1,3
 Trypanosoma cervi,Flagellate,0,NA,1,0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,1,0,1,0,1,0,0,0,0,0,0,0,0,1,3
 Trypanosoma congolense,Flagellate,0,1,1,0,0,1,0,0,0,1,0,0,0,2,1,0,1,0,1,0,0,0,0,0,0,0,0,1,3
