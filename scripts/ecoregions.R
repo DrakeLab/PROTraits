@@ -2,7 +2,9 @@ library(sf)
 
 # assign a ecoregion data to each host-parasite location
 
-host_par_points_df <- as.data.frame(protraits[, c(1, 19, 20)]) %>% na.omit() # extract lat longs and remove empty rows
+host_par_points_df <- read.csv("./data/modified/gmpd_zooscored.csv") %>% 
+  filter(ParType == "Protozoa") %>% 
+  select(ID = X, protname = gmpdparname, long, lat) %>% na.omit() # extract lat longs and remove empty rows
 host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf
 #host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
 
@@ -14,7 +16,17 @@ teow_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp")
 teowprot <- st_intersection(teow_sf, host_par_points_sf) %>% 
   as.data.frame()
 
-protraits <- left_join(protraits, teowprot %>% select(ID, ECO_NAME, REALM, BIOME), by = "ID") #protraits should now have 27 vars
+prots_ecoregions <- left_join(host_par_points_df, teowprot %>% select(ID, ECO_NAME, REALM, BIOME), by = "ID") #protraits should now have 27 vars
+
+prots_ecoregions_agg <- prots_ecoregions[-1] %>% group_by(protname) 
+
+prots_ecoregions_agg <- summarise(prots_ecoregions_agg, nRealms = n_distinct(REALM), 
+                                  nEcoReg = n_distinct(ECO_NAME), nBiome = n_distinct(BIOME)) 
+
+write.csv(prots_ecoregions_agg, "./data/modified/prots_ecoregions.csv")
+
+#fine but there are only 226 prots here
+
 
 # create df of the GMPD prot records that did NOT overlap with TEOW polygons
 noteows <- anti_join(protraits, teowprot, by = "ID") # 160 records did not match, mostly because they did not have lat/longs in GMPD
