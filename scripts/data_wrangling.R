@@ -182,7 +182,7 @@ setdiff(prots229$protname, gmpdprot$gmpdprotname)
 #' gmpdprot has outdated names. replace Isospora with Cystoisospora
 #' Trypanosoma brimonti has one host with no binomial name and was thus excluded
   
-prots229$protname <- gsub("Isospora canis", "Cystoisospora canis", prots229$protname)
+prots229$protname <- gsub("Isospora canis", "Cystoisospora canis", prots229$protname) 
 
 # Remove T. brimonti from prots229
 prots228 <- prots229 %>% filter(!grepl("Trypanosoma brimonti", protname))
@@ -196,11 +196,11 @@ gmpdprot <- gmpdprot %>% mutate(protname = gmpdprotname)
 # Verify that the protnames in both datasets are now matching
 intersect(prots228$protname, gmpdprot$protname) %>% length()
 
-# write.csv(prots226, "./data/modified/prots226.csv")
+# write.csv(prots228, "./data/modified/prots228.csv")
 
 ### Create
 
-# Add prots226 data to gmpdprot to create protraits
+# Add prots228 data to gmpdprot to create protraits
 protraits <- prots228 %>% 
   select(-c(zscore, cscore, zoostat, gmpdprotname)) %>% 
   left_join(gmpdprot, by = "protname")
@@ -263,15 +263,3 @@ sum(nrow(ung_protraits), nrow(car_protraits), nrow(pri_protraits)) == protraits 
 # 
 # library(BRRR)
 # skrrrahh("flava")
-
-## Mammal traits
-
-# allFinalWOS <- allFinalWOS %>% rownames_to_column()
-# 
-# allFinalWOS <- allFinalWOS %>% rename(hostname = rowname)
-# 
-# hostpairtraits <- allFinalWOS
-# 
-# hostpairtraits <- left_join(allprotpairs, hostpairtraits, by = "hostname")
-# 
-# prothosttraits <- hostpairtraits %>% group_by(protname) %>% summarise_if(is.numeric, mean, na.rm = TRUE)
