@@ -8,6 +8,7 @@
 library(tidyverse)
 library(magrittr)
 
+rm(list = ls())
 
 ### Load data
 
@@ -18,6 +19,25 @@ protsentry <- read_csv("data/original/protsentry.csv") %>%
   select(-c(starts_with("ref"), starts_with("tax"), other_host, note,
             ParasiteCorrectedName.updated, ParasiteReportedName,
             ParPhylum, ParClass, ParOrder, ParFamily))
+
+prots228 <- read.csv("./data/modified/prots228.csv")[-1]
+
+# check to see if they match up
+intersect(prots228$protname, protsentry$protname) # 225 - uh oh
+setdiff(prots228$protname, protsentry$protname) # 3 - "Cystoisospora canis"     "Cyclospora cayetanensis" "Cystoisospora belli"
+setdiff(protsentry$protname, prots228$protname) # 2 - "Isospora canis"       "Trypanosoma brimonti"
+
+# gmpdprot has outdated names. replace Isospora with Cystoisospora
+protsentry$protname <- gsub("Isospora canis", "Cystoisospora canis", protsentry$protname) 
+
+# Trypanosoma brimonti has one host with no binomial name and was thus excluded
+# Remove T. brimonti from prots229
+protsentry <- protsentry %>% filter(!grepl("Trypanosoma brimonti", protname))
+
+# check again
+intersect(prots228$protname, protsentry$protname) #226 - that's better. But protsentry is still missing two prots
+setdiff(prots228$protname, protsentry$protname) # 2 - "Cyclospora cayetanensis" "Cystoisospora belli"
+setdiff(protsentry$protname, prots228$protname) # 0
 
 # This area commented out bc resulting dfs have been saved as csvs, don't need to run all over agian ---
 
