@@ -1,0 +1,193 @@
+---
+title: "Protraits: Preliminary BRT results"
+author: "Joy Vaz"
+date: "March 05, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+rm(list = ls())
+
+library("knitr")
+opts_chunk$set(tidy=T, warning=F, message=F)
+opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
+```
+
+
+```{r brt xgboost}
+
+library(Matrix)
+library(data.table)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+library(caret)
+library(mlbench)
+
+
+protraits <- read.csv("data/modified/protraits_210305.csv", row.names = 1) %>% 
+  as_tibble() %>% select(-protname)
+
+tmp_prot <- data.table(protraits)
+
+
+```
+
+```{r train_test}
+
+library(caret)
+library(xgboost)
+library(tictoc)
+library(BRRR)
+
+# subset data into training vs testing 
+set.seed(191212)
+trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
+                                     list = FALSE, 
+                                     times = 1)
+tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
+tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+
+
+
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] # create a model matrix of the training data predictor variables  
+
+dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+
+```
+
+```{r tune parameters}
+
+# tune.BRT function
+
+tune.brt <- function(dtrain, n.rounds = 256, n.threads = 4){
+  #' Uses 5-fold cross-validation to tune the xgboost algorithm to data 
+  #' Requires 'xgboost' library
+  #' Requires 'dplyr' library  
+  #' Requires 'magrittr' library
+  #' Requires 'Matrix' library
+  #' Requires 'data.table' library
+  #' 
+  #' Args:
+  #'  dtrain: dgCMatrix
+  #'  nrounds: the number of decision trees/boosting iterations
+  #'  nthreads: the numbers of cores to run on
+  # Returns:
+  #   A matrix of evaluation metrics and associated parameters
+ 
+  k = 5
+
+  evalmetrics <- list("error", "auc")
+  
+  eval.log <- matrix(0 , ncol = 5)
+  colnames(eval.log) <- c("best.auc","best.error", "best.eta","best.gamma", "best.alpha")
+  for(alpha in seq(0.35, 0.5, by = 0.05)) {
+    output.BRT <- list()
+    for (eta in seq(0.025, 0.1, by = 0.025)) {
+      for (gamma in seq(0.15, 0.35, by = 0.05)) {
+        # 5-fold cross validation to determine best model parameters
+        # set gamma > 0, lowered eta, to help with overfitting
+        set.seed(2148)
+        xgbcv <- xgb.cv(params = list(max.depth = 3, alpha = alpha, nthread = n.threads, 
+                                      objective = "binary:logistic", gamma = gamma),
+                        data = dtrain, 
+                        prediction = T,
+                        nfold = k, 
+                        stratified = TRUE,
+                        nrounds = n.rounds,
+                        verbose = F,
+                        metrics = evalmetrics)
+      
+        mean.auc <- tail(xgbcv$evaluation_log$test_auc_mean, 1)
+        mean.error <- tail(xgbcv$evaluation_log$test_error_mean, 1)
+        # save eval log for each parameter combo
+        eval.metrics <- c(mean.auc, mean.error, eta, gamma, alpha)
+        eval.log <- rbind(eval.log, eval.metrics)
+      }    
+    }
+  }
+  return((eval.log)[-1, ])
+}
+
+# 5-fold cross validation determine best model parameters
+# param_log <- tune.brt(dtrain = dtrain, n.rounds = 128)
+# print(param_log)
+
+
+# set parameters to the values that maximized AUC and minimized error
+BRT_prot <- xgboost(dtrain,
+                      params = list(max.depth = 3, eta = 0.025, 
+                                nthread = 4, gamma = 0.15, alpha = 0.4,
+                                objective = "binary:logistic", 
+                                eval_metric = list( "auc", "error")),
+                      nrounds = 256,
+                      verbose = 0)
+
+BRT_prot[["evaluation_log"]]
+
+
+#change na.action back to default
+options(na.action=previous_na_action$na.action)
+```
+
+```{r vip, echo=F, comment=F, warning = F}
+
+library(pdp)
+library(Ckmeans.1d.dp)
+
+importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot), model = BRT_prot)
+
+
+xgb.plot.importance(importance_prot, rel_to_first = TRUE, xlab = "Relative importance")
+
+gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
+gg_prot
+
+```
+
+```{r pdps, echo=F, warning=F, message=F}
+## partial dependence plots
+
+important_vars <- importance_prot$Feature
+
+v <- importance_prot$Feature
+length(v)
+
+# c-ICE curves and PDPs
+
+p1 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[1]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p2 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[2]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p3 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[3]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p4 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[4]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+p5 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[5]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p6 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[6]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+
+
+grid.arrange(p1, p2, ncol = 2)
+grid.arrange(p3, p4, ncol = 2)
+grid.arrange(p5, p6, ncol = 2)
+
+```
+
+
