@@ -4,17 +4,28 @@ library(igraph)
 library(bipartite)
 
 # create df from which to build network
-hostprotnetwork <- read.csv("./data/modified/allpairs.csv", stringsAsFactors = F)[, -1] %>% 
-  select(protname, hostname) %>% mutate(netID = "1")
+hostprotnetwork <- read.csv("./data/modified/allprotpairs.csv", stringsAsFactors = F)[, -1] %>% 
+  select(protname, prothostname) %>% mutate(netID = "1")
 
 ## Setup for bipartite
 
 # convert to web format needed for bipartite functions
-web <- frame2webs(hostprotnetwork, varnames = c("protname", "hostname", "netID"))
+web <- frame2webs(hostprotnetwork, varnames = c("protname", "prothostname", "netID"))
 
 # calculate bipartite network indices for all prots and hosts
-protsnet <- specieslevel(web[["1"]], level = "lower", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
-hostsnet <- specieslevel(web[["1"]], level = "higher", index = c("normalised degree", "betweenness", "closeness", "proportion generality"))
+protsnet <- specieslevel(web[["1"]], level = "lower", index = c("degree", 
+                                                                "normalised degree", 
+                                                                "betweenness",
+                                                                "closeness",
+                                                                "species specificity",
+                                                                "proportional generality")) # a quantitative version of normalised degree
+
+hostsnet <- specieslevel(web[["1"]], level = "higher", index = c("degree", 
+                                                                 "normalised degree", 
+                                                                 "betweenness",
+                                                                 "closeness",
+                                                                 "species specificity",
+                                                                 "proportional generality")) # a quantitative version of normalised degree
 
 # convert to bipartite network one-mode network in order to calculate indices like centrality
 as.one.mode(web[["1"]])
@@ -31,7 +42,7 @@ bipartite.mapping(g)  # $res tells us if the network meets the criteria for a 2-
 # and $type tells us which nodes fall into each mode - FALSE for prots and TRUE for hosts
 
 # check: number of nodes should equal the total number of unique host + parasite spp.
-length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname, hostprotnetwork$hostname))) 
+length(bipartite.mapping(g)$type) - length(unique(union(hostprotnetwork$protname, hostprotnetwork$prothostname))) 
 
 # add the 'type' attribute to the network
 V(g)$type <- bipartite_mapping(g)$type
@@ -78,14 +89,14 @@ protsnet <- left_join(x = specieslevel(web[["1"]], level = "lower",
 
 hostsnet <- left_join(x = specieslevel(web[["1"]], level = "higher", 
                                        index = c("normalised degree", "betweenness", "closeness")) %>% 
-                        rownames_to_column("hostname"), 
+                        rownames_to_column("prothostname"), 
                       y = data.frame(types, deg, bet, clos, eig) %>% 
-                        rownames_to_column("hostname") %>% 
+                        rownames_to_column("prothostname") %>% 
                         mutate(types = as.character(types)) %>% 
                         filter(types == "TRUE"))
 # Save as csvs
 #write.csv(protsnet, "./data/modified/protsnet.csv")
-#write.csv(hostsnet, "./data/modified/hostsnet.csv")
+#write.csv(hostsnet, "./data/modified/prothostsnet.csv")
 
 # Add protsnet vars to protratis
 protraits <- left_join(protraits, protsnet, by = "protname") #protraits should now have 38 vars
