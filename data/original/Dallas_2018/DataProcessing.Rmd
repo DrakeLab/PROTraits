@@ -1,0 +1,441 @@
+---
+title: "Data processing"
+author: "Tad Dallas, John M. Drake, Barbara Han, Andrew Park, Shan Huang, and Patrick Stephens"
+output:
+  pdf_document: default
+  html_document:
+    fig_caption: yes
+    fig_height: 7
+    fig_width: 6
+    highlight: tango
+    theme: journal
+---
+
+
+
+
+
+```{r}
+library(plyr)
+library(dplyr)
+library(igraph)
+
+moreTraits <- read.csv('GMPD_traits.csv')
+phyloDst <- read.csv('EvolDistinct.csv')
+gmpd2 <- read.csv('GMPD.csv', stringsAsFactors=FALSE)
+
+
+```
+
+
+
+
+
+
+
+```{r eval=FALSE, echo=FALSE}
+
+moreTraits$binomial <- sub('_', ' ', moreTraits$binomial)
+moreTraits <- moreTraits[,-7]
+
+moreTraits$Terrestriality <- factor(moreTraits$Terrestriality)
+moreTraits$TrophicLevel <- factor(moreTraits$TrophicLevel)
+
+moreTraits$AdultBodyMass_wEXT <- log(moreTraits$AdultBodyMass_wEXT)
+moreTraits$Brain_weight_comb_e1_pref <- log(moreTraits$Brain_weight_comb_e1_pref)
+moreTraits$AdultHeadBodyLen <- log(moreTraits$AdultHeadBodyLen)
+moreTraits$HomeRange <- log(moreTraits$HomeRange)
+moreTraits$NeonateBodyMass_wEXT<- log(moreTraits$NeonateBodyMass_wEXT)
+moreTraits$NeonateBodyMass_wEXT[is.nan(moreTraits$NeonateBodyMass_wEXT)] <- NA
+moreTraits$PopulationDensity <- log(moreTraits$PopulationDensity)
+moreTraits$SexualMaturityAge <- log(moreTraits$SexualMaturityAge)
+moreTraits$WeaningAge <- log(moreTraits$WeaningAge)
+moreTraits$GR_Area_Combined_IUCN_preferred <- log(moreTraits$GR_Area_Combined_IUCN_preferred)
+
+
+
+phyloDst$fairProp <- log(phyloDst$fairProp)
+phyloDst$equalSplits <- NULL
+
+```
+
+
+
+
+
+
+```{r}
+
+ getOrder = function(central, trait, evol){
+  nms <- unique(rownames(central))
+  out <- matrix(NA, ncol=(ncol(central)+ncol(trait)+ncol(evol) - 2),
+                nrow=nrow(central))
+  #assumes the first column is always a names column
+  evol[,1] <- sub('_', ' ', evol[,1])
+  trait[,1] <- sub('_', ' ', trait[,1])
+
+  for(i in 1:length(nms)){
+    if(any(trait[,1] == nms[i])){
+      out[i, ] <- unlist(c(central[i,],
+                    trait[which(trait[,1] == nms[i]),-1],
+                    evol[which(evol[,1] == nms[i]),-1]))
+      }else{i=i+1}
+    print(i)
+  }
+  rownames(out) <- rownames(central)
+  colnames(out)<- c(colnames(central), colnames(trait[,-1]), colnames(evol)[-1])
+  out <- as.data.frame(out)
+  out$Order <- factor(out$Order)
+  #out$Family <- factor(out$Family)
+
+  return(out)
+}
+
+
+
+
+
+
+## Generates co-occurrence matrix from edgelist
+getCoMatrix <- function(edgelist){
+  hosts <- unique(edgelist[,1])
+  pars <- unique(edgelist[,2])
+  #ret <- matrix(0, ncol=length(hosts), nrow=length(hosts))
+  ret <- matrix(0, ncol=2)
+
+  for(i in 1:length(pars)){
+    temp <- edgelist[which(edgelist[,2] == pars[i]), 1]
+    if(length(temp) < 2){ }
+    if(length(temp) > 1){ret <- rbind(ret, t(combn(temp,2)))}
+  }
+
+  hostKey <- as.numeric(hosts)
+  names(hostKey) <- hosts
+  coEdge2 <- ret[-1,]
+  for(i in 1:length(hostKey)){
+    coEdge2[which(coEdge2[,1] == hostKey[i]), 1] <- names(hostKey)[i]
+    coEdge2[which(coEdge2[,2] == hostKey[i]), 2] <- names(hostKey)[i]
+  }
+
+
+  intMat <- table(edgelist[,1], edgelist[,2])
+  edgeWeights <- vector()
+  for(i in 1:nrow(coEdge2)){
+    a <- colSums(intMat[which(rownames(intMat) %in% coEdge2[i,]),])
+    edgeWeights[i] <- sum(a > 1)
+  }
+
+  return(list(hostKey = hostKey, coEdge = ret[-1,], 
+              coEdge2 = coEdge2, weights = edgeWeights))
+}
+
+
+
+```
+
+
+
+
+
+
+### All animals together
+
+
+
+```{r eval=F, echo=TRUE}
+
+
+gmpd2 <- filter(gmpd2, Prevalence != 0)
+gmpd2 <- gmpd2[-which(gmpd2$Host.Family %in% c("Otariidae","Phocidae","Odobenidae")),]
+
+gmpd2 <- gmpd2[-which(gmpd2$HostCorrectedName %in%
+   c('Felis catus', 'Micropotamogale lamottei','Micropotamogale ruwenzorii','Potamogale velox','Rhagamys orthodon','Myocastor coypus','Cynogale bennettii','Aonyx capensis','Aonyx capensis','Aonyx cinerea','Enhydra lutris','Hydrictis maculicollis','Lontra canadensis','Lontra felina','Lontra longicaudis','Lontra provocax','Lutra lutra','Lutra nippon','Lutra sumatrana','Lutrogale perspicillata','Pteronura brasiliensis', "Ovis aries",   "Bos taurus",  "Capra hircus",  "Sus scrofa",  "Equus caballus",   "Equus asinus",  "Bubalis bubalis",  "Camelus dromedarius",  "Camelus bactrianus", "Llama glama",  "Llama pacos", "Ursus maritimus")),]
+
+
+if(any(gmpd2$HostCorrectedName == 'no binomial name')){
+  gmpd2 <- filter(gmpd2, HostCorrectedName != 'no binomial name')
+}
+
+```
+
+
+
+
+
+
+# To perform the analysis removing parasites not resolved to species level, run the following code chunk. 
+
+```{r}
+
+spLev <- sapply(gmpd2$ParasiteCorrectedName, 
+	function(x){
+		a <- unlist(strsplit(x, ' '))	
+		b <- any(grepl('sp.', a)) & nchar(a[length(a)]) < 4 
+		b == FALSE
+	}
+)
+
+gmpd2 <- gmpd2[which(spLev), ]
+
+```
+
+
+
+Now let's quickly compare centrality values if we drop the parasite species only identified at the genus level. 
+
+```{r}
+
+gmpdAll2 <- gmpd2
+
+gmpdAEdgeM2 <- getCoMatrix(unique(data.frame(gmpdAll2$HostCorrectedName,
+                   gmpdAll2$ParasiteCorrectedName, 1)))
+
+allGraph2   <- graph.edgelist(unique(gmpdAEdgeM2[[3]]), directed = FALSE)
+E(allGraph2)$weight <- gmpdAEdgeM2[[4]]
+
+allDegree2  <- degree(allGraph2)
+allClose2  <- closeness(allGraph2)
+allBetween2 <- betweenness(allGraph2)
+allEigen2   <- eigen_centrality(allGraph2)
+
+
+centAll2 <-  data.frame(degree2 = allDegree2, close2 = allClose2,
+        between2 = allBetween2, eigen2 = allEigen2$vector)
+centAll2$Host <- rownames(centAll2)
+
+tmp <- as.data.frame(allFinalWOS[,1:4])
+tmp$Host <- rownames(allFinalWOS)
+
+centSp <- full_join(tmp, centAll2, by='Host')
+
+
+placeRho <- function(x, name='degree'){
+	tmp <- x[, grep(name, colnames(x))]
+	ret <- cor.test(tmp[,1], tmp[,2], method='spearman')
+	legend('bottomright', bty='n', legend=paste("Spearman correlation = ", round(ret$estimate,2)))
+}
+
+
+layout(matrix(c(1,2,3,4), ncol=2, byrow=TRUE), width=c(1,1))
+par(mar=c(4,4,0.5,0.5))
+plot(y=centSp$degree, x=centSp$degree2, las=1, pch=16, tck=-0.01, 
+	ylab='Species-level resolution', xlab='',
+  col=adjustcolor('dodgerblue', 0.35))
+title(line=-1, "Degree centrality")
+placeRho(centSp, 'degree')
+
+par(mar=c(4,4,0.5,0.5))
+plot(y=centSp$between, x=centSp$between2, las=1, pch=16, tck=-0.01, 
+  xlab='', ylab='', 
+  col=adjustcolor('dodgerblue', 0.35))
+title(line=-1, "Betweenness centrality")
+placeRho(centSp, 'between')
+
+par(mar=c(4,4,0.5,0.5))
+plot(y=centSp$close, x=centSp$close2, las=1, pch=16, tck=-0.01, 
+  xlab='Genus-level resolution', ylab='Species-level resolution', 
+  col=adjustcolor('dodgerblue', 0.35))
+title(line=-1, "Closeness centrality")
+placeRho(centSp, 'close')
+
+par(mar=c(4,4,0.5,0.5))
+plot(y=centSp$eigen, x=centSp$eigen2, las=1, pch=16, tck=-0.01, 
+  xlab='Genus-level resolution', ylab='',
+  col=adjustcolor('dodgerblue', 0.35))
+title(line=-1, "Eigenvector centrality")
+placeRho(centSp, 'eigen')
+
+dev.copy(pdf, 'genusEffect.pdf', width=7, height=6);dev.off()
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+```{r}
+
+gmpdAll <- gmpd2
+
+gmpdAEdgeM <- getCoMatrix(unique(data.frame(gmpdAll$HostCorrectedName,
+                   gmpdAll$ParasiteCorrectedName, 1)))
+
+allGraph   <- graph.edgelist(unique(gmpdAEdgeM[[3]]), directed = FALSE)
+E(allGraph)$weight <- gmpdAEdgeM[[4]]
+
+allDegree  <- degree(allGraph)
+allClose   <- closeness(allGraph)
+allBetween <- betweenness(allGraph)
+allEigen   <- eigen_centrality(allGraph)
+
+
+centAll <-  data.frame(degree = allDegree, close = allClose,
+        between = allBetween, eigen = allEigen$vector)
+
+allFinal <- getOrder(centAll, moreTraits, phyloDst)
+
+allFinal$ActivityCycle <- factor(allFinal$ActivityCycle)
+allFinal$DietBreadth <- factor(allFinal$DietBreadth)
+allFinal$Family <- factor(allFinal$Family)
+
+allFinal$HostCorrectedName <- rownames(allFinal)
+allFinal <- left_join(allFinal, unique(gmpd2[,c('HostCorrectedName', 'wos')]), 
+  by='HostCorrectedName')
+rownames(allFinal) <- allFinal$HostCorrectedName
+allFinal$HostCorrectedName <- NULL
+allFinalWOS <- allFinal
+allFinal$wos <- NULL
+
+```
+
+
+
+### Ungulates
+
+
+```{r eval=F, echo=TRUE}
+
+gmpdUng <- gmpd2[which(gmpd2$Group == 'ungulates'),]
+
+gmpdUEdgeM <- getCoMatrix(unique(data.frame(gmpdUng$HostCorrectedName,
+                   gmpdUng$ParasiteCorrectedName, 1)))
+
+
+
+ungGraph <- graph.edgelist(gmpdUEdgeM[[3]], directed = FALSE)
+E(ungGraph)$weight <- gmpdUEdgeM[[4]]
+
+ungDegree <- degree(ungGraph)
+ungClose   <- closeness(ungGraph)
+ungBetween <- betweenness(ungGraph)
+ungEigen   <- eigen_centrality(ungGraph)
+
+centUngulates <-  data.frame(#host = names(ungClose) ,
+        degree = ungDegree, close = ungClose, between = ungBetween, eigen = ungEigen$vector)
+
+ungFinal <- getOrder(centUngulates, moreTraits, phyloDst)
+
+ungFinal$ActivityCycle <- factor(ungFinal$ActivityCycle)
+ungFinal$DietBreadth <- factor(ungFinal$DietBreadth)
+ungFinal$Family <- factor(ungFinal$Family)
+
+ungFinal$HostCorrectedName <- rownames(ungFinal)
+ungFinal <- left_join(ungFinal, unique(gmpdUng[,c('HostCorrectedName', 'wos')]),
+  by='HostCorrectedName')
+rownames(ungFinal) <- ungFinal$HostCorrectedName
+ungFinal$HostCorrectedName <- NULL
+
+ungFinalWOS <- ungFinal
+ungFinal$wos <- NULL
+
+```
+
+
+### Carnivores
+
+```{r eval=F, echo=TRUE}
+
+gmpdCar <- gmpd2[which(gmpd2$Group == 'carnivores'),]
+
+gmpdCEdgeM <- getCoMatrix(unique(data.frame(gmpdCar$HostCorrectedName,
+                   gmpdCar$ParasiteCorrectedName, 1)))
+
+carGraph   <- graph.edgelist(gmpdCEdgeM[[3]], directed = FALSE)
+E(carGraph)$weight <- gmpdCEdgeM[[4]]
+
+carDegree <- degree(carGraph)
+carClose   <- closeness(carGraph)
+carBetween <- betweenness(carGraph)
+carEigen   <- eigen_centrality(carGraph)
+
+centCarnivores <-  data.frame(degree = carDegree, close=carClose, between=carBetween,
+                          eigen=carEigen$vector)
+
+carnFinal <- getOrder(centCarnivores, moreTraits, phyloDst)
+
+carnFinal$ActivityCycle <- factor(carnFinal$ActivityCycle)
+carnFinal$DietBreadth <- factor(carnFinal$DietBreadth)
+
+carnFinal <- carnFinal[which(rownames(carnFinal) != 'no binomial name'), ]
+carnFinal$Family <- factor(carnFinal$Family)
+
+carnFinal$HostCorrectedName <- rownames(carnFinal)
+carnFinal <- left_join(carnFinal, unique(gmpdCar[,c('HostCorrectedName', 'wos')]), by='HostCorrectedName')
+
+rownames(carnFinal) <- carnFinal$HostCorrectedName
+carnFinal$HostCorrectedName <- NULL
+
+carnFinalWOS <- carnFinal
+carnFinal$wos <- NULL
+
+```
+
+
+
+### Primates
+
+```{r eval=F, echo=TRUE}
+
+gmpdPri <- gmpd2[which(gmpd2$Group == 'primates'),]
+
+gmpdPEdgeM <- getCoMatrix(unique(data.frame(gmpdPri$HostCorrectedName,
+                   gmpdPri$ParasiteCorrectedName, 1)))
+
+priGraph <- graph.edgelist(gmpdPEdgeM[[3]], directed = FALSE)
+E(priGraph)$weight <- gmpdPEdgeM[[4]]
+
+priDegree <- degree(priGraph)
+priClose    <- closeness(priGraph)
+priBetween  <- betweenness(priGraph)
+priEigen    <- eigen_centrality(priGraph)
+
+centPrimates <-  data.frame(degree = priDegree, close=priClose, between=priBetween,
+                          eigen=priEigen$vector)
+
+priFinal <- getOrder(centPrimates, moreTraits, phyloDst)
+
+if(any(priFinal == -999, na.rm=TRUE)){
+  priFinal[priFinal == -999] <- NA
+}
+
+priFinal$ActivityCycle <- factor(priFinal$ActivityCycle)
+priFinal$DietBreadth <- factor(priFinal$DietBreadth)
+priFinal$Family <- factor(priFinal$Family)
+
+
+priFinal$HostCorrectedName <- rownames(priFinal)
+priFinal <- left_join(priFinal, unique(gmpdPri[,c('HostCorrectedName', 'wos')]), by='HostCorrectedName')
+
+rownames(priFinal) <- priFinal$HostCorrectedName
+priFinal$HostCorrectedName <- NULL
+
+priFinalWOS <- priFinal
+priFinal$wos <- NULL
+
+```
+
+
+
+
+
+
+
+
+```{r}
+
+save(gmpd2, ungFinal, carnFinal, priFinal, 
+  tree, phyloDst,
+  allFinalWOS, ungFinalWOS, carnFinalWOS, priFinalWOS,  
+  file='dataForGBM.RData')
+
+```
+
+
+

@@ -1,0 +1,1366 @@
+---
+title: "Identifying species traits associated with centrality"
+author: "Tad Dallas, John M. Drake, Barbara Han, Andrew Park, Shan Huang, and Patrick Stephens"
+output:
+  pdf_document: default
+  html_document:
+    fig_caption: yes
+    fig_height: 7
+    fig_width: 6
+    highlight: tango
+    theme: journal
+---
+
+
+
+Global Mammal Parasite Database data obtained from:
+
+> Stephens, P. R., Pappalardo, P., Huang, S., Byers, J. E., Farrell, M. J., Gehman, A., Ghai, R. R., Haas, S. E., Han, B., Park, A. W., Schmidt, J. P., Altizer, S., Ezenwa, V. O. and Nunn, C. L. (2017), Global Mammal Parasite Database version 2.0. Ecology. doi:10.1002/ecy.1799
+
+
+
+
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+## load packages
+library(bipartite)
+library(gbm)
+library(igraph)
+library(plyr)
+library(dplyr)
+library(RColorBrewer)
+library(lattice)
+
+
+
+## load data
+load('dataForGBM.RData')
+
+
+
+
+## Create palettes
+colorz <- c('#A63A50', '#3ABC4B', '#574B8C', '#54B1D3')
+colcolz <- c('#EF946C', '#976391','#26408B', '#000000')
+colPal <- colorRampPalette(c('#508fd7',	'#d7508f', '#8fd750'))
+
+
+## dir.create for figure placement 
+dir.create('figures')
+dir.create('figures/supplemental')
+
+```
+
+
+
+
+
+
+### Conceptual figure components
+
+```{r}
+
+n <- 10
+g <- graph(c(1,2,2,3,3,4,4,5,5,1,6,2,7,6,7,8,7,9,7,10,9,11,11,10,1,4), directed=FALSE)
+
+gDegree  <- igraph::degree(g)
+gClose   <- igraph::closeness(g)
+gBetween <- igraph::betweenness(g)
+gEigen   <- igraph::eigen_centrality(g)$vector
+
+colRamp <-colorRampPalette(rev(brewer.pal(9, 'Spectral')))
+ lay <- layout_nicely(g)
+
+V(g)$label <- NA; E(g)$color <- 'black'
+
+layout(matrix(c(1,2,3,4),ncol=2))
+
+#degree
+V(g)$color <- colRamp(n)[round(rank(gDegree),0)]
+plot(g, layout=lay)
+
+#closeness
+V(g)$color <- colRamp(n)[round(rank(gClose),0)]
+plot(g, layout=lay)
+
+#betwenness
+V(g)$color <- colRamp(n)[round(rank(gBetween),0)]
+plot(g, layout=lay)
+
+#eigenvector
+V(g)$color <- colRamp(n)[round(rank(gEigen),0)]
+plot(g, layout=lay)
+
+dev.copy(pdf, 'figures/conceptual2.pdf');dev.off()
+
+```
+
+
+
+
+
+
+
+
+
+
+# GMPD graph object 
+
+
+```{r}
+
+V(allGraph)$color <- colorz[2]
+Vcolz <- vertex.attributes(allGraph)$color
+
+Vcolz[which(vertex.attributes(allGraph)$name %in% rownames(ungFinal))]  <- colorz[1]
+Vcolz[which(vertex.attributes(allGraph)$name %in% rownames(carnFinal))] <- colorz[2]
+Vcolz[which(vertex.attributes(allGraph)$name %in% rownames(priFinal))]  <- colorz[3]
+
+processGraph <- function(graph, col){
+  V(graph)$color <- col
+  V(graph)$size <- 4
+  V(graph)$frame.color <- 'black'
+  V(graph)$label <- NA
+  E(graph)$color <- grey(0.1,0.15)
+  E(graph)$curved <- TRUE
+  return(graph)
+}
+
+ungGraph2 <- processGraph(ungGraph, col=colorz[1])
+carGraph2  <- processGraph(carGraph, col=colorz[2])
+priGraph2  <- processGraph(priGraph, col=colorz[3])
+allGraph2 <- processGraph(allGraph, col=Vcolz)
+
+```
+
+
+```{r}
+
+set.seed(123456)
+lay1 <- layout.fruchterman.reingold(allGraph2)
+lay1 <- layout_nicely(allGraph2)
+
+#red
+lay1[Vcolz == colorz[1], 1] <- jitter(lay1[Vcolz == colorz[1], 1], 4) -  runif(nrow(lay1[Vcolz == colorz[1],]), 1, 5)
+lay1[Vcolz == colorz[1], 2] <- jitter(lay1[Vcolz == colorz[1], 2], 4) - runif(nrow(lay1[Vcolz == colorz[1],]), 1, 5) - 5
+
+# green
+lay1[Vcolz == colorz[2], 1] <- jitter(lay1[Vcolz == colorz[2], 1], 4)  - runif(nrow(lay1[Vcolz==colorz[2],]), 4, 8)
+lay1[Vcolz == colorz[2], 2] <- jitter(lay1[Vcolz == colorz[2], 2], 4) + runif(nrow(lay1[Vcolz==colorz[2],]), 1,6)
+
+# purple
+lay1[Vcolz == colorz[3], 1] <- jitter(lay1[Vcolz == colorz[3], 1], 4)  + runif(nrow(lay1[Vcolz==colorz[3],]), 5, 6)+5
+lay1[Vcolz == colorz[3], 2] <- jitter(lay1[Vcolz == colorz[3], 2], 4) - runif(nrow(lay1[Vcolz==colorz[3],]), 1,5)
+
+plot(allGraph2, layout=lay1, edge.width=0.65)
+dev.copy(pdf, 'figures/graphFinal.pdf');dev.off()
+
+```
+
+
+
+
+
+
+
+
+
+
+### Train BRT models
+
+
+```{r eval=T, echo=TRUE}
+
+#' Train boosted regression tree models
+#' 
+#' @param y vector of centrality estimates corresponding to each row entry in data
+#' @param data data.frame containing host data
+#' @param plot (boolean) plot predicted-actual for holdout set?
+#' @param na.rm remove NA values?
+#' @param holdOut fraction of data to use for testing
+#' @param seed random seed to use for data split
+
+getGBM <- function(y, data, plot=TRUE, na.rm=TRUE, 
+                   holdOut=NULL, seed=1234){
+  if(na.rm){
+    if(any(is.na(y))){inds <- which(is.na(y)); y <- y[-inds]; data <- data[-inds,]}
+  }
+  if(!is.null(holdOut)){
+    yInds <- sample(1:length(y), round(holdOut*length(y), 0), replace=FALSE)
+    yTest <- y[yInds]; yTrain <- y[-yInds];
+    dataTest <- data[yInds,]; dataTrain <- data[-yInds,];
+  }
+
+  if(is.null(holdOut)){
+    yTrain <- y
+    yTest <- y
+    dataTrain <- data
+    dataTest <- data
+  }
+  set.seed(seed)
+  gbmOut <- gbm(yTrain ~ . , data = dataTrain,
+		bag.fraction = 0.5, n.trees = 50000, shrinkage=0.0005,
+    cv.folds = 5, interaction.depth = 4, verbose=T, n.cores=4)
+  best.iter <- gbm.perf(gbmOut, method = "cv")
+  bars  <- summary(gbmOut, n.trees = best.iter, plotit = FALSE)
+  preds <- predict(gbmOut, dataTest, n.trees=best.iter)
+
+  if(plot==TRUE){
+    plot(preds ~ yTest, pch=16,
+        las=1, ylab='Predicted', xlab='Actual', tck=0.01)
+    }
+	if(!is.null(holdOut)){
+	  return(list(model = gbmOut, best.iter = best.iter,
+      bars = bars, predictions = preds, 
+			acc=cor.test(preds,yTest)))
+	}else{
+		return(list(model = gbmOut, best.iter = best.iter,
+	    bars = bars, predictions = preds))
+	}
+}
+
+```
+
+
+
+
+
+## Training models to predict host centrality
+
+### Ungulates
+
+```{r eval=F, echo=T}
+
+gbm.ung.degree.w   <- getGBM(ungFinalWOS[,'degree'], ungFinalWOS[,c(5:ncol(ungFinalWOS))])
+gbm.ung.close.w    <- getGBM(ungFinalWOS[,'close'], ungFinalWOS[,c(5:ncol(ungFinalWOS))])
+gbm.ung.between.w  <- getGBM(ungFinalWOS[,'between'], ungFinalWOS[,c(5:ncol(ungFinalWOS))])
+gbm.ung.eigen.w    <- getGBM(ungFinalWOS[,'eigen'], ungFinalWOS[,c(5:ncol(ungFinalWOS))])
+
+
+gbm.ung.degree   <- getGBM(ungFinal[,'degree'], ungFinal[,c(5:ncol(ungFinal))])
+gbm.ung.close    <- getGBM(ungFinal[,'close'], ungFinal[,c(5:ncol(ungFinal))])
+gbm.ung.between  <- getGBM(ungFinal[,'between'], ungFinal[,c(5:ncol(ungFinal))])
+gbm.ung.eigen    <- getGBM(ungFinal[,'eigen'], ungFinal[,c(5:ncol(ungFinal))])
+```
+
+
+
+### Carnivores
+
+```{r eval=F, echo=T}
+gbm.car.degree.w   <- getGBM(carnFinalWOS[,'degree'],
+                           carnFinalWOS[,c(5:ncol(carnFinalWOS))])
+gbm.car.close.w    <- getGBM(carnFinalWOS[,'close'],
+                           carnFinalWOS[,c(5:ncol(carnFinalWOS))])
+gbm.car.between.w  <- getGBM(carnFinalWOS[,'between'],
+                           carnFinalWOS[,c(5:ncol(carnFinalWOS))])
+gbm.car.eigen.w    <- getGBM(carnFinalWOS[,'eigen'],
+                           carnFinalWOS[,c(5:ncol(carnFinalWOS))])
+
+
+gbm.car.degree   <- getGBM(carnFinal[,'degree'],
+                           carnFinal[,c(5:ncol(carnFinal))],seed=1235)
+gbm.car.close    <- getGBM(carnFinal[,'close'],
+                           carnFinal[,c(5:ncol(carnFinal))],seed=1235)
+gbm.car.between  <- getGBM(carnFinal[,'between'],
+                           carnFinal[,c(5:ncol(carnFinal))], seed=1235)
+gbm.car.eigen    <- getGBM(carnFinal[,'eigen'],
+                           carnFinal[,c(5:ncol(carnFinal))], seed=1234)
+```
+
+
+### Primates
+
+```{r eval=F, echo=T}
+gbm.pri.degree.w   <- getGBM(priFinalWOS[,'degree'],
+                           priFinalWOS[,c(5:ncol(priFinalWOS))])
+gbm.pri.close.w    <- getGBM(priFinalWOS[,'close'],
+                           priFinalWOS[,c(5:ncol(priFinalWOS))])
+gbm.pri.between.w  <- getGBM(priFinalWOS[,'between'],
+                           priFinalWOS[,c(5:ncol(priFinalWOS))])
+gbm.pri.eigen.w    <- getGBM(priFinalWOS[,'eigen'],
+                           priFinalWOS[,c(5:ncol(priFinalWOS))])
+
+
+gbm.pri.degree   <- getGBM(priFinal[,'degree'],
+                           priFinal[,c(5:ncol(priFinal))])
+gbm.pri.close    <- getGBM(priFinal[,'close'],
+                           priFinal[,c(5:ncol(priFinal))])
+gbm.pri.between  <- getGBM(priFinal[,'between'],
+                           priFinal[,c(5:ncol(priFinal))])
+gbm.pri.eigen    <- getGBM(priFinal[,'eigen'],
+                           priFinal[,c(5:ncol(priFinal))])
+```
+
+
+### All animals at once
+
+
+```{r eval=F, echo=T}
+gbm.all.degree.w   <- getGBM(allFinalWOS[,'degree'],
+                           allFinalWOS[,c(5:ncol(allFinalWOS))])
+gbm.all.close.w    <- getGBM(allFinalWOS[,'close'],
+                           allFinalWOS[,c(5:ncol(allFinalWOS))])
+gbm.all.between.w  <- getGBM(allFinalWOS[,'between'],
+                          allFinalWOS[,c(5:ncol(allFinalWOS))])
+gbm.all.eigen.w    <- getGBM(allFinalWOS[,'eigen'],
+                          allFinalWOS[,c(5:ncol(allFinalWOS))])
+
+
+gbm.all.degree  <- getGBM(allFinal[,'degree'],
+                           allFinal[,c(5:ncol(allFinal))])
+gbm.all.close   <- getGBM(allFinal[,'close'],
+                           allFinal[,c(5:ncol(allFinal))])
+gbm.all.between <- getGBM(allFinal[,'between'],
+                          allFinal[,c(5:ncol(allFinal))])
+gbm.all.eigen   <- getGBM(allFinal[,'eigen'],
+                          allFinal[,c(5:ncol(allFinal))])
+
+```
+
+
+
+
+
+
+
+
+## Model accuracy
+
+```{r eval=FALSE, echo=FALSE}
+
+predList <- list(
+       ung = cbind(
+             degree = gbm.ung.degree$predictions,
+             close = gbm.ung.close$predictions,
+             between = gbm.ung.between$predictions,
+             eigen = gbm.ung.eigen$predictions),
+       car = cbind(degree=gbm.car.degree$predictions,
+             close = gbm.car.close$predictions,
+             between = gbm.car.between$predictions,
+             eigen = gbm.car.eigen$predictions),
+       pri = cbind(degree=gbm.pri.degree$predictions,
+             close = gbm.pri.close$predictions,
+             between = gbm.pri.between$predictions,
+             eigen = gbm.pri.eigen$predictions),
+       all = cbind(degree = gbm.all.degree$predictions,
+             close = gbm.all.close$predictions,
+             between = gbm.all.between$predictions,
+             eigen = gbm.all.eigen$predictions))
+
+
+## With WOS citations in models
+predList.w <- list(
+       ung = cbind(
+            degree = gbm.ung.degree.w$predictions,
+            close = gbm.ung.close.w$predictions,
+             between = gbm.ung.between.w$predictions,
+             eigen = gbm.ung.eigen.w$predictions),
+       car = cbind(degree=gbm.car.degree.w$predictions,
+              close = gbm.car.close.w$predictions,
+             between = gbm.car.between.w$predictions,
+             eigen = gbm.car.eigen.w$predictions),
+       pri = cbind(degree=gbm.pri.degree.w$predictions,
+             close = gbm.pri.close.w$predictions,
+             between = gbm.pri.between.w$predictions,
+             eigen = gbm.pri.eigen.w$predictions),
+       all = cbind(degree = gbm.all.degree.w$predictions,
+             close = gbm.all.close.w$predictions,
+             between = gbm.all.between.w$predictions,
+             eigen = gbm.all.eigen.w$predictions))
+
+
+actList <- list(na.omit(ungFinal[,1:4]),
+                na.omit(carnFinal[,1:4]),
+                na.omit(priFinal[,1:4]),
+                na.omit(allFinal[,1:4]))
+
+
+```
+
+
+
+
+## Phylogenetic signal test
+
+```{r eval=TRUE}
+
+#' Test for phylogenetic signal in model residuals
+#' 
+#' @param mod is gbm model object from getGBM
+#' @param actual is created data.frame like carnFinal
+#' @param ind is the index for the column in actual
+#' @param tree is the phylogenetic tree object
+
+getPhyloSig <- function(mod, actual, ind, tree){
+  require(picante); library(xtable)
+  rsd <-  na.omit(actual[,ind]) - predict(mod[[1]])
+  if(any(is.na(actual[,ind]))){
+    names(rsd) <- gsub(' ', '_', rownames(actual[-which(is.na(actual[,ind])),]))
+  }else{
+    names(rsd) <- gsub(' ', '_', rownames(actual))
+  }
+
+  treeTrim <- multi2di(drop.tip(tree, which((tree$tip.label %in% names(rsd)) == FALSE)))
+  rsd <- rsd[match(treeTrim$tip.label, names(rsd))]
+
+  ret <- phylosignal(rsd, treeTrim)
+  return(c(K = ret$K, Z = ret$PIC.variance.Z, pVal = ret$PIC.variance.P))
+}
+
+```
+
+
+
+```{r}
+
+phyloMat <- matrix(
+c(getPhyloSig(gbm.ung.degree, ungFinal, 1, tree),
+getPhyloSig(gbm.ung.close, ungFinal, 2, tree),
+getPhyloSig(gbm.ung.between, ungFinal, 3, tree),
+getPhyloSig(gbm.ung.eigen, ungFinal, 4, tree),
+
+getPhyloSig(gbm.car.degree, carnFinal, 1, tree),
+getPhyloSig(gbm.car.close, carnFinal, 2, tree),
+getPhyloSig(gbm.car.between, carnFinal, 3, tree),
+getPhyloSig(gbm.car.eigen, carnFinal, 4, tree),
+
+getPhyloSig(gbm.pri.degree, priFinal, 1, tree),
+getPhyloSig(gbm.pri.close, priFinal, 2, tree),
+getPhyloSig(gbm.pri.between, priFinal, 3, tree),
+getPhyloSig(gbm.pri.eigen, priFinal, 4, tree),
+
+getPhyloSig(gbm.all.degree, allFinal, 1, tree),
+getPhyloSig(gbm.all.close, allFinal, 2, tree),
+getPhyloSig(gbm.all.between, allFinal, 3, tree),
+getPhyloSig(gbm.all.eigen, allFinal, 4, tree)),
+byrow=TRUE, ncol=3)
+
+rownames(phyloMat) <- c('ung.degree', "ung.close", "ung.between", "ung.eigen", 'car.degree', "car.close", "car.between", "car.eigen",
+'pri.degree', "pri.close", "pri.between", "pri.eigen", 'all.degree', "all.close", "all.between", "all.eigen")
+colnames(phyloMat) <- c("K", "Z", "p")
+
+print(xtable(phyloMat), include.rownames=TRUE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Rank correlations among variable among host groups, and centrality measures
+
+
+```{r}
+
+ungBars <- data.frame(between=order(gbm.ung.between$bars[,1]),
+                                        close=order(gbm.ung.close$bars[,1]),
+                                        degree=order(gbm.ung.degree$bars[,1]),
+                                        eigenvector=order(gbm.ung.eigen$bars[,1]))
+
+carBars <- data.frame(between=order(gbm.car.between$bars[,1]),
+                                        close=order(gbm.car.close$bars[,1]),
+                                        degree=order(gbm.car.degree$bars[,1]),
+                                        eigenvector=order(gbm.car.eigen$bars[,1]))
+
+priBars <- data.frame(between=order(gbm.pri.between$bars[,1]),
+                                        close=order(gbm.pri.close$bars[,1]),
+                                        degree=order(gbm.pri.degree$bars[,1]),
+                                        eigenvector=order(gbm.pri.eigen$bars[,1]))
+
+allBars <- data.frame(between=order(gbm.all.between$bars[,1]),
+                                        close=order(gbm.all.close$bars[,1]),
+                                        degree=order(gbm.all.degree$bars[,1]),
+                                        eigenvector=order(gbm.all.eigen$bars[,1]))
+
+rownames(ungBars) <- varNames$names
+rownames(carBars) <- varNames$names
+rownames(priBars) <- varNames$names
+rownames(allBars) <- varNames$names
+
+
+ungBars <- ungBars[order(rowSums(ungBars)),]
+carBars <- carBars[order(rowSums(carBars)),]
+priBars <- priBars[order(rowSums(priBars)),]
+allBars <- allBars[order(rowSums(allBars)),]
+
+```
+
+
+
+## Rank plots
+
+```{r}
+
+## All
+par(mar=c(12,4,0.25,0.25))
+plot(x=1:22 - 0.5, y=allBars[,1], ylab='Centrality rank', xaxt='n',
+  las=1, pch=16, col=colcolz[1], xlab='', tck=-0.02, xlim=c(1,21.2))
+points(1:22 - 0.4, y=allBars[,2], col=colcolz[2], pch=16)
+points(1:22 - 0.3, y=allBars[,3], col=colcolz[3], pch=16)
+points(1:22 - 0.2, y=allBars[,4], col=colcolz[4], pch=16)
+axis(1, at=1:22, labels=FALSE)
+text(1:22 - 0.25,-0.5, labels=rownames(allBars), srt=90, pos=2, xpd=TRUE)
+abline(v=c(1:22), col=grey(0.5,0.5))
+dev.copy(pdf, 'figures/supplemental/allRankPlot.pdf', height=5, width=8); dev.off()
+
+
+## car
+par(mar=c(12,4,0.25,0.25))
+plot(x=1:22 - 0.5, y=carBars[,1], ylab='Centrality rank', xaxt='n',
+  las=1, pch=16, col=colcolz[1], xlab='', tck=-0.02, xlim=c(1,21.2))
+points(1:22 - 0.4, y=carBars[,2], col=colcolz[2], pch=16)
+points(1:22 - 0.3, y=carBars[,3], col=colcolz[3], pch=16)
+points(1:22 - 0.2, y=carBars[,4], col=colcolz[4], pch=16)
+axis(1, at=1:22, labels=FALSE)
+text(1:22 - 0.25,-0.5, labels=rownames(carBars), srt=90, pos=2, xpd=TRUE)
+abline(v=c(1:22), col=grey(0.5,0.5))
+dev.copy(pdf, 'figures/supplemental/carRankPlot.pdf', height=5, width=8); dev.off()
+
+
+
+## pri
+par(mar=c(12,4,0.25,0.25))
+plot(x=1:22 - 0.5, y=priBars[,1], ylab='Centrality rank', xaxt='n',
+  las=1, pch=16, col=colcolz[1], xlab='', tck=-0.02, xlim=c(1,21.2))
+points(1:22 - 0.4, y=priBars[,2], col=colcolz[2], pch=16)
+points(1:22 - 0.3, y=priBars[,3], col=colcolz[3], pch=16)
+points(1:22 - 0.2, y=priBars[,4], col=colcolz[4], pch=16)
+axis(1, at=1:22, labels=FALSE)
+text(1:22 - 0.25,-0.5, labels=rownames(priBars), srt=90, pos=2, xpd=TRUE)
+abline(v=c(1:22), col=grey(0.5,0.5))
+dev.copy(pdf, 'figures/supplemental/priRankPlot.pdf', height=5, width=8); dev.off()
+
+
+
+## ung
+par(mar=c(12,4,0.25,0.25))
+plot(x=1:22 - 0.5, y=ungBars[,1], ylab='Centrality rank', xaxt='n',
+  las=1, pch=16, col=colcolz[1], xlab='', tck=-0.02, xlim=c(1,21.2))
+points(1:22 - 0.4, y=ungBars[,2], col=colcolz[2], pch=16)
+points(1:22 - 0.3, y=ungBars[,3], col=colcolz[3], pch=16)
+points(1:22 - 0.2, y=ungBars[,4], col=colcolz[4], pch=16)
+axis(1, at=1:22, labels=FALSE)
+text(1:22 - 0.25,-0.5, labels=rownames(ungBars), srt=90, pos=2, xpd=TRUE)
+abline(v=c(1:22), col=grey(0.5,0.5))
+dev.copy(pdf, 'figures/supplemental/ungRankPlot.pdf', height=5, width=8); dev.off()
+
+```
+
+
+## Relationship between centrality and parasite species richness (supplemental figure)
+
+```{r}
+
+psrAll <- gmpd2 %>%
+  group_by(HostCorrectedName) %>%
+  summarise(psr=length(unique(ParasiteCorrectedName))) 
+all <- allFinalWOS[,c(1:4,25,27)]
+all$HostCorrectedName <- rownames(all)
+psrAll <- left_join(psrAll, all, by='HostCorrectedName')
+
+```
+
+```{r}
+
+layout(matrix(c(1,2,3,4), ncol=2, byrow=TRUE), width=c(1.15,1))
+par(mar=c(4,4,0.5,0.5))
+plot(y=psrAll$psr, x=psrAll$degree, las=1, pch=16, tck=-0.01, 
+  xlab='Host degree centrality', ylab='Parasite species richness', 
+  col=adjustcolor('dodgerblue', 0.35))
+par(mar=c(4,1,0.5,0.5))
+plot(y=psrAll$psr, x=psrAll$close, las=1, pch=16, tck=-0.01, 
+  xlab='Host closeness centrality', ylab='', 
+  col=adjustcolor('dodgerblue', 0.35), yaxt='n')
+par(mar=c(4,4,0.5,0.5))
+plot(y=psrAll$psr, x=psrAll$between, las=1, pch=16, tck=-0.01, 
+  xlab='Host betweenness centrality', ylab='Parasite species richness', 
+  col=adjustcolor('dodgerblue', 0.35))
+par(mar=c(4,1,0.5,0.5))
+plot(y=psrAll$psr, x=psrAll$eigen, las=1, pch=16, tck=-0.01, 
+  xlab='Host eigenvector centrality', ylab='',
+  col=adjustcolor('dodgerblue', 0.35), yaxt='n')
+dev.copy(pdf, 'figures/supplemental/richnessCentrality.pdf', width=7, height=6);dev.off()
+
+
+
+# web of science hits
+
+par(mar=c(4,4,0.5,0.5))
+plot(y=sqrt(psrAll$psr), x=sqrt(psrAll$wos), las=1, pch=16, tck=-0.01, 
+  xlab='Web of Science citation count', ylab='Parasite species richness', 
+  col=adjustcolor('dodgerblue', 0.35))
+dev.copy(pdf, 'psrWOS.pdf', width=4, height=4);dev.off()
+
+
+cor.test(sqrt(psrAll$psr), sqrt(psrAll$wos))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+## Relative contribution plots
+
+```{r eval=TRUE, echo=FALSE}
+
+var <- colnames(allFinal)[5:ncol(allFinal)]
+nmes <- c('Order', 'Family', 'Activity cycle', 'Body mass', 
+          'Brain weight', 'Body length', 'Diet breadth', 
+          'Gestation length', 'Habitat breadth', 'Home range size', 
+          'Interbirth interval', 'Litter size', 'Litters per year', 
+          'Maximum age', 'Neonate body mass', 'Population density', 
+          'Age at maturity', 'Terrestriality', 'Trophic level', 
+          'Weaning age', 'Geographic range size', 'Evolutionary distinctiveness')
+
+varNames <- data.frame(vars= var, names = nmes)
+varNames <- varNames[order(varNames[,1]),]
+
+varNames.w <- rbind(apply(varNames,2, as.character), c('WOS', 'WOS citations'))
+
+```
+
+### Averaged relative contribution values per centrality measure
+
+
+
+```{r eval=TRUE}
+
+DegreeBars <- data.frame(ung = gbm.ung.degree$bars[order(gbm.ung.degree$bars[,1]),2],
+                        car = gbm.car.degree$bars[order(gbm.car.degree$bars[,1]),2],
+                        pri = gbm.pri.degree$bars[order(gbm.pri.degree$bars[,1]),2],
+                        all = gbm.all.degree$bars[order(gbm.all.degree$bars[,1]),2])
+rownames(DegreeBars) <- sort(gbm.ung.degree$bars[,1])
+
+CloseBars <- data.frame(ung = gbm.ung.close$bars[order(gbm.ung.close$bars[,1]),2],
+                        car = gbm.car.close$bars[order(gbm.car.close$bars[,1]),2],
+                        pri = gbm.pri.close$bars[order(gbm.pri.close$bars[,1]),2],
+                        all = gbm.all.close$bars[order(gbm.all.close$bars[,1]),2])
+rownames(CloseBars) <- sort(gbm.ung.close$bars[,1])
+
+BetweenBars <- data.frame(ung = gbm.ung.between$bars[order(gbm.ung.between$bars[,1]),2],
+                          car = gbm.car.between$bars[order(gbm.car.between$bars[,1]),2],
+                          pri = gbm.pri.between$bars[order(gbm.pri.between$bars[,1]),2],
+                          all = gbm.all.between$bars[order(gbm.all.between$bars[,1]),2])
+rownames(BetweenBars) <- sort(gbm.ung.close$bars[,1])
+
+EigenBars <- data.frame(ung = gbm.ung.eigen$bars[order(gbm.ung.eigen$bars[,1]),2],
+                        car = gbm.car.eigen$bars[order(gbm.car.eigen$bars[,1]),2],
+                        pri = gbm.pri.eigen$bars[order(gbm.pri.eigen$bars[,1]),2],
+                        all = gbm.all.eigen$bars[order(gbm.all.eigen$bars[,1]),2])
+rownames(EigenBars) <- sort(gbm.ung.close$bars[,1])
+
+
+##
+DegreeBars.w <- data.frame(ung = gbm.ung.degree.w$bars[order(gbm.ung.degree.w$bars[,1]),2],
+                        car = gbm.car.degree.w$bars[order(gbm.car.degree.w$bars[,1]),2],
+                        pri = gbm.pri.degree.w$bars[order(gbm.pri.degree.w$bars[,1]),2],
+                        all = gbm.all.degree.w$bars[order(gbm.all.degree.w$bars[,1]),2])
+rownames(DegreeBars.w) <- sort(gbm.ung.degree.w$bars[,1])
+
+CloseBars.w <- data.frame(ung = gbm.ung.close.w$bars[order(gbm.ung.close.w$bars[,1]),2],
+                        car = gbm.car.close.w$bars[order(gbm.car.close.w$bars[,1]),2],
+                        pri = gbm.pri.close.w$bars[order(gbm.pri.close.w$bars[,1]),2],
+                        all = gbm.all.close.w$bars[order(gbm.all.close.w$bars[,1]),2])
+
+rownames(CloseBars.w) <- sort(gbm.ung.close.w$bars[,1])
+
+BetweenBars.w <- data.frame(ung = gbm.ung.between.w$bars[order(gbm.ung.between.w$bars[,1]),2],
+                          car = gbm.car.between.w$bars[order(gbm.car.between.w$bars[,1]),2],
+                          pri = gbm.pri.between.w$bars[order(gbm.pri.between.w$bars[,1]),2],
+                          all = gbm.all.between.w$bars[order(gbm.all.between.w$bars[,1]),2])
+rownames(BetweenBars.w) <- sort(gbm.ung.close.w$bars[,1])
+
+
+EigenBars.w <- data.frame(ung = gbm.ung.eigen.w$bars[order(gbm.ung.eigen.w$bars[,1]),2],
+                        car = gbm.car.eigen.w$bars[order(gbm.car.eigen.w$bars[,1]),2],
+                        pri = gbm.pri.eigen.w$bars[order(gbm.pri.eigen.w$bars[,1]),2],
+                        all = gbm.all.eigen.w$bars[order(gbm.all.eigen.w$bars[,1]),2])
+rownames(EigenBars.w) <- sort(gbm.ung.close.w$bars[,1])
+
+```
+
+
+
+```{r eval=TRUE}
+
+#' Make BRT plots (main text xy plots)
+#' 
+#' @param barMat ordered variable importance scores as formatted above
+#' @param varNames names of variables to plot
+#' @param actVec vector containing model accuracy values
+#' @param cols colors to use for plotting
+
+getAvgCont <- function(barMat, varNames, actVec=NULL, cols = colPal){
+  par(mar=c(4,15,0.5,0.5))
+  rownames(barMat) <- varNames[,2]
+  barMat2 <- barMat[order(rowMeans(barMat)),]
+  plot(x=barMat2[,1], y=1:nrow(barMat), pch=16, col=cols[1], xlim=c(min(barMat2), max(barMat2))
+       , las=1, tck=-0.01, ylab='', yaxt='n', xlab='Relative contribution')
+  for(i in 2:ncol(barMat2)){
+    points(x=barMat2[,i], y = 1:nrow(barMat), col=cols[i], pch=16)
+  }
+  points(x=rowMeans(barMat2), y=1:nrow(barMat), pch=16, cex=2, col=grey(0.5,0.5))
+  axis(2, rownames(barMat2), at=1:nrow(barMat), las=1, tck=-0.01); box()
+  if(!is.null(actVec)){
+    legend(0.5*max(barMat2), 5, pch=16, pt.cex=c(1,1,1,1,2), 
+      col=c(cols[1:4], grey(0.5,0.5)), 
+      legend=paste(c("Ungulates", "Carnivores", "Primates", "All", "Average"), 
+        c(paste('(', actVec, ')', sep=''), ''), sep=' '), bty='n')
+ }
+}
+
+```
+
+
+```{r}
+
+
+degreeVec  <-c(cor(predList[['ung']][,'degree'], na.omit(ungFinal[,'degree']), method='spearman'),
+             cor(predList[['car']][,'degree'], na.omit(carnFinal[,'degree']), method='spearman'),
+             cor(predList[['pri']][,'degree'], na.omit(priFinal[,'degree']), method='spearman'),
+             cor(predList[['all']][,'degree'], na.omit(allFinal[,'degree']), method='spearman'))
+
+degreeVec.w  <-c(cor(predList.w[['ung']][,'degree'], na.omit(ungFinal[,'degree']), method='spearman'),
+             cor(predList.w[['car']][,'degree'], na.omit(carnFinal[,'degree']), method='spearman'),
+             cor(predList.w[['pri']][,'degree'], na.omit(priFinal[,'degree']), method='spearman'),
+             cor(predList.w[['all']][,'degree'], na.omit(allFinal[,'degree']), method='spearman'))
+
+closeVec  <-c(cor(predList[['ung']][,'close'], na.omit(ungFinal[,'close']), method='spearman'),
+             cor(predList[['car']][,'close'], na.omit(carnFinal[,'close']), method='spearman'),
+             cor(predList[['pri']][,'close'], na.omit(priFinal[,'close']), method='spearman'),
+             cor(predList[['all']][,'close'], na.omit(allFinal[,'close']), method='spearman'))
+
+closeVec.w  <-c(cor(predList.w[['ung']][,'close'], na.omit(ungFinal[,'close']), method='spearman'),
+             cor(predList.w[['car']][,'close'], na.omit(carnFinal[,'close']), method='spearman'),
+             cor(predList.w[['pri']][,'close'], na.omit(priFinal[,'close']), method='spearman'),
+             cor(predList.w[['all']][,'close'], na.omit(allFinal[,'close']), method='spearman'))
+
+betweenVec <-c(cor(predList[['ung']][,'between'],na.omit(ungFinal[,'between']), method='spearman'),
+             cor(predList[['car']][,'between'], na.omit(carnFinal[,'between']), method='spearman'),
+             cor(predList[['pri']][,'between'], na.omit(priFinal[,'between']), method='spearman'),
+             cor(predList[['all']][,'between'], na.omit(allFinal[,'between']), method='spearman'))
+
+betweenVec.w <-c(cor(predList.w[['ung']][,'between'], na.omit(ungFinal[,'between']), method='spearman'),
+             cor(predList.w[['car']][,'between'], na.omit(carnFinal[,'between']), method='spearman'),
+             cor(predList.w[['pri']][,'between'], na.omit(priFinal[,'between']), method='spearman'),
+             cor(predList.w[['all']][,'between'], na.omit(allFinal[,'between']), method='spearman'))
+eigenVec<-c(cor(predList[['ung']][,'eigen'], na.omit(ungFinal[,'eigen']), method='spearman'),
+             cor(predList[['car']][,'eigen'], na.omit(carnFinal[,'eigen']), method='spearman'),
+             cor(predList[['pri']][,'eigen'], na.omit(priFinal[,'eigen']), method='spearman'),
+             cor(predList[['all']][,'eigen'],  na.omit(allFinal[,'eigen']), method='spearman'))
+
+
+eigenVec.w <-c(cor(predList.w[['ung']][,'eigen'], na.omit(ungFinal[,'eigen']), method='spearman'),
+             cor(predList.w[['car']][,'eigen'], na.omit(carnFinal[,'eigen']), method='spearman'),
+             cor(predList.w[['pri']][,'eigen'], na.omit(priFinal[,'eigen']), method='spearman'),
+             cor(predList.w[['all']][,'eigen'], na.omit(allFinal[,'eigen']), method='spearman'))
+
+```
+
+
+
+
+
+## Variables important in predicting degree centrality
+
+```{r eval=TRUE}
+
+pdf('figures/degreeCont.pdf')
+getAvgCont(DegreeBars, varNames, actVec=round(degreeVec,2), cols = colorz)
+dev.off()
+
+
+pdf('figures/supplemental/DegreeContW.pdf')
+getAvgCont(DegreeBars.w, varNames.w, actVec=round(degreeVec.w,2), cols = colorz)
+dev.off()
+
+```
+
+
+## Variables important in predicting closeness centrality
+
+```{r eval=TRUE}
+
+pdf('figures/closeCont.pdf')
+getAvgCont(CloseBars, varNames, actVec=round(closeVec,2), cols = colorz)
+dev.off()
+
+
+pdf('figures/supplemental/closeContW.pdf')
+getAvgCont(CloseBars.w, varNames.w, actVec=round(closeVec.w,2), cols = colorz)
+dev.off()
+
+```
+
+
+
+
+## Variables important in predicting betweenness centrality
+
+```{r eval=TRUE}
+
+pdf('figures/betweenCont.pdf')
+getAvgCont(BetweenBars, varNames, actVec=round(betweenVec,2),cols = colorz)
+dev.off()
+
+pdf('figures/supplemental/betweenContW.pdf')
+getAvgCont(BetweenBars.w, varNames.w, actVec=round(betweenVec.w,2),cols = colorz)
+dev.off()
+
+```
+
+
+## Variables important in predicting eigenvector centrality
+
+```{r eval=TRUE}
+
+pdf('figures/eigenCont.pdf')
+getAvgCont(EigenBars, varNames, actVec=round(eigenVec,2),cols = colorz)
+dev.off()
+
+
+pdf('figures/supplemental/eigenContW.pdf')
+getAvgCont(EigenBars.w, varNames.w, actVec=round(eigenVec.w,2),cols = colorz)
+dev.off()
+
+```
+
+
+
+
+
+
+
+
+
+## Rank correlation table (model accuracy in ranking)
+
+
+```{r eval=TRUE, echo=TRUE}
+
+#' Produce table of rank correlations
+#'
+#' @param predDFlist list of predictions from BRT models
+#' @param actDFlist list of actual centrality values on holdout set
+
+getRankTable <- function(predDFlist, actDFlist, rank = TRUE){
+  require(xtable)
+  out <- matrix(0, ncol=ncol(predDFlist[[1]]), nrow=length(predDFlist))
+
+  if(rank==TRUE){
+    for(i in 1:length(predDFlist)){
+      temp <- cor.test(predDFlist[[i]][,'degree'], na.omit(actDFlist[[i]][,'degree']),
+                       method='spearman')
+      out[i,1] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+      temp <- cor.test(predDFlist[[i]][,'close'], na.omit(actDFlist[[i]][,'close']),
+                       method='spearman')
+      out[i,2] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+      temp <- cor.test(predDFlist[[i]][,'between'], na.omit(actDFlist[[i]][,'between']),
+                       method='spearman')
+      out[i,3] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+      temp <- cor.test(predDFlist[[i]][,'eigen'], na.omit(actDFlist[[i]][,'eigen']),
+                       method='spearman')
+      out[i,4] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+    }
+  }
+
+  if(rank == FALSE){
+    for(i in 1:length(predDFlist)){
+      temp <- cor.test(predDFlist[[i]][,'degree'], na.omit(actDFlist[[i]][,'degree']),
+                       method='pearson')
+      out[i,1] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+      temp <- cor.test(predDFlist[[i]][,'close'], na.omit(actDFlist[[i]][,'close']),
+                       method='pearson')
+      out[i,2] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+
+      temp <- cor.test(predDFlist[[i]][,'between'], na.omit(actDFlist[[i]][,'between']),
+                       method='pearson')
+      out[i,3] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+
+      temp <- cor.test(predDFlist[[i]][,'eigen'], na.omit(actDFlist[[i]][,'eigen']),
+                       method='pearson')
+      out[i,4] <- paste(round(temp$estimate,2), ' (', round(temp$p.value, 6), ')', sep='')
+    }
+  }
+
+  rownames(out) <- c('Ungulates', 'Carnivores', 'Primates', 'Combined')
+  colnames(out) <- c('Degree', 'Closeness', 'Betweenness', 'Eigenvector')
+  ret <- xtable(out)
+  print(ret, floating=TRUE, include.rownames = TRUE, floating.placement='!',
+        comment=FALSE, sanitize.text.function = function(x){x})
+}
+
+
+```
+
+
+
+
+
+
+
+
+```{r eval=TRUE}
+getRankTable(predList, actList)
+```
+
+```{r eval=TRUE}
+getRankTable(predList, actList, rank=FALSE)
+```
+
+```{r eval=TRUE}
+getRankTable(predList.w, actList)
+```
+
+```{r eval=TRUE}
+getRankTable(predList.w, actList, rank=FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+## How correlated are centrality measures?
+
+```{r eval=TRUE, echo=TRUE}
+
+# ungulates
+pdf('figures/supplemental/ungCor.pdf')
+splom(na.omit(ungFinal[,1:4]), lower.panel = panel.splom,
+      upper.panel = function(x, y, ...) {
+        panel.fill(col = brewer.pal(9, "RdBu")[ round(cor(x, y) * 4 + 5)])
+        cpl <- current.panel.limits()
+        ## translate upward
+        panel.text(mean(cpl$xlim), mean(cpl$ylim), round(cor(x, y),2), font=2,
+        cex=1.5, adj=c(0.5,-0.7))}, 
+      varnames=c('Degree', 'Closeness','Betweenness','Eigenvector'),
+      main='Ungulates', pch=16, tck=0.01, cex=1.3,
+      varname.cex = 1, varname.font=2)
+dev.off()
+
+# carnivores
+pdf('figures/supplemental/carCor.pdf')
+splom(na.omit(carnFinal[,1:4]), lower.panel = panel.splom,
+      upper.panel = function(x, y, ...) {
+        panel.fill(col = brewer.pal(9, "RdBu")[ round(cor(x, y) * 4 + 5)])
+        cpl <- current.panel.limits()
+        panel.text(mean(cpl$xlim), mean(cpl$ylim), round(cor(x, y),2), 
+        font=2, cex=1.5, adj=c(0.5,-0.7))}, 
+      varnames=c('Degree', 'Closeness','Betweenness','Eigenvector'), 
+      main='Carnivores', pch=16, tck=-0.01, cex=1.3, varname.cex = 1, varname.font=2)
+dev.off()
+
+# primates
+pdf('figures/supplemental/priCor.pdf')
+splom(na.omit(priFinal[,1:4]), lower.panel = panel.splom,
+      upper.panel = function(x, y, ...) {
+        panel.fill(col = brewer.pal(9, "RdBu")[ round(cor(x, y) * 4 + 5)])
+        cpl <- current.panel.limits()  
+        panel.text(mean(cpl$xlim), mean(cpl$ylim), round(cor(x, y),2), 
+        font=2, cex=1.5, adj=c(0.5,-0.7))}, 
+      varnames=c('Degree', 'Closeness','Betweenness','Eigenvector'), 
+      main='Primates', pch=16, tck=-0.01, cex=1.3, varname.cex = 1, varname.font=2)
+dev.off()
+
+# all
+pdf('figures/supplemental/allCor.pdf')
+splom(na.omit(allFinal[,1:4]), lower.panel = panel.splom,
+      upper.panel = function(x, y, ...) {
+        panel.fill(col = brewer.pal(9, "RdBu")[ round(cor(x, y) * 4 + 5)])
+        cpl <- current.panel.limits()
+        panel.text(mean(cpl$xlim), mean(cpl$ylim), round(cor(x, y),2), font=2, 
+        cex=1.5, adj=c(0.5,-0.7))}, 
+      varnames=c('Degree', 'Closeness','Betweenness','Eigenvector'), 
+      main='All hosts combined', pch=16, tck=-0.01, cex=1.3, varname.cex = 1, varname.font=2)
+dev.off()
+
+
+```
+
+
+
+
+
+
+
+
+## Produce partial dependence plots for supplement
+
+```{r eval=TRUE, echo=TRUE}
+
+contCols <- colorRampPalette(colorz)
+cols <- colorz
+
+# NOTE: hard-coded carriage returns in long names for aesthetics 
+varNames2 <- data.frame(apply(varNames,2, as.character), stringsAsFactors=FALSE)
+varNames2$names[9] <- 'Geographic range \n size'
+varNames2$names[11] <- 'Home range \n size'
+varNames2$names[16] <- 'Neonate \n body mass'
+
+
+getPartial <- function(gbmMod, varNum = 1, colors = cols[1], textColor=NULL, factor=FALSE,  traits=NULL,
+    varNames=varNames2, allFlag=FALSE, scaling=1, ...){
+
+  name <- as.character(gbmMod$bars[varNum,'var'])
+  temp <- plot(gbmMod[[1]], i.var=name, return.grid=TRUE)
+
+  if(factor){temp <- temp[order(temp$y),] ; temp[,1] <- as.factor(1:nrow(temp)) }
+  if(allFlag){
+    plot(temp, col = "#54B1D3", las=1, lwd=3, main='', xlab='', tck=0.01, type='l',
+        yaxt='n', cex.lab=1.35, ylab='', ...)
+  }else{
+    plot(temp, col = colors, las=1, lwd=3, main='', xlab='', tck=0.01,
+        type='l', yaxt='n', cex.lab=1.35, ylab='', ...)
+  }
+
+  if(min(temp$y, na.rm=TRUE)>1){
+    axis(2, at = round(c(min(temp$y), max(temp$y)),0), tck=0.01, hadj=0.45, las=1)
+  }
+  if(min(temp$y, na.rm=TRUE) < 1) {
+    axis(2, at = c(min(temp$y), max(temp$y)), labels=format(c(min(temp$y), max(temp$y)),
+     scientific=TRUE, digits=2), tck=0.01, hadj=0.9, las=1)
+  }
+	if(temp$y[1] > tail(temp$y,1)){pos <- 'bottomleft'}
+	if(temp$y[1] < tail(temp$y,1)){pos <- 'topleft'}
+
+	if(!is.null(textColor)){
+		legend(pos, as.character(varNames[which(name==varNames$vars), 'names']), 
+      bty='n', cex=1.25, text.col=textColor)
+	}else{
+		legend(pos, as.character(varNames[which(name==varNames$vars), 'names']), 
+      bty='n', cex=1.25, text.col=colors)
+	}
+
+  if(!is.null(traits)){
+    if(allFlag){
+    #this is where you'd put some cool point coloring by clade code
+      adj <- as.numeric(na.omit(traits$Order))
+      adj[adj==3] <- 1
+      adj[adj==4] <- 3
+      traits <- traits[which(!is.na(traits$Order)), ]
+      points(y=rep(min(temp$y), length(adj)) + (scaling*as.numeric(adj)), 
+        x= traits[,which(name == colnames(traits))], col=adjustcolor(allCols,0.2), pch=16)
+    }else{
+      points(y=rep(min(temp$y), nrow(traits)), 
+        x= traits[,which(name == colnames(traits))], col=adjustcolor(colors,0.2), pch=16)
+    }
+  }
+  return(temp)
+}
+
+```
+
+
+
+
+
+```{r}
+
+allCols <- rep(NA, nrow(allFinal))
+allCols[allFinal$Order %in% c(1,3)] <- colorz[1]
+allCols[allFinal$Order == 2] <- colorz[2]
+allCols[allFinal$Order == 4] <- colorz[3]
+allCols <- allCols[!is.na(allCols)]
+
+
+#Degree
+pdf('figures/supplemental/pdpDegree.pdf')
+layout(matrix(c(1:12), ncol=3, nrow=4, byrow=TRUE), 
+  height=c(1,1,1,1), width=c(1,1,1))
+
+par(mar=c(2,4,0.5,1), oma=c(0,0,3,0))
+ getPartial(gbm.ung.degree,1, colors=cols[1], traits=ungFinal)
+ getPartial(gbm.ung.degree,2, colors=cols[1], traits=ungFinal)
+ getPartial(gbm.ung.degree,3, colors=cols[1], traits=ungFinal)
+
+ getPartial(gbm.pri.degree,1, colors=cols[3], traits=priFinal)
+ getPartial(gbm.pri.degree,2, colors=cols[3], traits=priFinal)
+ getPartial(gbm.pri.degree,3, colors=cols[3], traits=priFinal)
+
+ getPartial(gbm.car.degree,1, colors=cols[2], traits=carnFinal)
+ getPartial(gbm.car.degree,2, colors=cols[2], traits=carnFinal)
+ getPartial(gbm.car.degree,3, colors=cols[2], traits=carnFinal)
+
+ getPartial(gbm.all.degree,1, colors=allCols, traits=allFinal, 
+   allFlag=T, textColor=cols[4], scaling=5, factor=TRUE)
+ getPartial(gbm.all.degree,2, colors=allCols, traits=allFinal, 
+   allFlag=T, textColor=cols[4])
+ getPartial(gbm.all.degree,3, colors=allCols, traits=allFinal, 
+   allFlag=T, scaling=1, textColor=cols[4])
+
+dev.off()
+
+
+
+
+
+#Betweenness
+pdf('figures/supplemental/pdpBetween.pdf')
+layout(matrix(c(1:12), ncol=3, nrow=4, byrow=TRUE), height=c(1,1,1,1), width=c(1,1,1))
+par(mar=c(2,4,0.5,1), oma=c(0,0,3,0))
+ getPartial(gbm.ung.between,1, colors=cols[1], traits=ungFinal)
+ getPartial(gbm.ung.between,2, colors=cols[1], traits=ungFinal)
+ getPartial(gbm.ung.between,3, colors=cols[1], traits=ungFinal)
+
+ getPartial(gbm.pri.between,1, colors=cols[3], traits=priFinal)
+ getPartial(gbm.pri.between,2, colors=cols[3], traits=priFinal)
+ getPartial(gbm.pri.between,3, colors=cols[3], traits=priFinal)
+
+ getPartial(gbm.car.between,1, colors=cols[2], traits=carnFinal)
+ getPartial(gbm.car.between,2, colors=cols[2], traits=carnFinal)
+ getPartial(gbm.car.between,3, colors=cols[2], traits=carnFinal)
+
+ getPartial(gbm.all.between,1, colors=allCols, traits=allFinal, 
+   allFlag=T, scaling=20, textColor=cols[4])
+ getPartial(gbm.all.between,2, colors=allCols, traits=allFinal, 
+   allFlag=T, scaling=30, textColor=cols[4])
+ getPartial(gbm.all.between,3, colors=allCols, traits=allFinal, 
+   allFlag=T, scaling=30, textColor=cols[4])
+dev.off()
+
+
+
+
+
+
+
+
+# Closeness
+pdf('figures/supplemental/pdpClose.pdf')
+layout(matrix(c(1:12), ncol=3, nrow=4, byrow=TRUE), height=c(1,1,1,1), width=c(1,1,1))
+par(mar=c(2,4,0.5,1), oma=c(0,0,3,0))
+ getPartial(gbm.ung.close,1, colors=cols[1], traits=ungFinal)
+ getPartial(gbm.ung.close,2, colors=cols[1], traits=ungFinal)
+ getPartial(gbm.ung.close,3, colors=cols[1], traits=ungFinal)
+
+ getPartial(gbm.pri.close,1, colors=cols[3], traits=priFinal)
+ getPartial(gbm.pri.close,2, colors=cols[3], traits=priFinal)
+ getPartial(gbm.pri.close,3, colors=cols[3], traits=priFinal)
+
+ getPartial(gbm.car.close,1, colors=cols[2], traits=carnFinal)
+ getPartial(gbm.car.close,2, colors=cols[2], traits=carnFinal)
+ getPartial(gbm.car.close,3, colors=cols[2], traits=carnFinal)
+
+ getPartial(gbm.all.close,1, colors=allCols, traits=allFinal,
+   allFlag=T,scaling=0.00001, textColor=cols[4])
+ getPartial(gbm.all.close,2, colors=allCols, traits=allFinal, 
+   allFlag=T, scaling=0.000001, textColor=cols[4])
+ getPartial(gbm.all.close,3, colors=allCols, traits=allFinal, 
+   allFlag=T, scaling=0.0000005, textColor=cols[4])
+dev.off()
+
+
+
+
+
+# Eigenvector
+pdf('figures/supplemental/pdpEigen.pdf')
+layout(matrix(c(1:12), ncol=3, nrow=4, byrow=TRUE), height=c(1,1,1,1), width=c(1,1,1))
+par(mar=c(2,4,0.5,1), oma=c(0,0,3,0))
+getPartial(gbm.ung.eigen,1, colors=cols[1], traits=ungFinal)
+getPartial(gbm.ung.eigen,2, colors=cols[1], traits=ungFinal)
+getPartial(gbm.ung.eigen,3, colors=cols[1], traits=ungFinal)
+
+getPartial(gbm.pri.eigen,1, colors=cols[3], traits=priFinal)
+getPartial(gbm.pri.eigen,2, colors=cols[3], traits=priFinal)
+getPartial(gbm.pri.eigen,3, colors=cols[3], traits=priFinal)
+
+getPartial(gbm.car.eigen,1, colors=cols[2], traits=carnFinal)
+getPartial(gbm.car.eigen,2, colors=cols[2], traits=carnFinal)
+getPartial(gbm.car.eigen,3, colors=cols[2], traits=carnFinal)
+
+getPartial(gbm.all.eigen,1, colors=cols[4], traits=allFinal,
+  allFlag=T, scaling=0.05, textColor=cols[4])
+getPartial(gbm.all.eigen,2, colors=cols[4], traits=allFinal, 
+  allFlag=T, scaling=0.006, textColor=cols[4])
+getPartial(gbm.all.eigen,3, colors=cols[4], traits=allFinal, 
+  allFlag=T, scaling=0.007, textColor=cols[4])
+dev.off()
+
+
+```
+
+
+
+
+
+
+
+
+
+
+# Rank correlation between GBMs with and without WOS citations
+
+Drop WOS and see if variable ranking is the same. 
+
+
+```{r}
+getCor <- function(mod, modw){
+    tmp <- cor.test(as.numeric(mod$bars[,1]),
+    as.numeric(modw$bars[-which(modw$bars[,1] == 'wos'), 1]),
+    method='spearman')
+    paste(round(tmp$estimate,2), ' (', round(tmp$p.value,3),')', sep='')
+}
+
+ret <- matrix(0, ncol=4, nrow=4)
+colnames(ret) <- c('Ungulate', 'Carnivore', 'Primate', 'Combined')
+rownames(ret) <- c('Degree',  'Closeness','Betwenness', 'Eigenvector')
+ret[1,1] <- getCor(gbm.ung.degree, gbm.ung.degree.w)
+ret[1,2] <- getCor(gbm.ung.close, gbm.ung.close.w)
+ret[1,3] <- getCor(gbm.ung.between, gbm.ung.between.w)
+ret[1,4] <- getCor(gbm.ung.eigen, gbm.ung.eigen.w)
+
+ret[2,1] <- getCor(gbm.car.degree, gbm.car.degree.w)
+ret[2,2] <- getCor(gbm.car.close, gbm.car.close.w)
+ret[2,3] <- getCor(gbm.car.between, gbm.car.between.w)
+ret[2,4] <- getCor(gbm.car.eigen, gbm.car.eigen.w)
+
+ret[3,1] <- getCor(gbm.pri.degree, gbm.pri.degree.w)
+ret[3,2] <- getCor(gbm.pri.close, gbm.pri.close.w)
+ret[3,3] <- getCor(gbm.pri.between, gbm.pri.between.w)
+ret[3,4] <- getCor(gbm.pri.eigen, gbm.pri.eigen.w)
+
+ret[4,1] <- getCor(gbm.all.degree, gbm.all.degree.w)
+ret[4,2] <- getCor(gbm.all.close, gbm.all.close.w)
+ret[4,3] <- getCor(gbm.all.between, gbm.all.between.w)
+ret[4,4] <- getCor(gbm.all.eigen, gbm.all.eigen.w)
+
+print(xtable(ret))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r eval=FALSE, echo=FALSE}
+
+#save model outputs
+save(gbm.ung.degree, gbm.ung.close, gbm.ung.between, gbm.ung.eigen,
+  gbm.car.degree,  gbm.car.close, gbm.car.between, gbm.car.eigen,
+  gbm.pri.degree, gbm.pri.close, gbm.pri.between, gbm.pri.eigen,
+  gbm.all.degree, gbm.all.close,  gbm.all.between, gbm.all.eigen,
+  gbm.ung.degree.w, gbm.ung.close.w, gbm.ung.between.w, gbm.ung.eigen.w,
+  gbm.car.degree.w,  gbm.car.close.w, gbm.car.between.w, gbm.car.eigen.w,
+  gbm.pri.degree.w, gbm.pri.close.w, gbm.pri.between.w, gbm.pri.eigen.w,
+  gbm.all.degree.w, gbm.all.close.w,  gbm.all.between.w, gbm.all.eigen.w,
+  allFinal, ungFinal, carnFinal, priFinal, tree, phyloDst,
+  allFinalWOS, ungFinalWOS, carnFinalWOS, priFinalWOS, 
+  file='gbmModels.RData')
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Addressing reviewer concern about hold-out set
+
+```{r}
+
+gbm.ung.degreeHO <- gbm.ung.closeHO <- gbm.ung.betweenHO <- gbm.ung.eigenHO <- vector()
+gbm.car.degreeHO <- gbm.car.closeHO <- gbm.car.betweenHO <- gbm.car.eigenHO <- vector()
+gbm.pri.degreeHO <- gbm.pri.closeHO <- gbm.pri.betweenHO <- gbm.pri.eigenHO <- vector()
+gbm.all.degreeHO <- gbm.all.closeHO <- gbm.all.betweenHO <- gbm.all.eigenHO <- vector()
+
+for(i in 1:10){
+	gbm.ung.degreeHO[i]  <- getGBM(ungFinal[,'degree'], ungFinal[,c(5:ncol(ungFinal))],
+		seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.ung.closeHO[i]    <- getGBM(ungFinal[,'close'], ungFinal[,c(5:ncol(ungFinal))],
+		seed=1235-i, holdOut=0.3)$acc[4]
+	gbm.ung.betweenHO[i]  <- getGBM(ungFinal[,'between'], ungFinal[,c(5:ncol(ungFinal))],
+		seed=1235-i, holdOut=0.3)$acc[4]
+	gbm.ung.eigenHO[i]    <- getGBM(ungFinal[,'eigen'], ungFinal[,c(5:ncol(ungFinal))],
+		seed=1235-i,holdOut=0.3)$acc[4]
+
+
+	gbm.car.degreeHO[i]   <- getGBM(carnFinal[,'degree'],
+		                         carnFinal[,c(5:ncol(carnFinal))],seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.car.closeHO[i]    <- getGBM(carnFinal[,'close'],
+		                         carnFinal[,c(5:ncol(carnFinal))],seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.car.betweenHO[i]  <- getGBM(carnFinal[,'between'],
+		                         carnFinal[,c(5:ncol(carnFinal))], seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.car.eigenHO[i]    <- getGBM(carnFinal[,'eigen'],
+		                         carnFinal[,c(5:ncol(carnFinal))], seed=1234-i,holdOut=0.3)$acc[4]
+
+	gbm.pri.degreeHO[i] <- getGBM(priFinal[,'degree'],
+		                         priFinal[,c(5:ncol(priFinal))],
+														 seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.pri.closeHO[i] <- getGBM(priFinal[,'close'],
+		                         priFinal[,c(5:ncol(priFinal))],
+														 seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.pri.betweenHO[i] <- getGBM(priFinal[,'between'],
+		                         priFinal[,c(5:ncol(priFinal))],
+														 seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.pri.eigenHO[i] <- getGBM(priFinal[,'eigen'],
+		                         priFinal[,c(5:ncol(priFinal))],
+														 seed=1235-i,holdOut=0.3)$acc[4]
+
+
+	gbm.all.degreeHO[i]  <- getGBM(allFinal[,'degree'],
+		                         allFinal[,c(5:ncol(allFinal))],
+														seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.all.closeHO[i]   <- getGBM(allFinal[,'close'],
+		                         allFinal[,c(5:ncol(allFinal))],
+														seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.all.betweenHO[i] <- getGBM(allFinal[,'between'],
+		                        allFinal[,c(5:ncol(allFinal))],
+														seed=1235-i,holdOut=0.3)$acc[4]
+	gbm.all.eigenHO[i]  <- getGBM(allFinal[,'eigen'],
+		                        allFinal[,c(5:ncol(allFinal))],
+														seed=1235-i,holdOut=0.3)$acc[4]
+
+}
+
+```
+
+
+
+
+
+
