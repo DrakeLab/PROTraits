@@ -98,7 +98,7 @@ Hepatozoon JM-8,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Hepatozoon procyonis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Iodamoeba butschlii,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Isospora arctopitheci,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Isospora canis,dog,0,0,0,1,0,0,0,0,1
+Cystoisospora canis,dog,0,0,0,1,0,0,0,0,1
 Isospora cebi,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Isospora endocallimici,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Isospora lutrae,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
@@ -202,7 +202,6 @@ Triadinium galea,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Trichomonas intestinalis,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Troglocorys cava,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Troglodytella abrassarti,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-Trypanosoma brimonti,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Trypanosoma brucei,"game animals, cattle",1,0,0,0,1,0,0,0,2
 Trypanosoma cervi,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 Trypanosoma congolense,"game animals, cattle",1,0,0,0,1,0,0,0,2
