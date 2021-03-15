@@ -84,6 +84,10 @@ highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
 table(highlyCorrelated$feature1) %>% View()
 
 protraits <- protraits %>% select(-c(numhostzoons, numcommzoons, numparcommzoons))
+protraits <- protraits %>% select(-nRealms)
+protraits <- protraits %>% select(-c(multi, Terrestrial, Marine, Freshwater, Aerial, numpars))
+protraits <- protraits %>% select(-c(nBiome, numhosts, protcommsize))
+
 
 # ok it's fine can come back later
 
@@ -91,6 +95,11 @@ protraits <- protraits %>% select(-c(numhostzoons, numcommzoons, numparcommzoons
 
 data <- select_if(protraits, is.numeric)
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+
 corrplot(correlationMatrix, method="color", is.corr=T, tl.col = "black", tl.cex = 0.6, number.cex = 0.5, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
 
@@ -99,7 +108,9 @@ completeness <- protraits %>% summarise_all(function(x) mean(!is.na(x))) %>% as.
 datacompleteness <- cbind(names(protraits), completeness) %>% as.data.frame()
 protraits %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric() %>% plot(type = 'h')
 
+
 write.csv(protraits, "./data/modified/protraits_210305.csv")
+write.csv(corrPairs, "./data/modified/featurePCC.csv")
 
 # Extra/old code ---------------
 
