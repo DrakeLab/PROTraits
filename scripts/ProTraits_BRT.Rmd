@@ -1,7 +1,7 @@
 ---
-title: "Protraits: Preliminary BRT results"
+title: "Protraits: Exploratory Analyses"
 author: "Joy Vaz"
-date: "March 05, 2021"
+date: "March 09, 2021"
 output: html_document
 ---
 
@@ -9,7 +9,7 @@ output: html_document
 rm(list = ls())
 
 library("knitr")
-opts_chunk$set(tidy=T, warning=F, message=F)
+opts_chunk$set(tidy=T, warning=F, message=F, include = T)
 opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
 ```
 
@@ -64,70 +64,161 @@ dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
 
 ```{r tune parameters}
 
-# tune.BRT function
+# source tune.BRT function
+source("./scripts/tuneBRT_function.R")
 
-tune.brt <- function(dtrain, n.rounds = 256, n.threads = 4){
-  #' Uses 5-fold cross-validation to tune the xgboost algorithm to data 
-  #' Requires 'xgboost' library
-  #' Requires 'dplyr' library  
-  #' Requires 'magrittr' library
-  #' Requires 'Matrix' library
-  #' Requires 'data.table' library
-  #' 
-  #' Args:
-  #'  dtrain: dgCMatrix
-  #'  nrounds: the number of decision trees/boosting iterations
-  #'  nthreads: the numbers of cores to run on
-  # Returns:
-  #   A matrix of evaluation metrics and associated parameters
- 
-  k = 5
+# use tune.BRT to determine best model parameters
+tic()
+param_log <- tune.brt(dtrain = dtrain, n.rounds = 5) # returns a df of parameter combinations and the mean test AUCs and errors for each combo. Each combo is in there 5 times because it was repeated using 5 different seeds. 
+print(param_log) #
+toc()
+skrrrahh("soulja")
 
-  evalmetrics <- list("error", "auc")
-  
-  eval.log <- matrix(0 , ncol = 5)
-  colnames(eval.log) <- c("best.auc","best.error", "best.eta","best.gamma", "best.alpha")
-  for(alpha in seq(0.35, 0.5, by = 0.05)) {
-    output.BRT <- list()
-    for (eta in seq(0.025, 0.1, by = 0.025)) {
-      for (gamma in seq(0.15, 0.35, by = 0.05)) {
-        # 5-fold cross validation to determine best model parameters
-        # set gamma > 0, lowered eta, to help with overfitting
-        set.seed(2148)
-        xgbcv <- xgb.cv(params = list(max.depth = 3, alpha = alpha, nthread = n.threads, 
-                                      objective = "binary:logistic", gamma = gamma),
-                        data = dtrain, 
-                        prediction = T,
-                        nfold = k, 
-                        stratified = TRUE,
-                        nrounds = n.rounds,
-                        verbose = F,
-                        metrics = evalmetrics)
-      
-        mean.auc <- tail(xgbcv$evaluation_log$test_auc_mean, 1)
-        mean.error <- tail(xgbcv$evaluation_log$test_error_mean, 1)
-        # save eval log for each parameter combo
-        eval.metrics <- c(mean.auc, mean.error, eta, gamma, alpha)
-        eval.log <- rbind(eval.log, eval.metrics)
-      }    
-    }
-  }
-  return((eval.log)[-1, ])
-}
+```
 
-# 5-fold cross validation determine best model parameters
-# param_log <- tune.brt(dtrain = dtrain, n.rounds = 128)
-# print(param_log)
+Perform 5-fold crossvalidation and save evaluation metrics (AUC and RMSE)
 
+```{r}
+
+# reproducibility
+set.seed(2148) # this is the same seed as what is in the tune.BRT function
+
+set.seed(2)
+set.seed(3)
+set.seed(8)
+set.seed(11)
+set.seed(19)
+# 5-fold cross validated XGBoost model with 1024 trees and tuned parameters
+cv_bst_prot <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+                                nthread = 4, gamma = 0.15, alpha = 0.4,
+                                objective = "binary:logistic"),
+                    data = dtrain,
+                    stratified = TRUE,
+                    verbose = F,
+                    nfold = 5, 
+                    nrounds = 156,
+                    metrics = list("auc", "rmse"),
+                    prediction = T
+                    )
+
+# # only some seeds work, most do not - for example:
+# 
+# # reproducibility
+# set.seed(2048) # this is the same seed as what is in the tune.BRT function
+# 
+# # 5-fold cross validated XGBoost model with 1024 trees and tuned parameters
+# cv_bst_prot <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+#                                 nthread = 4, gamma = 0.15, alpha = 0.4,
+#                                 objective = "binary:logistic"),
+#                     data = dtrain,
+#                     stratified = TRUE,
+#                     verbose = F,
+#                     nfold = 5, 
+#                     nrounds = 1024,
+#                     metrics = list("auc", "rmse"),
+#                     prediction = T
+#                     )
+
+# The above gives the following error: 
+# Error in xgb.iter.eval(fd$bst, fd$watchlist, iteration - 1, feval): [13:29:05] amalgamation/../src/metric/rank_metric.cc:200: Check failed: !auc_error: AUC: the dataset only contains pos or neg samples
+
+```
+
+
+
+Plot AUC curve showing how mean train and test AUCs vary with the number of trees
+
+```{r}
+# plot of AUC vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_auc_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_auc_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test AUC mean", "Train AUC mean")) +
+  ylab("AUC (mean)") + xlab("number of trees")
+
+cv_bst_prot[["evaluation_log"]] %>% tail()
+```
+
+Train AUC increases as number of trees increase and levels out at 1, whereas test AUC jumps up and down before leveling out at 0.9229976. But that's not the highest test AUC, there are higher values around ~125 trees.
+
+Replot AUC curve with a smaller number of trees (350)
+
+```{r}
+# replot upto 350 trees
+ggplot(cv_bst_prot$evaluation_log[1:350]) +
+  geom_line(aes(iter, train_auc_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_auc_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test AUC mean", "Train AUC mean")) +
+  ylab("AUC (mean)") + xlab("number of trees")
+
+```
+
+I want the test AUC to be as close to 1 as possible. Which iterations (number of trees) give the highest train and test AUCs?
+
+```{r}
+# get number of trees that maximize train and test AUC
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = which(train_auc_mean == max(train_auc_mean))[1],
+    auc.train   = max(train_auc_mean),
+    ntrees.test  = which(test_auc_mean == max(test_auc_mean))[1],
+    auc.test   = max(test_auc_mean)
+  )
+
+cv_bst_prot[["evaluation_log"]][112]
+cv_bst_prot[["evaluation_log"]][114]
+```
+
+The maximum mean test AUC is at 112 trees (0.9289272), which is only 0.0059296 higher than the AUC >300 trees so I feel like it doesn't matter?
+
+
+Plot deviance curve showing how mean train and test errors vary with the number of trees
+
+```{r}
+
+# Plot RMSE (deviance) vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_rmse_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_rmse_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test RMSE mean", "Train RMSE mean")) +
+  ylab("RMSE (mean)") + xlab("number of trees")
+
+cv_bst_prot[["evaluation_log"]] %>% tail()
+
+# Replot with 350 trees
+ggplot(cv_bst_prot$evaluation_log[1:350]) +
+  geom_line(aes(iter, train_rmse_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_rmse_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test RMSE mean", "Train RMSE mean")) +
+  ylab("RMSE (mean)") + xlab("number of trees")
+
+# get number of trees that minimize error
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = which(train_rmse_mean == min(train_rmse_mean))[1],
+    rmse.train   = min(train_rmse_mean),
+    ntrees.test  = which(test_rmse_mean == min(test_rmse_mean))[1],
+    rmse.test   = min(test_rmse_mean)
+  )
+
+```
+Still not sure what is the best number of trees. Should I put nrounds in tune.BRT?
+
+
+IDK. I'm just going to make some preliminary results with the current parameters and 256 trees.
+```{r}
 
 # set parameters to the values that maximized AUC and minimized error
 BRT_prot <- xgboost(dtrain,
-                      params = list(max.depth = 3, eta = 0.025, 
-                                nthread = 4, gamma = 0.15, alpha = 0.4,
-                                objective = "binary:logistic", 
-                                eval_metric = list( "auc", "error")),
-                      nrounds = 256,
-                      verbose = 0)
+                    params = list(max.depth = 3, eta = 0.025,
+                                  nthread = 4, gamma = 0.15, alpha = 0.4,
+                                  eval_metric = "auc",
+                                  objective = "binary:logistic"),
+                    nrounds = 256,
+                    #metrics = list("auc", "rmse"),
+                    verbose = F,
+                    prediction = T
+                    )
 
 BRT_prot[["evaluation_log"]]
 
