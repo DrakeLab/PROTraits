@@ -263,3 +263,33 @@ sum(nrow(ung_protraits), nrow(car_protraits), nrow(pri_protraits)) == protraits 
 # 
 # library(BRRR)
 # skrrrahh("flava")
+
+
+gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
+
+table(gmpd_zooscored$zoostat)
+
+# create tbl listing all unique par spp (n = 226)
+allpars <- gmpd_zooscored %>% select(gmpdparname) %>% distinct()
+
+# create tbl listing all unique prot host spp (n = 245)
+allhosts <- gmpd_zooscored %>% select(gmpdhostname) %>% distinct()
+
+# create tbl listing all unique host-prot pairs (n = 840)
+allpairs <- gmpd_zooscored %>% select(gmpdhostname, gmpdparname) %>% distinct() %>% as.tbl() %>% 
+  mutate(pairname = paste(gmpdparname, ", ", gmpdhostname))
+
+ung_partraits <- gmpd_zooscored %>% filter(hosttype == "ungulates") %>% distinct(gmpdparname, .keep_all = T)
+table(ung_partraits$zoostat) %>% print() # 6/103 zoonotic, 97/103 non-zoonotic
+
+car_partraits <- gmpd_zooscored %>% filter(hosttype == "carnivores") %>% distinct(gmpdparname, .keep_all = T)
+table(car_partraits$zoostat) %>% print() # 3/54 zoonotic, 51/54 non-zoonotic
+
+pri_partraits <- gmpd_zooscored %>% filter(hosttype == "primates") %>% distinct(gmpdparname, .keep_all = T)
+table(pri_partraits$zoostat) %>% print() # 12/90 zoonotic, 78/90 non-zoonotic
+
+
+Save as csvs
+# write.csv(allpars, "./data/modified/allpars.csv")
+# write.csv(allpairs, "./data/modified/allpairs.csv")
+# write.csv(allhosts, "./data/modified/allhosts.csv")
