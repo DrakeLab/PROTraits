@@ -13,22 +13,25 @@ rm(list = ls())
 ### Load data
 
 ## GMPD data # rows are records of host-par associations. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
-gmpdpars_all <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
-  select(hosttype=Group, gmpdhostname=HostCorrectedName, hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
-         location=LocationName, lat=Latitude, long=Longitude, 
-         gmpdparname=ParasiteCorrectedName, HasBinomialName, ParType)
-length(unique(gmpdpars_all$gmpdparname)) # 2412 unique pars
 
-gmpdpars_all$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdpars_all$gmpdparname)
+# Entire GMPD minus species with no binomial name ---------
+gmpd_allpars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
+  filter(HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName))
 
-gmpdpars_binomialpars <- gmpdpars_all %>% 
-  filter(HasBinomialName == "yes")
-length(unique(gmpdpars_binomialpars$gmpdparname)) # 2031 unique pars after filtering out pars with no binomial name
+# Select only desired vars
+gmpd_allpars <- gmpd_allpars  %>% 
+  select(gmpdparname=ParasiteCorrectedName, -HasBinomialName, partype = ParType, 
+         gmpdhostname=HostCorrectedName, hosttype=Group, 
+         hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
+         location=LocationName, lat=Latitude, long=Longitude)
 
-gmpdpars_binomialhostspars <- gmpdpars_all %>% 
-  filter(HasBinomialName == "yes", !grepl("no binomial name", gmpdhostname))
-length(unique(gmpdpars_binomialhostspars$gmpdparname)) # 1998 unique pars after filtering out hosts and pars with no binomial name
+# Update this prot spp name
+gmpd_allpars$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpd_allpars$gmpdparname)
+  
+length(unique(gmpd_allpars$gmpdparname)) # 1998 unique pars
+table(gmpd_allpars %>% distinct(gmpdparname, .keep_all = T) %>% select(partype)) # 255 protozoa
 
+# Add zoostat to zscores to GMPD ---------
 
 zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
   filter(!Non.GMPD == 1) %>% 
@@ -63,22 +66,23 @@ zooscore_all$gmpdparname <- gsub("Isospora belli", "Cystoisospora belli", zoosco
 zooscore_all$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", zooscore_all$gmpdparname)
 
 #see if any zscores are missing
-table(zooscore_all$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # sum is 1992 which means each row has a zscore
+table(zooscore_all$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() 
+# sum is 1992 which means each row has a zscore
 
-setdiff(gmpdpars_binomialhostspars$gmpdparname, 
+setdiff(gmpd_allpars$gmpdparname, 
         zooscore_all$gmpdparname) %>% sort() # 524
 setdiff(zooscore_all$gmpdparname,
-        gmpdpars_binomialhostspars$gmpdparname) # 517 (i guess the zooscores file had more pars from outside gmpd???)
-intersect(gmpdpars_binomialhostspars$gmpdparname, 
+        gmpd_allpars$gmpdparname) # 517 (i guess the zooscores file had more pars from outside gmpd???)
+intersect(gmpd_allpars$gmpdparname, 
           zooscore_all$gmpdparname) #1474
 
 # add zscores to gmpd
-gmpd_zooscored <- left_join(gmpdpars_binomialhostspars, zooscore_all, by = "gmpdparname")
+gmpd_zooscored <- left_join(gmpd_allpars, zooscore_all, by = "gmpdparname")
 
 # see how many have zscores
 table(gmpd_zooscored$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # 13681/19333 rows have a zscore
 
-setdiff(gmpd_zooscored$gmpdparname, gmpdpars_binomialhostspars$gmpdparname)
+setdiff(gmpd_zooscored$gmpdparname, gmpd_allpars$gmpdparname)
 
 #remove those without zscore
 completeFun <- function(data, desiredCols) {
@@ -88,7 +92,7 @@ completeFun <- function(data, desiredCols) {
 
 gmpd_zooscored <- completeFun(gmpd_zooscored, "zscore") # 13681 obs YAAAY :)
 
-setdiff(gmpd_zooscored$gmpdparname, gmpdpars_binomialhostspars$gmpdparname)
+setdiff(gmpd_zooscored$gmpdparname, gmpd_allpars$gmpdparname) # should be 0
 
 # assign zoostat
 
@@ -106,29 +110,75 @@ table(gmpd_zooscored$zoostat)
 
 # SAVE THIS MF
 
-# write.csv(gmpd_zooscored, "./data/modified/gmpd_zooscored.csv")
+# write.csv(gmpd_zooscored, "./data/modified/gmpd_zooscored.csv") # does not have parasite taxo or tm_mode
 
-gmpd_zooscored %>% distinct(gmpdparname, .keep_all = T) %>% filter(ParType == "Protozoa") %>% select(gmpdparname)
-#
+# Prots -------
 
-# PROTS ------
-gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
+gmpdprot <- gmpd_zooscored %>% filter(partype == "Protozoa") 
 
-gmpdprot <- gmpd_zooscored %>% filter(ParType == "Protozoa") %>% rename(gmpdprotname = gmpdparname, prothostname = gmpdhostname)
 
-#
+length(unique(gmpdprot$gmpdparname)) # 228 prots
+gmpdprot %>% distinct(gmpdparname, .keep_all = T) %>% select(zoostat) %>% table() # 13 zoonotic
+gmpdprot %>% distinct(gmpdparname, .keep_all = T) %>% filter(zoostat == 1) %>% select(gmpdparname)
+
+
+# add prot taxonomy data ------
 gmpdtaxo <- read.csv("./data/original/GMPD_datafiles/GMPD_parasite_taxonomy.csv") %>% # rows are unique parasite species, columns are taxonomic classifications of each species
-  filter(ParType == "Protozoa", HasBinomialName == "yes") %>% 
-  select(gmpdprotname=ParasiteCorrectedName, 
-         parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily) %>% 
+  filter(HasBinomialName == "yes") 
+
+gmpdtaxo <- gmpdtaxo %>% select(gmpdparname=ParasiteCorrectedName, partype = ParType, parphylum=ParPhylum, 
+                                parclass=ParClass, parorder=ParOrder, parfamily=ParFamily) %>% 
   distinct()
+
+# Update this prot spp name
+gmpdtaxo$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdtaxo$gmpdparname)
+# fix spelling
+gmpdtaxo$gmpdparname <- gsub("Plasmodium rodhani", "Plasmodium rodhaini", gmpdtaxo$gmpdparname)
+
+length(unique(gmpdtaxo$gmpdparname)) # 2031 unique pars but the df has 2048 rows?
+
+# find duplicate parasites
+gmpdtaxo %>% select(gmpdparname) %>% 
+  table() %>% as.data.frame() %>% filter(Freq > 1) 
+#' UGHH there are 16 that appear more than once. Does this matter? 
+#' Yes because the protozoa order, fam, etc. are going to be predictors. 
+#' How many of these duplicates are actually protozoa?
+
+gmpdtaxo %>% filter(partype == "Protozoa") %>% select(gmpdparname) %>% 
+  table() %>% as.data.frame() %>% filter(Freq > 1) 
+# Just the one - Cytauxzoon felis appears twice
+
+gmpdtaxo %>% rownames_to_column() %>% filter(gmpdparname == "Cytauxzoon felis") 
+# It has two Orders, Achromatorida and Piroplasmida. Wikipedia says Piroplasmida so I'm going to go with that.
+
+gmpdtaxo <- gmpdtaxo[-445, ] %>% 
+  distinct()
+
+# check for duplicate protozoa again
+gmpdtaxo %>% filter(partype == "Protozoa") %>% select(gmpdparname) %>% 
+  table() %>% as.data.frame() %>% filter(Freq > 1) 
+# None! Nice. The other partypes have duplicates but that's not my problem right now.
+
+# Subset to just prots
+gmpdprottaxo <- gmpdtaxo %>% filter(partype == "Protozoa")
+length(unique(gmpdprottaxo$gmpdparname)) # 255
+# WHY are there more than 228? Is it because 27 of those were not zooscored?
+
+setdiff(gmpdprottaxo$gmpdparname, gmpdprot$gmpdparname) # 27, one of which is T. brimonti which we don't want anyway
+setdiff(gmpdprot$gmpdparname, gmpdprottaxo$gmpdparname) # 0
+intersect(gmpdprottaxo$gmpdparname, zooscore_all$gmpdparname) # HOW CAN THIS BE 229 WHEN TAXO ONLY HAS 255 PARS ASDFASDLFKJ?
+
+## Merge GMPD prots with GMPD prots taxo
+gmpdprottaxo <- left_join(gmpdprot, gmpdprottaxo)
 
 # Save as csvs
 #write.csv(gmpdprot, "./data/modified/gmpdprot.csv")
-#write.csv(gmpdtaxo, "./data/modified/gmpdtaxo.csv")
+#write.csv(gmpdprottaxo, "./data/modified/gmpdprottaxo.csv")
 
 
+# PROTS from raw data------
 
+# I think the point of this is just to add the tm modes.
 
 ## Load protozoa zooscores data and subset relevant portions
 
@@ -157,6 +207,11 @@ names(prots178) == names(prots051)
 
 prots229 <- rbind(prots178, prots051)
 
+# correct T. brucei zscore
+prots229 %>% rownames_to_column() %>% filter(protname == "Trypanosoma brucei") # row number 156
+# replace zscore with the correct one
+prots229$zscore[156]  <- 3
+
 # assign zoostat
 
 table(prots229$zscore)
@@ -176,102 +231,54 @@ table(prots229$zoostat)
 ## Names
 
 # Check  for discrepencies in gmpdprotnames between the two dataframes 
-setdiff(prots229$protname, gmpdprot$gmpdprotname) 
+setdiff(prots229$protname, gmpdprot$gmpdparname) 
 
-#' 3 spp in prots227 does is not listed gmpdprot: "Cystoisospora canis"  "Trypanosoma brimonti" "Cystoisospora belli"
-#' gmpdprot has outdated names. replace Isospora with Cystoisospora
+#' 2 spp in prots229 are not listed gmpdprot: "Isospora canis"  "Trypanosoma brimonti"
+#' Replace Isospora with Cystoisospora
 #' Trypanosoma brimonti has one host with no binomial name and was thus excluded
   
 prots229$protname <- gsub("Isospora canis", "Cystoisospora canis", prots229$protname) 
 
 # Remove T. brimonti from prots229
-prots228 <- prots229 %>% filter(!grepl("Trypanosoma brimonti", protname))
-
-# remove unecessary vars
-prots228 <- prots228 %>% select(-c(zscore, cscore, gmpdprotname))
-
-# Check for discrepencies between final protnames and gmpdprotnames
-setdiff(prots228$protname, gmpdprot$gmpdprotname) # the final protnames in prots226 contains 2 corrected protnames that have been updated from the original gmpdprotname
-
-# Create protname variable in gmpd for final protnames
-gmpdprot <- gmpdprot %>% mutate(protname = gmpdprotname)
-
-# Verify that the protnames in both datasets are now matching
-intersect(prots228$protname, gmpdprot$protname) %>% length()
+prots228 <- prots229 %>% filter(!grepl("Trypanosoma brimonti", protname)) %>% 
+  select(-c(zscore, cscore, gmpdprotname, zoostat)) # remove unecessary vars
 
 # write.csv(prots228, "./data/modified/prots228.csv")
 
-### Create
+# Merge prots 228 with gmpdprottaxo ----
 
-# Add prots228 data to gmpdprot to create protraits (idk why this is a thing??)
-protraits <- prots228 %>% 
-  select(-c(zscore, cscore, zoostat, gmpdprotname)) %>% 
-  left_join(gmpdprot, by = "protname")
+# Rename to match
+gmpdprottaxo <- gmpdprottaxo %>% rename(protname = gmpdparname)
+
+# Check for discrepencies between final protnames and gmpdparnames
+setdiff(prots228$protname, gmpdprottaxo$protname) # 0
+
+# Verify that the protnames in both datasets are now matching
+intersect(prots228$protname, gmpdprottaxo$protname) %>% length()
 
 
-# Check if protraits_zooscored has 228 prot species
-length(unique(protraits$protname))
+## Merge
 
-protraits %>% distinct(protname, .keep_all = T) %>% select(zoostat) %>% table()
+# Add prots228 data to gmpdprottaxo to create gmpdprotraits
+gmpdprotraits <- left_join(prots228, gmpdprottaxo)
+
+# Check if gmpdprotraits has 228 prot species
+length(unique(gmpdprotraits$protname))
+
+gmpdprotraits %>% distinct(protname, .keep_all = T) %>% select(zoostat) %>% table()
+
+# write.csv(gmpdprotraits, "./data/modified/gmpdprotraits.csv")
 
 # create tbl listing all unique prot spp (n = 228)
-allprots <- protraits %>% distinct(protname)
+allprots <- gmpdprotraits %>% distinct(protname)
 
-# create tbl listing all unique prot host spp (n = 245)
-allprothosts <- protraits %>% distinct(prothostname)
+# create tbl listing all unique prot host spp (n = 246)
+allprothosts <- gmpdprotraits %>% distinct(gmpdhostname)
 
 # create tbl listing all unique host-prot pairs (n = 840)
-allprotpairs <- protraits %>% select(prothostname, protname) %>% distinct() %>% as.tbl() %>% 
-  mutate(pairname = paste(protname, ", ", prothostname))
+allprotpairs <- gmpdprotraits %>% select(gmpdhostname, protname) %>% distinct() %>% as.tbl() %>% 
+  mutate(pairname = paste(protname, ", ", gmpdhostname))
 
-# # Split my mammal order
-# 
-# # Ungulates (n = 103)
-# ung_protraits <- protraits %>% filter(hosttype == "ungulates") %>% distinct(protname, .keep_all = T)
-# table(ung_protraits$zoostat) # 6/103 zoonotic, 97/103 non-zoonotic
-# 
-# # Carnivores (n = 54)
-# car_protraits <- protraits %>% filter(hosttype == "carnivores") %>% distinct(protname, .keep_all = T)
-# table(car_protraits$zoostat) # 3/54 zoonotic, 51/54 non-zoonotic
-# 
-# # Primates (n = 90)
-# pri_protraits <- protraits %>% filter(hosttype == "primates") %>% distinct(protname, .keep_all = T)
-# table(pri_protraits$zoostat) # 12/90 zoonotic, 78/90 non-zoonotic
-# 
-# # check if we got the right number
-# sum(nrow(ung_protraits), nrow(car_protraits), nrow(pri_protraits)) == protraits %>% select(protname, hosttype) %>% distinct() %>% nrow()
-# 
-# # Save as csvs
-# # write.csv(allprots, "./data/modified/allprots.csv")
-# # write.csv(allprotpairs, "./data/modified/allprotpairs.csv")
-# # write.csv(allprothosts, "./data/modified/allprothosts.csv")
-
-
-# gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
-# 
-# table(gmpd_zooscored$zoostat)
-# 
-# # create tbl listing all unique par spp (n = 226)
-# allpars <- gmpd_zooscored %>% select(gmpdparname) %>% distinct()
-# 
-# # create tbl listing all unique prot host spp (n = 245)
-# allhosts <- gmpd_zooscored %>% select(gmpdhostname) %>% distinct()
-# 
-# # create tbl listing all unique host-prot pairs (n = 840)
-# allpairs <- gmpd_zooscored %>% select(gmpdhostname, gmpdparname) %>% distinct() %>% as.tbl() %>% 
-#   mutate(pairname = paste(gmpdparname, ", ", gmpdhostname))
-# 
-# ung_partraits <- gmpd_zooscored %>% filter(hosttype == "ungulates") %>% distinct(gmpdparname, .keep_all = T)
-# table(ung_partraits$zoostat) %>% print() # 6/103 zoonotic, 97/103 non-zoonotic
-# 
-# car_partraits <- gmpd_zooscored %>% filter(hosttype == "carnivores") %>% distinct(gmpdparname, .keep_all = T)
-# table(car_partraits$zoostat) %>% print() # 3/54 zoonotic, 51/54 non-zoonotic
-# 
-# pri_partraits <- gmpd_zooscored %>% filter(hosttype == "primates") %>% distinct(gmpdparname, .keep_all = T)
-# table(pri_partraits$zoostat) %>% print() # 12/90 zoonotic, 78/90 non-zoonotic
-# 
-# 
-# # Save as csvs
-# write.csv(allpars, "./data/modified/allpars.csv")
-# write.csv(allpairs, "./data/modified/allpairs.csv")
-# write.csv(allhosts, "./data/modified/allhosts.csv")
+# write.csv(allprots, "./data/modified/protnames.csv")
+# write.csv(allprothosts, "./data/modified/prothostnames.csv")
+# write.csv(allprotpairs, "./data/modified/prothostpairs.csv")
