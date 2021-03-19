@@ -7,7 +7,7 @@
 library(tidyverse) 
 library(magrittr)
 
-
+rm(list = ls())
 
 # ALL GMPD PARS ------------
 ### Load data
@@ -138,7 +138,7 @@ prots178 <- read.csv("./data/original/Zooscore_datafiles/Zooscore_trait_Protozoa
          zscore=XC_ZooScore, cscore=XC_CScore, 
          gmpdprotname=ParasiteCorrectedName.updated, 
          tm_close=close, tm_nonclose=nonclose, tm_vector=vector, tm_intermediate=intermediate, 
-         parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily)
+         parphylum=ParPhylum, parclass=ParClass, parorder=ParOrder, parfamily=ParFamily, protWOS = WOShits..As.of.2.6.2017.)
 
 #write.csv(prots178, "./data/modified/prots178.csv")
 
@@ -148,7 +148,7 @@ prots051 <- read.csv("./data/modified/prots051.csv") %>% # 51 additional protozo
          zscore, cscore,
          gmpdprotname, 
          tm_close, tm_nonclose, tm_vector, tm_intermediate,
-         parphylum, parclass, parorder, parfamily)
+         parphylum, parclass, parorder, parfamily, protWOS = WOShits)
 
 #write.csv(prots049, "./data/modified/prots049.csv")
 
@@ -187,6 +187,9 @@ prots229$protname <- gsub("Isospora canis", "Cystoisospora canis", prots229$prot
 # Remove T. brimonti from prots229
 prots228 <- prots229 %>% filter(!grepl("Trypanosoma brimonti", protname))
 
+# remove unecessary vars
+prots228 <- prots228 %>% select(-c(zscore, cscore, gmpdprotname))
+
 # Check for discrepencies between final protnames and gmpdprotnames
 setdiff(prots228$protname, gmpdprot$gmpdprotname) # the final protnames in prots226 contains 2 corrected protnames that have been updated from the original gmpdprotname
 
@@ -200,7 +203,7 @@ intersect(prots228$protname, gmpdprot$protname) %>% length()
 
 ### Create
 
-# Add prots228 data to gmpdprot to create protraits
+# Add prots228 data to gmpdprot to create protraits (idk why this is a thing??)
 protraits <- prots228 %>% 
   select(-c(zscore, cscore, zoostat, gmpdprotname)) %>% 
   left_join(gmpdprot, by = "protname")
@@ -221,75 +224,54 @@ allprothosts <- protraits %>% distinct(prothostname)
 allprotpairs <- protraits %>% select(prothostname, protname) %>% distinct() %>% as.tbl() %>% 
   mutate(pairname = paste(protname, ", ", prothostname))
 
-# Split my mammal order
-
-# Ungulates (n = 103)
-ung_protraits <- protraits %>% filter(hosttype == "ungulates") %>% distinct(protname, .keep_all = T)
-table(ung_protraits$zoostat) # 6/103 zoonotic, 97/103 non-zoonotic
-
-# Carnivores (n = 54)
-car_protraits <- protraits %>% filter(hosttype == "carnivores") %>% distinct(protname, .keep_all = T)
-table(car_protraits$zoostat) # 3/54 zoonotic, 51/54 non-zoonotic
-
-# Primates (n = 90)
-pri_protraits <- protraits %>% filter(hosttype == "primates") %>% distinct(protname, .keep_all = T)
-table(pri_protraits$zoostat) # 12/90 zoonotic, 78/90 non-zoonotic
-
-# check if we got the right number
-sum(nrow(ung_protraits), nrow(car_protraits), nrow(pri_protraits)) == protraits %>% select(protname, hosttype) %>% distinct() %>% nrow()
-
-# Save as csvs
-# write.csv(allprots, "./data/modified/allprots.csv")
-# write.csv(allprotpairs, "./data/modified/allprotpairs.csv")
-# write.csv(allprothosts, "./data/modified/allprothosts.csv")
-
-## Commented the following section out bc manually entered raw data (protsentry) has been processed in clean_raw_data.R
-
-# ## Manually entered data
+# # Split my mammal order
 # 
-# rawprots <- read.csv("./data/original/protsentry.csv") %>% 
-#   select(protname = ï..ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, Type,
-#          intra = intra_extra, bodysystem = site_system, continent = geo_dist,
-#          domestic = dom_host, domestic_name = dom_hostname, flagella, sexual)
+# # Ungulates (n = 103)
+# ung_protraits <- protraits %>% filter(hosttype == "ungulates") %>% distinct(protname, .keep_all = T)
+# table(ung_protraits$zoostat) # 6/103 zoonotic, 97/103 non-zoonotic
 # 
-# View(rawprots)
+# # Carnivores (n = 54)
+# car_protraits <- protraits %>% filter(hosttype == "carnivores") %>% distinct(protname, .keep_all = T)
+# table(car_protraits$zoostat) # 3/54 zoonotic, 51/54 non-zoonotic
 # 
-# bodysystems <- c("muscular", "skeletal", "circulatory", "respiratory", "digestive", "immune", "urinary", 
-#                  "nervous", "endocrine", "reproductive", "lymphatic", "integumentary", "ocular")
+# # Primates (n = 90)
+# pri_protraits <- protraits %>% filter(hosttype == "primates") %>% distinct(protname, .keep_all = T)
+# table(pri_protraits$zoostat) # 12/90 zoonotic, 78/90 non-zoonotic
 # 
-# recode(rawprots$domestic, "yes" = 1, "no" = 0)
-# recode(rawprots$flagella, "yes" = 1, "no" = 0)
-# recode(rawprots$sexual, "yes" = 1, "both" = 1, "no" = 0)
+# # check if we got the right number
+# sum(nrow(ung_protraits), nrow(car_protraits), nrow(pri_protraits)) == protraits %>% select(protname, hosttype) %>% distinct() %>% nrow()
 # 
-# library(BRRR)
-# skrrrahh("flava")
+# # Save as csvs
+# # write.csv(allprots, "./data/modified/allprots.csv")
+# # write.csv(allprotpairs, "./data/modified/allprotpairs.csv")
+# # write.csv(allprothosts, "./data/modified/allprothosts.csv")
 
 
-gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
-
-table(gmpd_zooscored$zoostat)
-
-# create tbl listing all unique par spp (n = 226)
-allpars <- gmpd_zooscored %>% select(gmpdparname) %>% distinct()
-
-# create tbl listing all unique prot host spp (n = 245)
-allhosts <- gmpd_zooscored %>% select(gmpdhostname) %>% distinct()
-
-# create tbl listing all unique host-prot pairs (n = 840)
-allpairs <- gmpd_zooscored %>% select(gmpdhostname, gmpdparname) %>% distinct() %>% as.tbl() %>% 
-  mutate(pairname = paste(gmpdparname, ", ", gmpdhostname))
-
-ung_partraits <- gmpd_zooscored %>% filter(hosttype == "ungulates") %>% distinct(gmpdparname, .keep_all = T)
-table(ung_partraits$zoostat) %>% print() # 6/103 zoonotic, 97/103 non-zoonotic
-
-car_partraits <- gmpd_zooscored %>% filter(hosttype == "carnivores") %>% distinct(gmpdparname, .keep_all = T)
-table(car_partraits$zoostat) %>% print() # 3/54 zoonotic, 51/54 non-zoonotic
-
-pri_partraits <- gmpd_zooscored %>% filter(hosttype == "primates") %>% distinct(gmpdparname, .keep_all = T)
-table(pri_partraits$zoostat) %>% print() # 12/90 zoonotic, 78/90 non-zoonotic
-
-
-Save as csvs
+# gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
+# 
+# table(gmpd_zooscored$zoostat)
+# 
+# # create tbl listing all unique par spp (n = 226)
+# allpars <- gmpd_zooscored %>% select(gmpdparname) %>% distinct()
+# 
+# # create tbl listing all unique prot host spp (n = 245)
+# allhosts <- gmpd_zooscored %>% select(gmpdhostname) %>% distinct()
+# 
+# # create tbl listing all unique host-prot pairs (n = 840)
+# allpairs <- gmpd_zooscored %>% select(gmpdhostname, gmpdparname) %>% distinct() %>% as.tbl() %>% 
+#   mutate(pairname = paste(gmpdparname, ", ", gmpdhostname))
+# 
+# ung_partraits <- gmpd_zooscored %>% filter(hosttype == "ungulates") %>% distinct(gmpdparname, .keep_all = T)
+# table(ung_partraits$zoostat) %>% print() # 6/103 zoonotic, 97/103 non-zoonotic
+# 
+# car_partraits <- gmpd_zooscored %>% filter(hosttype == "carnivores") %>% distinct(gmpdparname, .keep_all = T)
+# table(car_partraits$zoostat) %>% print() # 3/54 zoonotic, 51/54 non-zoonotic
+# 
+# pri_partraits <- gmpd_zooscored %>% filter(hosttype == "primates") %>% distinct(gmpdparname, .keep_all = T)
+# table(pri_partraits$zoostat) %>% print() # 12/90 zoonotic, 78/90 non-zoonotic
+# 
+# 
+# # Save as csvs
 # write.csv(allpars, "./data/modified/allpars.csv")
 # write.csv(allpairs, "./data/modified/allpairs.csv")
 # write.csv(allhosts, "./data/modified/allhosts.csv")
