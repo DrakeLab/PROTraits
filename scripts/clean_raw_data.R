@@ -93,7 +93,7 @@ for (x in 1:length(sys_names)) {
 protraits_site$numsys  <- rowSums(protraits_site[, 3:15])
 
 # 
-write_csv(protraits_site, "data/modified/protraits_site.csv")
+# write_csv(protraits_site, "data/modified/protraits_site.csv")
 # 
 # # Geographic distribution (X variables - continents? subconinental divisions? column for specificity?)
 # 
@@ -123,21 +123,14 @@ for (x in 1:length(dom_host_names)) {
 protraits_dom_host_names$numdomhosts  <- rowSums(protraits_dom_host_names[, 3:10])
 
 # 
-write_csv(protraits_dom_host_names, "data/modified/protraits_domhosts.csv")
 
-# ---
+# write_csv(protraits_dom_host_names, "data/modified/protraits_domhosts.csv")
+
+# Later? ---
 
 # Transmission modes (X vars - fecal-oral, sexual, environment, ingestion, cysts, ticks, waterborne, etc.)
-
-
-
-# Columns to add up factor vars (num dom hosts, num sites, etc.) - DONE (see above)
-
-
 # Filter data based on specificity (genus vs. species) - LATER
 
-
-### Save final df
 
 # Select all clean columns, remove raw data entered, save a a final copy that can be merged with the main protraits df in data_wrangling.R
 
@@ -152,9 +145,18 @@ protraits_raw_01 <- protsentry %>%
 protraits_raw_02 <- left_join(protraits_raw_01, protraits_domhosts) # 16 vars
 protraits_raw_03 <- left_join(protraits_raw_02, protraits_sitesys) # 31 vars
 
+# Check for completeness
+completenessprotraits_raw_03 <- protraits_raw_03 %>% summarise_all(function(x) mean(!is.na(x))) %>% transpose()
+completenessprotraits_raw_03_df <- completenessprotraits_raw_03[[1]] %>% unlist() %>% as.data.frame() %>% rownames_to_column()
+
+# remove vars under 40% coverage
+
+protsentry_clean <- protraits_raw_03[, -c(8:16)]
+
+
 ### Save final df
 
-# write_csv(protraits_raw_03, "data/modified/protsentry_clean.csv")
+# write_csv(protsentry_clean, "data/modified/protsentry_clean.csv")
 
 
 

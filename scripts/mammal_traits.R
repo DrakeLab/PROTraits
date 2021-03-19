@@ -47,7 +47,9 @@ intersect(pantheria$hostname, allhosts$hostname) # 383
 setdiff(allhosts$hostname, pantheria$hostname) # 0!!! (all my hosts are in panteria)
 
 allhostsPantraits <- left_join(allhosts, pantheria, by = "hostname")
-completenessPantraits <- allhostsPantraits %>% summarise_all(function(x) mean(! is.na(x))) 
+completenessPantraits <- allhostsPantraits %>% summarise_all(function(x) mean(! is.na(x))) %>% transpose()
+# completenessPantraits_df <- completenessPantraits[[1]] %>% unlist() %>% as.data.frame() %>% rownames_to_column()
+
 ## Some of them are SUPER INCOMPLETE! compare to Dallas data and choose which ones give more complete data
 
 
@@ -72,7 +74,7 @@ setdiff(allhosts$hostname, Dallas2018Finaltraits$hostname) # 88 mimatches - some
  
 
 allhostsDallas2018Finaltraits <- left_join(allhosts, Dallas2018Finaltraits)
-completenessDallas2018Finaltraits <- allhostsDallas2018Finaltraits %>% summarise_all(function(x) mean(! is.na(x)))
+completenessDallas2018Finaltraits <- allhostsDallas2018Finaltraits %>% summarise_all(function(x) mean(! is.na(x))) %>% transpose()
 
 # GMPD traits 
 
@@ -150,7 +152,9 @@ Finalhosttraits <- left_join(Finalhosttraits, FinalPantraits)
 
 Finalhosttraits <- left_join(Finalhosttraits, FinalPHYLAtraits)
 
-completenessFinalhosttraits <- Finalhosttraits %>% summarise_all(function(x) mean(!is.na(x))) 
+completenessFinalhosttraits <- Finalhosttraits %>% summarise_all(function(x) mean(!is.na(x))) %>% transpose()
+completenessFinalhosttraits_df <- completenessFinalhosttraits[[1]] %>% unlist() %>% as.data.frame() %>% rownames_to_column()
+
 # HomeRange and SocialGrpSize are low but the rest are pretty good!
 
 # SAVE THIS MOFO!!!!!!
@@ -210,7 +214,9 @@ allprotpairtraits <- left_join(allprotpairs, allhosttraits)
 prothosttraits_agg <- allprotpairtraits %>% group_by(protname) %>% summarise_if(is.numeric, median, na.rm = TRUE)
 
 #Check for completeness
-prothosttraits_agg %>% as.data.frame() %>% summarise_all(function(x) mean(!is.na(x)))
+completenessprothosttraits_agg  <- prothosttraits_agg %>% as.data.frame() %>% summarise_all(function(x) mean(!is.na(x))) %>% transpose()
+completenessprothosttraits_aggs_df <- completenessprothosttraits_agg[[1]] %>% unlist() %>% as.data.frame() %>% rownames_to_column()
+
 prothosttraits_agg %>% as.data.frame() %>% summarise_all(function(x) mean(!is.na(x))) %>% min()
 # GOOD!
 
