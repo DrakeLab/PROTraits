@@ -31,6 +31,13 @@ gmpd_allpars$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", g
 length(unique(gmpd_allpars$gmpdparname)) # 1998 unique pars
 table(gmpd_allpars %>% distinct(gmpdparname, .keep_all = T) %>% select(partype)) # 255 protozoa
 
+# save all pairs
+gmpd_allpairs <- gmpd_allpars %>% 
+  select(gmpdparname, gmpdhostname) %>% 
+  distinct()
+
+write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
+
 # Add zoostat to zscores to GMPD ---------
 
 zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
@@ -267,7 +274,7 @@ length(unique(gmpdprotraits$protname))
 
 gmpdprotraits %>% distinct(protname, .keep_all = T) %>% select(zoostat) %>% table()
 
-# write.csv(gmpdprotraits, "./data/modified/gmpdprotraits.csv")
+# write.csv(gmpdprotraits, "./data/modified/protraits/gmpdprotraits.csv")
 
 # create tbl listing all unique prot spp (n = 228)
 allprots <- gmpdprotraits %>% distinct(protname)
