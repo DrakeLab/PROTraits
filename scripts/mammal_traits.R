@@ -3,6 +3,8 @@
 library(tidyverse)
 library(magrittr)
 
+rm(list = ls())
+
 # my host species
 allhosts <- read.csv("./data/modified/allhosts.csv")[-1] %>% rename(hostname = gmpdhostname)
 
@@ -41,7 +43,7 @@ pantheria <- read.delim("./data/original/PanTHERIA/PanTHERIA_1-0_WR05_Aug2008.tx
 
 pantheria[pantheria == -999] <- NA
 
-pantheria %>% summarise_all(function(x) mean(! is.na(x))) ## hmmmmmm
+pantheria %>% summarise_all(function(x) mean(!is.na(x))) ## hmmmmmm
 
 intersect(pantheria$hostname, allhosts$hostname) # 383
 setdiff(allhosts$hostname, pantheria$hostname) # 0!!! (all my hosts are in panteria)
@@ -175,54 +177,68 @@ allprotpairs <- read.csv("./data/modified/allprotpairs.csv")[-1] %>% rename(host
 
 prothostsnet <- read.csv("./data/modified/prothostsnet.csv")[-1] %>% rename(hostname = prothostname) %>% 
   select(-types)
+colnames(prothostsnet)[2:10] <- paste0("bipartite_", colnames(prothostsnet)[2:10])
+
 allhosttraits <- allhosttraits %>% left_join(prothostsnet)
 
 # Add host community vars!
-hostcommtraits <- read.csv("./data/modified/hostcomm_allpars.csv")
-allhosttraits <- allhosttraits %>% left_join(hostcommtraits)
+hostcommtraits <- read.csv("./data/modified/hostcomm_allpars.csv")[-1] %>% select(hostname, numparzoons)
 
+
+setdiff(hostcommtraits$hostname, allhosttraits$hostname)
+setdiff(allhosttraits$hostname, hostcommtraits$hostname) # no diff!
+
+allhosttraits_tmp <- allhosttraits %>% left_join(hostcommtraits)
+
+colnames(allhosttraits_tmp)[2:50] <- paste0("host_", colnames(allhosttraits_tmp)[2:50])
 
 # Change host trait vars of the factor class into numeric
 
-select_if(allhosttraits, is.numeric) %>% names()
-select_if(allhosttraits, is.factor) %>% names() # "Island.Endemicity" "IUCN.Status"
+select_if(allhosttraits_tmp, is.numeric) %>% names()
+select_if(allhosttraits_tmp, is.factor) %>% names() # "Island.Endemicity" "IUCN.Status"
 
 #Island
-allhosttraits$Island.Endemicity %>% levels()
-allhosttraits$Island.Endemicity %>% table()
-levels(allhosttraits$Island.Endemicity) <- c(0, 1, 0, 2)
-allhosttraits$Island.Endemicity %>% table()
+allhosttraits_tmp$host_Island.Endemicity %>% levels()
+allhosttraits_tmp$host_Island.Endemicity %>% table()
+levels(allhosttraits_tmp$host_Island.Endemicity) <- c(0, 1, 0, 2)
+allhosttraits_tmp$host_Island.Endemicity %>% table()
 
-allhosttraits$Island.Endemicity <- allhosttraits$Island.Endemicity %>% as.numeric()
+allhosttraits_tmp$host_Island.Endemicity <- allhosttraits_tmp$host_Island.Endemicity %>% as.numeric()
 
 # IUCN
-allhosttraits$IUCN.Status %>% levels()
-allhosttraits$IUCN.Status %>% table()
-levels(allhosttraits$IUCN.Status) <- c(5, 0, 4, 6, 1, 2, 3)
-allhosttraits$IUCN.Status %>% table()
+allhosttraits_tmp$host_IUCN.Status %>% levels()
+allhosttraits_tmp$host_IUCN.Status %>% table()
+levels(allhosttraits_tmp$host_IUCN.Status) <- c(5, 0, 4, 6, 1, 2, 3)
+allhosttraits_tmp$host_IUCN.Status %>% table()
 
-allhosttraits$IUCN.Status <- allhosttraits$IUCN.Status %>% as.numeric()
+allhosttraits_tmp$host_IUCN.Status <- allhosttraits_tmp$host_IUCN.Status %>% as.numeric()
 
 # check if all numeric
-select_if(allhosttraits, is.numeric) %>% names() # 53/54 vars - all numeric except for protname, which is good
+select_if(allhosttraits_tmp, is.numeric) %>% names() # 49/50 vars - all numeric except for protname, which is good
 
 # Join to make host-par pair dataframe
 
-allprothosttraits <- left_join(allprothosts, allhosttraits)
-allprotpairtraits <- left_join(allprotpairs, allhosttraits)
+allprotpairtraits <- left_join(allprotpairs, allhosttraits_tmp) %>% select(-pairname)
 
-prothosttraits_agg <- allprotpairtraits %>% group_by(protname) %>% summarise_if(is.numeric, median, na.rm = TRUE)
+prothosttraits_agg <- allprotpairtraits %>% group_by(protname) %>% 
+  summarise_if(is.numeric, median, na.rm = TRUE)
+
+colnames(prothosttraits_agg)[2:50] <- paste0("med_", colnames(prothosttraits_agg)[2:50])
 
 #Check for completeness
-completenessprothosttraits_agg  <- prothosttraits_agg %>% as.data.frame() %>% summarise_all(function(x) mean(!is.na(x))) %>% transpose()
-completenessprothosttraits_aggs_df <- completenessprothosttraits_agg[[1]] %>% unlist() %>% as.data.frame() %>% rownames_to_column()
+completenessprothosttraits_agg  <- prothosttraits_agg %>% as.data.frame() %>% 
+  summarise_all(function(x) mean(!is.na(x))) %>% transpose()
+completenessprothosttraits_aggs_df <- completenessprothosttraits_agg[[1]] %>% unlist() %>% 
+  as.data.frame() %>% rownames_to_column()
 
 prothosttraits_agg %>% as.data.frame() %>% summarise_all(function(x) mean(!is.na(x))) %>% min()
-# GOOD!
+# Good!
 
-# SAVE
+# write.csv(completenessprothosttraits_aggs_df, "./data/modified/completenesshostprotraits.csv")
 
-# write.csv(prothosttraits_agg, "./data/modified/allprothosttraits.csv")
+# Save CSV
+
+# write.csv(prothosttraits_agg, "./data/modified/protraits/hostprotraits.csv")
 
 
 
