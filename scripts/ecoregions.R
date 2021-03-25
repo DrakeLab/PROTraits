@@ -36,7 +36,7 @@ protnames <- read.csv("./data/modified/protnames.csv")
 ecoprotraits <- left_join(protnames, ecoprotraits_agg)
 
 
-# write.csv(ecoprotraits, "./data/modified/ecoprotraits.csv")
+# write.csv(ecoprotraits, "./data/modified/protraits/ecoprotraits.csv")
 
 
 # create df of the GMPD prot records that did NOT overlap with TEOW polygons
@@ -46,7 +46,7 @@ length(noteows$lat %>% na.omit())
 #' 9 records have lat/longs but still did not overlap with TEOW polygons because they were not in 
 #' terrestrial ecoregions. 8 of the records are at the exact same point in Japan, 9th one is in Taiwan.
 
-# plot for fun
+# plot for fun ------------
 
 library(ggplot2)
 

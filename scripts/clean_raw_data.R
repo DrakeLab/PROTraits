@@ -20,14 +20,14 @@ protsentry <- read_csv("data/original/protsentry.csv") %>%
             ParasiteCorrectedName.updated, ParasiteReportedName,
             ParPhylum, ParClass, ParOrder, ParFamily))
 
-prots228 <- read.csv("./data/modified/prots228.csv")[-1]
+protnames <- read.csv("./data/modified/protnames.csv")[-1]
 
 # check to see if they match up
-intersect(prots228$protname, protsentry$protname) # 225 - uh oh
-setdiff(prots228$protname, protsentry$protname) # 3 - "Cystoisospora canis"     "Cyclospora cayetanensis" "Cystoisospora belli"
-setdiff(protsentry$protname, prots228$protname) # 2 - "Isospora canis"       "Trypanosoma brimonti"
+intersect(protnames$protname, protsentry$protname) # 225 - uh oh
+setdiff(protnames$protname, protsentry$protname) # 3 - "Cystoisospora canis"     "Cyclospora cayetanensis" "Cystoisospora belli"
+setdiff(protsentry$protname, protnames$protname) # 2 - "Isospora canis"       "Trypanosoma brimonti"
 
-# gmpdprot has outdated names. replace Isospora with Cystoisospora
+# replace Isospora with Cystoisospora
 protsentry$protname <- gsub("Isospora canis", "Cystoisospora canis", protsentry$protname) 
 
 # Trypanosoma brimonti has one host with no binomial name and was thus excluded
@@ -35,9 +35,9 @@ protsentry$protname <- gsub("Isospora canis", "Cystoisospora canis", protsentry$
 protsentry <- protsentry %>% filter(!grepl("Trypanosoma brimonti", protname))
 
 # check again
-intersect(prots228$protname, protsentry$protname) #226 - that's better. But protsentry is still missing two prots
-setdiff(prots228$protname, protsentry$protname) # 2 - "Cyclospora cayetanensis" "Cystoisospora belli"
-setdiff(protsentry$protname, prots228$protname) # 0
+intersect(protnames$protname, protsentry$protname) #226 - that's better. But protsentry is still missing two prots
+setdiff(protnames$protname, protsentry$protname) # 2 - "Cyclospora cayetanensis" "Cystoisospora belli"
+setdiff(protsentry$protname, protnames$protname) # 0
 
 # This area commented out bc resulting dfs have been saved as csvs, don't need to run all over agian ---
 
@@ -139,24 +139,25 @@ protraits_sitesys <- read_csv("data/modified/protraits_site.csv") %>%
 protraits_domhosts <- read_csv("data/modified/protraits_domhosts.csv") %>% 
   select(-dom_hostname)
 
-protraits_raw_01 <- protsentry %>% 
+joytraits_01 <- protsentry %>% 
   select(c(protname, type = Type, intra_extra, dom_host, flagella, cyst, sexual)) # 7 vars
 
-protraits_raw_02 <- left_join(protraits_raw_01, protraits_domhosts) # 16 vars
-protraits_raw_03 <- left_join(protraits_raw_02, protraits_sitesys) # 31 vars
+joytraits_02 <- left_join(joytraits_01, protraits_domhosts) # 16 vars
+joytraits_03 <- left_join(joytraits_02, protraits_sitesys) # 31 vars
 
 # Check for completeness
-completenessprotraits_raw_03 <- protraits_raw_03 %>% summarise_all(function(x) mean(!is.na(x))) %>% transpose()
-completenessprotraits_raw_03_df <- completenessprotraits_raw_03[[1]] %>% unlist() %>% as.data.frame() %>% rownames_to_column()
+completenessjoytraits_03 <- joytraits_03 %>% summarise_all(function(x) mean(!is.na(x))) %>% transpose()
+completenessjoytraits_03_df <- completenessjoytraits_03[[1]] %>% unlist() %>% as.data.frame() %>% rownames_to_column()
 
 # remove vars under 40% coverage
 
-protsentry_clean <- protraits_raw_03[, -c(8:16)]
+protsentry_clean <- joytraits_03[, -c(8:16)]
 
 
 ### Save final df
 
-# write_csv(protsentry_clean, "data/modified/protsentry_clean.csv")
+# write.csv(protsentry_clean, "data/modified/protraits/otherprotraits.csv")
+
 
 
 

@@ -97,10 +97,9 @@ protnames <- read.csv("./data/modified/allprots.csv", row.names = 1, stringsAsFa
   rename(parname = protname)
 
 protcomm_all <- left_join(protnames, allpars, by = "parname") %>% 
-  select(parname, parcommsize, numparcommzoons = numcommzoons, propparcommzoon = propcommzoon) %>% 
-  rename(protname = parname)
+  select(protname = parname, parcommsize, propparcommzoon = propcommzoon, prophostzoon)
 
-write.csv(protcomm_all, "./data/modified/protcomm_all.csv")
+write.csv(protcomm_all, "./data/modified/protraits/commprotraits.csv")
 
 # select which vars you want to go into parraits and add join them
 

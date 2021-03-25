@@ -248,9 +248,10 @@ prots229$protname <- gsub("Isospora canis", "Cystoisospora canis", prots229$prot
 
 # Remove T. brimonti from prots229
 prots228 <- prots229 %>% filter(!grepl("Trypanosoma brimonti", protname)) %>% 
-  select(-c(zscore, cscore, gmpdprotname, zoostat)) # remove unecessary vars
+  select(-c(zscore, cscore, gmpdprotname)) # remove unecessary vars
 
 # write.csv(prots228, "./data/modified/prots228.csv")
+# write.csv(prots228, "./data/modified/protraits/gmpdprotraits.csv")
 
 # Merge prots 228 with gmpdprottaxo ----
 
@@ -274,7 +275,7 @@ length(unique(gmpdprotraits$protname))
 
 gmpdprotraits %>% distinct(protname, .keep_all = T) %>% select(zoostat) %>% table()
 
-# write.csv(gmpdprotraits, "./data/modified/protraits/gmpdprotraits.csv")
+# write.csv(gmpdprotraits, "./data/modified/gmpdprotraits.csv")
 
 # create tbl listing all unique prot spp (n = 228)
 allprots <- gmpdprotraits %>% distinct(protname)
