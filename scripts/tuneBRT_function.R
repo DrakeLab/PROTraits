@@ -16,17 +16,17 @@ tune.brt <- function(dtrain, n.rounds = 256, n.threads = 4){
   
   k = 5
   
-  evalmetrics <- list("error", "auc")
+  evalmetrics <- list("error", "logloss")
   
   eval.log <- matrix(0 , ncol = 6)
-  colnames(eval.log) <- c("accuracy", "best.auc","best.error", "best.eta","best.gamma", "best.alpha")
-  for(alpha in seq(0.35, 0.5, by = 0.05)) {
+  colnames(eval.log) <- c("TSS", "mean.logloss","mean.error", "best.eta","best.gamma", "best.alpha")
+  for(alpha in seq(0.35, 0.55, by = 0.05)) {
     output.BRT <- list()
-    for (eta in seq(0.025, 0.1, by = 0.025)) {
-      for (gamma in seq(0.15, 0.35, by = 0.05)) {
+    for (eta in seq(0.01, 0.05, by = 0.01)) {
+      for (gamma in seq(0.10, 0.35, by = 0.05)) {
         # 5-fold cross validation to determine best model parameters
         # set gamma > 0, lowered eta, to help with overfitting
-        set.seed(2148)
+        set.seed(2048)
         xgbcv <- xgb.cv(params = list(max.depth = 3, alpha = alpha, nthread = n.threads, 
                                       objective = "binary:logistic", gamma = gamma),
                         data = dtrain, 
@@ -45,13 +45,17 @@ tune.brt <- function(dtrain, n.rounds = 256, n.threads = 4){
                 # actual zoostat
         real.class <- tmp_prot_Train$zoostat %>% as.factor()
         
-        # Create the confusion matrix and get accuracy
-        accuracy <- confusionMatrix(pred.class, real.class, positive="1")[["overall"]][["Accuracy"]]
-        mean.auc <- tail(xgbcv$evaluation_log$test_auc_mean, 1)
+        # Create the confusion matrix and get TSS
+        conf.mat <- confusionMatrix(pred.class, real.class, positive="1")
+        TPR <- conf.mat[["byClass"]][["Sensitivity"]]
+        TNR <- conf.mat[["byClass"]][["Specificity"]]
+        TSS <- TPR + TNR - 1
+        
+        mean.logloss <- tail(xgbcv$evaluation_log$test_logloss_mean, 1)
         mean.error <- tail(xgbcv$evaluation_log$test_error_mean, 1)
         # save eval log for each parameter combo
-        eval.metrics <- c(accuracy, mean.auc, mean.error, eta, gamma, alpha)
-        eval.log <- rbind(eval.log, eval.metrics)
+        eval.metrics <- c(TSS, mean.logloss, mean.error, eta, gamma, alpha)
+        eval.log <- rbind(eval.log, eval.metrics) %>% as.data.frame()
       }    
     }
   }
