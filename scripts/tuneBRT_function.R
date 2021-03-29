@@ -1,5 +1,5 @@
 
-tune.brt <- function(dtrain, n.rounds = 256, n.threads = 4){
+tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
   #' Uses 5-fold cross-validation to tune the xgboost algorithm to data 
   #' Requires 'xgboost' library
   #' Requires 'dplyr' library  
@@ -27,22 +27,25 @@ tune.brt <- function(dtrain, n.rounds = 256, n.threads = 4){
         # 5-fold cross validation to determine best model parameters
         # set gamma > 0, lowered eta, to help with overfitting
         set.seed(2048)
-        xgbcv <- xgb.cv(params = list(max.depth = 3, alpha = alpha, nthread = n.threads, 
-                                      objective = "binary:logistic", gamma = gamma),
+        xgbcv <- xgb.cv(params = list(max.depth = 3, nthread = n.threads, 
+                                      eta = eta, 
+                                      alpha = alpha, 
+                                      gamma = gamma,
+                                      objective = "binary:logistic"),
                         data = dtrain, 
-                        prediction = T,
-                        nfold = k, 
                         stratified = TRUE,
-                        nrounds = n.rounds,
                         verbose = F,
+                        nfold = k,
+                        nrounds = n.rounds,
                         metrics = evalmetrics,
-                        scale_pos_weight = 15
+                        scale_pos_weight = 15,
+                        prediction = T
                         )
         # prediction probabilities
         pred <- xgbcv$pred
-                # Set cutoff threshold
+        # Set cutoff threshold
         pred.class <- ifelse(pred >= 0.5, 1, 0) %>% as.factor()
-                # actual zoostat
+        # actual zoostat
         real.class <- tmp_prot_Train$zoostat %>% as.factor()
         
         # Create the confusion matrix and get TSS
