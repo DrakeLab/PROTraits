@@ -97,7 +97,7 @@ setdiff(Dallas2018Finaltraits$hostname, Dallas2018GMPDtraits$hostname) %>% sort(
 #' PanTHERIA has all my 383 hosts - see above. But completeness is really low.
 #' So I'm going to add add all variables I want from all three datasets
 #' The variables from Dallas datasets that are not from PanTHERIA:
-#' TNetwork measures (degree, closeness, betweenness, and eigenvector centrality)
+#' Network measures (degree, closeness, betweenness, and eigenvector centrality)
 #' Brain weight (GMPD one has two versions idk why), the fair proportion measure of evolutionary distinctiveness,
 #' GR_Area_combined (is this geographic range?), and wos
 
@@ -112,21 +112,46 @@ completenessPantraits
 completenessDallas2018Finaltraits
 completenessDallas2018GMPDtraits
 
-FinalPantraits <- allhostsPantraits %>% select(hostname, ActivityCycle, GestationLen, HabitatBreadth, InterbirthInterval, 
-                                               LitterSize,PopulationDensity, Terrestriality, WeaningAge, SocialGrpSize, 
-                                               HuPopDen_Mean_n.km2, HuPopDen_Change, Precip_Mean_mm, Temp_Mean_01degC)
+FinalPantraits <- allhostsPantraits %>% select(hostname, 
+                                               ActivityCycle, 
+                                               GestationLen, 
+                                               HabitatBreadth, 
+                                               InterbirthInterval, 
+                                               LitterSize,
+                                               PopulationDensity, 
+                                               Terrestriality, 
+                                               WeaningAge, 
+                                               SocialGrpSize, 
+                                               HuPopDen_Mean_n.km2, 
+                                               HuPopDen_Change, 
+                                               Precip_Mean_mm, 
+                                               Temp_Mean_01degC)
 
-FinalDallas2018traits <- allhostsDallas2018Finaltraits %>% select(hostname, degree, close, between, eigen, fairProp, wos)
+FinalDallas2018traits <- allhostsDallas2018Finaltraits %>% select(hostname, 
+                                                                  degree, 
+                                                                  close, 
+                                                                  between, 
+                                                                  eigen, 
+                                                                  fairProp, 
+                                                                  wos)
 
-FinalDallas2018GMPDtraits <- Dallas2018GMPDtraits %>% select(hostname, AdultBodyMass_wEXT, AdultHeadBodyLen, DietBreadth, 
-                                                             HomeRange, NeonateBodyMass_wEXT, LittersPerYear_wEXT, MaxLongevity, 
-                                                             SexualMaturityAge, TrophicLevel, GR_Area_Combined_IUCN_preferred)
+FinalDallas2018GMPDtraits <- Dallas2018GMPDtraits %>% select(hostname, 
+                                                             AdultBodyMass_wEXT, 
+                                                             AdultHeadBodyLen, 
+                                                             DietBreadth, 
+                                                             HomeRange, 
+                                                             NeonateBodyMass_wEXT, 
+                                                             LittersPerYear_wEXT, 
+                                                             MaxLongevity, 
+                                                             SexualMaturityAge, 
+                                                             TrophicLevel, 
+                                                             GR_Area_Combined_IUCN_preferred)
 
 # PHYLACINE -----------
 
 phylacine <- read.csv("./data/original/PHYLACINE_datafiles/Trait_data.csv") %>% 
   select(hostname = Binomial.1.2, 
-         Terrestrial, Marine, Freshwater, Aerial, 
+         # Terrestrial, Marine, Freshwater, Aerial, 
          Mass.g, Island.Endemicity, IUCN.Status = IUCN.Status.1.2,
          Diet.Plant, Diet.Vertebrate, Diet.Invertebrate) 
 
