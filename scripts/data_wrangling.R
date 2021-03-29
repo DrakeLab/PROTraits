@@ -31,15 +31,16 @@ gmpd_allpars$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", g
 length(unique(gmpd_allpars$gmpdparname)) # 1998 unique pars
 table(gmpd_allpars %>% distinct(gmpdparname, .keep_all = T) %>% select(partype)) # 255 protozoa
 
-# save all pairs
+# save all pairs (every unique combo of host-par interaction)
 gmpd_allpairs <- gmpd_allpars %>% 
   select(gmpdparname, gmpdhostname) %>% 
   distinct()
 
-write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
+# write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
 
 # Add zoostat to zscores to GMPD ---------
 
+# this is from Tao - a CSV of all the zooscored gmpd parasites
 zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
   filter(!Non.GMPD == 1) %>% 
   select(gmpdparname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, zscore=XC_ZooScore)
@@ -101,6 +102,7 @@ gmpd_zooscored <- completeFun(gmpd_zooscored, "zscore") # 13681 obs YAAAY :)
 
 setdiff(gmpd_zooscored$gmpdparname, gmpd_allpars$gmpdparname) # should be 0
 
+
 # assign zoostat
 
 table(gmpd_zooscored$zscore)
@@ -120,6 +122,8 @@ table(gmpd_zooscored$zoostat)
 # write.csv(gmpd_zooscored, "./data/modified/gmpd_zooscored.csv") # does not have parasite taxo or tm_mode
 
 # Prots -------
+
+gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
 
 gmpdprot <- gmpd_zooscored %>% filter(partype == "Protozoa") 
 
@@ -183,7 +187,7 @@ gmpdprottaxo <- left_join(gmpdprot, gmpdprottaxo)
 #write.csv(gmpdprottaxo, "./data/modified/gmpdprottaxo.csv")
 
 
-# PROTS from raw data------
+# Clean data from zooscore files ------
 
 # I think the point of this is just to add the tm modes.
 
@@ -248,7 +252,10 @@ prots229$protname <- gsub("Isospora canis", "Cystoisospora canis", prots229$prot
 
 # Remove T. brimonti from prots229
 prots228 <- prots229 %>% filter(!grepl("Trypanosoma brimonti", protname)) %>% 
+  mutate(num_tm = tm_close + tm_nonclose + tm_vector + tm_intermediate) %>%
   select(-c(zscore, cscore, gmpdprotname)) # remove unecessary vars
+
+
 
 # write.csv(prots228, "./data/modified/prots228.csv")
 # write.csv(prots228, "./data/modified/protraits/gmpdprotraits.csv")
