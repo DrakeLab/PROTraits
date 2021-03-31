@@ -14,10 +14,10 @@ protraits2 <- read.csv("./data/modified/protsentry_clean.csv")[, -(8:16)] # remo
 prothosttraits <- read.csv("./data/modified/allprothosttraits.csv", row.names = 1) %>% select(-X)
 protsnettraits <- read.csv("./data/modified/protsnet.csv", row.names = 1) %>% 
   select(-types)
-protcommtraits1 <- read.csv("./data/modified/protcomm_prots.csv", row.names = 1)
+#protcommtraits1 <- read.csv("./data/modified/protcomm_prots.csv", row.names = 1)
 protcommtraits2 <- read.csv("./data/modified/protcomm_all.csv", row.names = 1)
 protecotraits <- read.csv("./data/modified/prots_ecoregions.csv", row.names = 1)
-protphylotraits <- read.csv("./data/modified/mpd_prot.csv", row.names = 1)
+#protphylotraits <- read.csv("./data/modified/mpd_prot.csv", row.names = 1)
 
 # BRING IT ALL TOGETHER -------------
 
@@ -38,6 +38,7 @@ dev.off()
 
 # calculate correlation matrix ---------------------
 
+library(reshape2)
 library(corrplot)
 
 data <- select_if(protraits, is.numeric)
