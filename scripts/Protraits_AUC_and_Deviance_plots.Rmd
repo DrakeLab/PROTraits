@@ -1,0 +1,430 @@
+---
+title: "Protraits: AUC and Deviance plots"
+author: "Joy Vaz"
+date: "March 09, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+library("knitr")
+opts_chunk$set(tidy=T, warning=F, message=F, include = F)
+opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
+```
+
+
+```{r brt xgboost}
+
+library(Matrix)
+library(data.table)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+library(caret)
+library(mlbench)
+
+
+protraits <- read.csv("data/modified/protraits_210305.csv", row.names = 1) %>% 
+  as_tibble() %>% select(-protname)
+
+tmp_prot <- data.table(protraits)
+
+
+```
+
+```{r train_test}
+
+library(caret)
+library(xgboost)
+library(tictoc)
+library(BRRR)
+
+# subset data into training vs testing 
+set.seed(191212)
+trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
+                                     list = FALSE, 
+                                     times = 1)
+tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
+tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+
+
+
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] # create a model matrix of the training data predictor variables  
+
+dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+
+```
+
+### Introduction
+
+The original purpose of this document was to simply product two plots:
+1. AUC vs number of trees
+2. Deviance (RMSE) vs number of trees
+
+However, a number of other issues came up.  Please read though my comments and questions and we can discuss them at the meeting tomorrow.
+
+
+### Parameter Tuning Function
+
+```{r tune parameters, include = T}
+
+# tune.BRT function
+
+tune.brt <- function(dtrain, n.rounds = 256, n.threads = 4){
+  #' Uses 5-fold cross-validation to tune the xgboost algorithm to data 
+  #' Requires 'xgboost' library
+  #' Requires 'dplyr' library  
+  #' Requires 'magrittr' library
+  #' Requires 'Matrix' library
+  #' Requires 'data.table' library
+  #' 
+  #' Args:
+  #'  dtrain: dgCMatrix
+  #'  nrounds: the number of decision trees/boosting iterations
+  #'  nthreads: the numbers of cores to run on
+  # Returns:
+  #   A df of evaluation metrics and associated parameters
+ 
+  k = 5
+
+  evalmetrics <- list("error", "auc")
+  
+  eval.log <- matrix(0 , ncol = 5)
+  colnames(eval.log) <- c("best.auc","best.error", "best.eta","best.gamma", "best.alpha")
+  for(alpha in seq(0.35, 0.5, by = 0.05)) {
+    output.BRT <- list()
+    for (eta in seq(0.025, 0.1, by = 0.025)) {
+      for (gamma in seq(0.15, 0.35, by = 0.05)) {
+        # 5-fold cross-validation to determine best model parameters
+        # set gamma > 0, lowered eta, to help with overfitting
+        set.seed(2148)
+        xgbcv <- xgb.cv(params = list(max.depth = 3, alpha = alpha, nthread = n.threads, 
+                                      objective = "binary:logistic", gamma = gamma),
+                        data = dtrain, 
+                        prediction = T,
+                        nfold = k, 
+                        stratified = TRUE,
+                        nrounds = n.rounds,
+                        verbose = F,
+                        metrics = evalmetrics)
+      
+        mean.auc <- tail(xgbcv$evaluation_log$test_auc_mean, 1)
+        mean.error <- tail(xgbcv$evaluation_log$test_error_mean, 1)
+        # save eval log for each parameter combo
+        eval.metrics <- c(mean.auc, mean.error, eta, gamma, alpha)
+        eval.log <- rbind(eval.log, eval.metrics)
+      }    
+    }
+  }
+  return((eval.log)[-1, ])
+}
+
+# # 5-fold cross-validation determine best model parameters
+# tic()
+# 
+# param_log <- tune.brt(dtrain = dtrain, n.rounds = 128)
+# print(param_log)
+# 
+# toc()
+# skrrrahh("soulja")
+
+```
+
+### Cross-validation I
+
+Perform 5-fold cross-validation and save evaluation metrics (AUC and RMSE)
+
+```{r, include = T}
+
+# reproducibility
+set.seed(2148) # this is the same CV seed as the one in the tune.BRT function
+
+# 5-fold cross-validated XGBoost model with 1024 trees and tuned parameters
+cv_bst_prot <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+                                nthread = 4, gamma = 0.15, alpha = 0.4,
+                                objective = "binary:logistic"),
+                    data = dtrain,
+                    stratified = TRUE,
+                    verbose = F,
+                    nfold = 5, 
+                    nrounds = 1024,
+                    metrics = list("auc", "rmse"),
+                    prediction = T
+                    )
+
+# # only some seeds work, most do not - for example:
+# 
+# # reproducibility
+# set.seed(2048) # this is the same seed as what is in the tune.BRT function
+# 
+# # 5-fold cross-validated XGBoost model with 1024 trees and tuned parameters
+# cv_bst_prot <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+#                                 nthread = 4, gamma = 0.15, alpha = 0.4,
+#                                 objective = "binary:logistic"),
+#                     data = dtrain,
+#                     stratified = TRUE,
+#                     verbose = F,
+#                     nfold = 5, 
+#                     nrounds = 1024,
+#                     metrics = list("auc", "rmse"),
+#                     prediction = T
+#                     )
+
+# The above gives the following error: 
+# Error in xgb.iter.eval(fd$bst, fd$watchlist, iteration - 1, feval): [13:29:05] amalgamation/../src/metric/rank_metric.cc:200: Check failed: !auc_error: AUC: the dataset only contains pos or neg samples
+
+```
+
+### AUC Plot I
+
+Plot AUC curve showing how mean train and test AUCs vary with the number of trees
+
+```{r, include = T}
+# plot of AUC vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_auc_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_auc_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test AUC mean", "Train AUC mean")) +
+  ylab("AUC (mean)") + xlab("number of trees")
+
+# final values of train and test AUC
+cv_bst_prot[["evaluation_log"]] %>% tail() # 1.000000 and 0.9229976
+
+# get the number of trees at which test AUC jumps to 0.9229976
+cbind(cv_bst_prot[["evaluation_log"]][["iter"]][275:300], cv_bst_prot[["evaluation_log"]][["test_auc_mean"]][275:300]) # 285 trees
+```
+
+Train AUC increases as number of trees increase and levels out at 1, whereas test AUC jumps up and down before leveling out at 0.9229976. But that's not the highest test AUC, there are higher values around ~125 trees.
+
+Replot AUC curve with a smaller number of trees since classification efficacy does not improve above 285 trees 
+
+```{r, include = T}
+# replot upto 300 trees
+ggplot(cv_bst_prot$evaluation_log[1:300]) +
+  geom_line(aes(iter, train_auc_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_auc_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test AUC mean", "Train AUC mean")) +
+  ylab("AUC (mean)") + xlab("number of trees")
+
+```
+
+We want the test AUC to be as close to 1 as possible. Which iterations (number of trees) give the highest train and test AUCs?
+
+```{r, include = T}
+# get number of trees that maximize train and test AUC
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = which(train_auc_mean == max(train_auc_mean))[1], # 114
+    auc.train   = max(train_auc_mean),
+    ntrees.test  = which(test_auc_mean == max(test_auc_mean))[1],   # 112
+    auc.test   = max(test_auc_mean)
+  )
+
+cv_bst_prot[["evaluation_log"]][112]
+cv_bst_prot[["evaluation_log"]][114]
+```
+
+The maximum mean test AUC is at 112 trees (0.9289272), which is only 0.0059296 higher than the AUC when number of trees is >= 285. So I don't think it is worth choosing 112 trees just because it "maximizes" test AUC. Also, AUC is not the only metric being used to choose the number of trees. Now I will look at the number of trees that minimizes error.
+
+### Deviance Plot I
+
+Plot deviance curve showing how mean train and test errors vary with the number of trees
+
+```{r, include = T}
+
+# Plot RMSE (deviance) vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_rmse_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_rmse_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test RMSE mean", "Train RMSE mean")) +
+  ylab("RMSE (mean)") + xlab("number of trees")
+
+# final values of train and test RMSE
+cv_bst_prot[["evaluation_log"]] %>% tail() # 0.0790828 and 0.2062322
+
+# Replot with 350 trees
+ggplot(cv_bst_prot$evaluation_log[1:350]) +
+  geom_line(aes(iter, train_rmse_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_rmse_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test RMSE mean", "Train RMSE mean")) +
+  ylab("RMSE (mean)") + xlab("number of trees")
+
+# get number of trees that minimize error
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = which(train_rmse_mean == min(train_rmse_mean))[1], # 299
+    rmse.train   = min(train_rmse_mean),
+    ntrees.test  = which(test_rmse_mean == min(test_rmse_mean))[1],   # 145
+    rmse.test   = min(test_rmse_mean)
+  )
+
+```
+
+**Still not sure how many trees is best.** 
+
+Another thing to consider: since the dataset is relatively small, then how the data are split up can potentially have a large impact on AUC and error. Let's se what happens if we use a different seed for CV.
+
+### Cross-validation II
+
+Perform 5-fold cross-validation and save evaluation metrics (AUC and RMSE)
+
+```{r, include = T}
+
+# reproducibility
+set.seed(4321) # this is a new seed, NOT the same as the one in the tune.BRT function
+
+# 5-fold cross-validated XGBoost model with 1024 trees and tuned parameters
+cv_bst_prot2 <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+                                nthread = 4, gamma = 0.15, alpha = 0.4,
+                                objective = "binary:logistic"),
+                    data = dtrain,
+                    stratified = TRUE,
+                    verbose = F,
+                    nfold = 5, 
+                    nrounds = 1024,
+                    metrics = list("auc", "rmse"),
+                    prediction = T
+                    )
+
+```
+
+### AUC Plot II
+
+Plot AUC curve showing how mean train and test AUCs vary with the number of trees
+
+```{r, include = T}
+# plot of AUC vs number of trees
+ggplot(cv_bst_prot2$evaluation_log) +
+  geom_line(aes(iter, train_auc_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_auc_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test AUC mean", "Train AUC mean")) +
+  ylab("AUC (mean)") + xlab("number of trees")
+
+# final values of train and test AUC
+cv_bst_prot2[["evaluation_log"]] %>% tail() # 1.0000 and 0.85232 (much lower than previous)
+
+# get the number of trees at which test AUC starts to settle at to 0.85232
+cbind(cv_bst_prot2[["evaluation_log"]][["iter"]][250:300], cv_bst_prot2[["evaluation_log"]][["test_auc_mean"]][250:300]) # 274 trees
+```
+
+We want the test AUC to be as close to 1 as possible. Which iterations (number of trees) give the highest train and test AUCs?
+
+```{r, include = T}
+# get number of trees that maximize train and test AUC
+cv_bst_prot2$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = which(train_auc_mean == max(train_auc_mean))[1], # 101
+    auc.train   = max(train_auc_mean),
+    ntrees.test  = which(test_auc_mean == max(test_auc_mean))[1],   # 138
+    auc.test   = max(test_auc_mean)
+  )
+
+cv_bst_prot2[["evaluation_log"]][101]
+cv_bst_prot2[["evaluation_log"]][138]
+```
+
+The maximum mean test AUC is at 138 trees (0.8705738), which is only 0.0182538 higher than the AUC when number of trees is >= 274. 
+
+Now I will look at the number of trees that minimizes error.
+
+### Deviance Plot II
+
+Plot deviance curve showing how mean train and test errors vary with the number of trees
+
+```{r, include = T}
+
+# Plot RMSE (deviance) vs number of trees
+ggplot(cv_bst_prot2$evaluation_log) +
+  geom_line(aes(iter, train_rmse_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_rmse_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test RMSE mean", "Train RMSE mean")) +
+  ylab("RMSE (mean)") + xlab("number of trees")
+
+# final values of train and test RMSE
+cv_bst_prot2[["evaluation_log"]] %>% tail() # 0.080149 and 0.2083514 (about the same as previous)
+
+# Replot with 350 trees
+ggplot(cv_bst_prot2$evaluation_log[1:350]) +
+  geom_line(aes(iter, train_rmse_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_rmse_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test RMSE mean", "Train RMSE mean")) +
+  ylab("RMSE (mean)") + xlab("number of trees")
+
+# get number of trees that minimize error
+cv_bst_prot2$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = which(train_rmse_mean == min(train_rmse_mean))[1], # 302
+    rmse.train   = min(train_rmse_mean),
+    ntrees.test  = which(test_rmse_mean == min(test_rmse_mean))[1],   # 255
+    rmse.test   = min(test_rmse_mean)
+  )
+
+```
+
+### Main Takeaways 
+
+1. Since the way the CV folds are split up (determined by the seed) seems to have an impact on the AUC, it would be ideal to run the parameter tuning function with a few different seeds. 
+
+2. Not all CV seeds work, which means it is important to split the data so that there are a minimum # of positives in each fold. **I'm not sure how to do this.**
+
+3. The dataset is small (228 rows) with a relatively imbalanced response variable (13 positives and 215 negatives). So we should look at a few different metrics to tune the model: AUC is classification-threshold invariant. That is, it doesn't punish false-negatives more or less than false-positives, so it is not the best for evaluating how good a binary classifier is when the classes are so imbalanced. A more useful approach is to look at the balanced accuracy. 
+
+### Calculating Balanced Accuracy I
+
+We want the prediction accuracy to be roughly equivalent across outcome classes.
+
+```{r, include = T}
+
+# prediction probabilities
+pred <- cv_bst_prot$pred
+
+# Set cutoff threshold
+pred.class <- ifelse(pred >= 0.5, 1, 0) %>% as.factor()
+
+# actual zoostat
+real.class <- tmp_prot_Train$zoostat %>% as.factor()
+
+table(real.class) # the training set has 149 out of 228 rows in the full dataset. 9/149 are zoonotic and 140/149 are non-zoonotic.
+
+# Create the confusion matrix
+confusionMatrix(pred.class, real.class, positive="1")
+
+```
+
+The prediction accuracy is much higher for the negatives (138/140 = 0.985), whereas the positives have a lower prediction accuracy (2/9 = 0.22). 
+
+### Calculating Balanced Accuracy II
+
+We want the prediction accuracy to be roughly equivalent across outcome classes.
+
+```{r, include = T}
+
+# prediction probabilities
+pred2 <- cv_bst_prot2$pred
+
+# Set cutoff threshold
+pred.class2 <- ifelse(pred2 >= 0.5, 1, 0) %>% as.factor()
+
+# actual zoostat
+real.class2 <- tmp_prot_Train$zoostat %>% as.factor()
+
+table(real.class2) # the training set has 149 out of 228 rows in the full dataset. 9/149 are zoonotic and 140/149 are non-zoonotic.
+
+# Create the confusion matrix
+confusionMatrix(pred.class2, real.class2, positive="1")
+
+```
+
+Again, the prediction accuracy is much higher for the negatives (139/140 = 0.992), whereas the positives have a lower prediction accuracy (1/9 = 0.111).
+
+
+So it might be worth looking into evaluation metrics that penalize false negatives more than false positives if we want the model to have a higher balanced accuracy. **Any ideas for which metric would be good for this?**
+
+Another way to deal with unbalalanced classes is to use the `scale_pos_weight` XGBoost parameter. See here for more details: https://xgboost.readthedocs.io/en/latest/parameter.html#parameters-for-tree-booster.
+
+
