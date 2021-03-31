@@ -6,6 +6,7 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
   #' Requires 'magrittr' library
   #' Requires 'Matrix' library
   #' Requires 'data.table' library
+  #' Requires 'pROC' library
   #' 
   #' Args:
   #'  dtrain: dgCMatrix
@@ -18,12 +19,12 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
   
   evalmetrics <- list("error", "logloss")
   
-  eval.log <- matrix(0 , ncol = 6)
-  colnames(eval.log) <- c("TSS", "mean.logloss","mean.error", "best.eta","best.gamma", "best.alpha")
+  eval.log <- matrix(0 , ncol = 7)
+  colnames(eval.log) <- c("TSS", "AUC", "mean.logloss","mean.error", "eta","gamma", "alpha")
   for(alpha in seq(0.35, 0.55, by = 0.05)) {
     output.BRT <- list()
     for (eta in seq(0.01, 0.05, by = 0.01)) {
-      for (gamma in seq(0.10, 0.35, by = 0.05)) {
+      for (gamma in seq(0.10, 0.4, by = 0.075)) {
         # 5-fold cross validation to determine best model parameters
         # set gamma > 0, lowered eta, to help with overfitting
         set.seed(2048)
@@ -44,7 +45,13 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
         # prediction probabilities
         pred <- xgbcv$pred
         # Set cutoff threshold
-        pred.class <- ifelse(pred >= 0.5, 1, 0) %>% as.factor()
+        pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+                              pred.zoostat = pred)
+        # threshold <- filter(pred.df, true.zoostat == 1) %>% 
+        #   summarise(min(pred.zoostat)) %>% as.numeric()
+        threshold <- 13/228
+        
+        pred.class <- ifelse(pred >= threshold, 1, 0) %>% as.factor()
         # actual zoostat
         real.class <- tmp_prot_Train$zoostat %>% as.factor()
         
@@ -54,10 +61,14 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
         TNR <- conf.mat[["byClass"]][["Specificity"]]
         TSS <- TPR + TNR - 1
         
+        # Calculate AUC
+        roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
+        AUC <- pROC::auc(roc.test)
+        
         mean.logloss <- tail(xgbcv$evaluation_log$test_logloss_mean, 1)
         mean.error <- tail(xgbcv$evaluation_log$test_error_mean, 1)
         # save eval log for each parameter combo
-        eval.metrics <- c(TSS, mean.logloss, mean.error, eta, gamma, alpha)
+        eval.metrics <- c(TSS, AUC, mean.logloss, mean.error, eta, gamma, alpha)
         eval.log <- rbind(eval.log, eval.metrics) %>% as.data.frame()
       }    
     }
