@@ -1,13 +1,9 @@
 ---
 title: "Protraits: Results"
 author: "Joy Vaz"
-date: "March 09, 2021"
+date: "March 30, 2021"
 output: html_document:
-    toc: TRUE # table of contents
-    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
-    number_sections: TRUE  # number sections at each table header
-    theme: united 
-    highlight: tango  # syntax highlighting style
+#   toc: TRUE # table of contents
 ---
 
 
@@ -18,7 +14,7 @@ opts_chunk$set(tidy=T, warning=F, message=F, include = T)
 opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
 ```
 
-```{r load_packages, include=F, message=F, warning=F}
+```{r load_packages, echo=F, message=F, warning=F}
 
 library(xgboost)
 library(Matrix)
@@ -33,17 +29,25 @@ library(BRRR)
 library(pdp)
 library(Ckmeans.1d.dp)
 library(readxl)
+library(pROC)
 
 ```
 
-## Data summary
+# Data summary
 
-The response variable is whether a protozoa species is zoonotic or not, n = 228.
+Traitsof 228 protozoa species are recorded in the dataset. See [this data table](https://outlookuga-my.sharepoint.com/:x:/g/personal/jjc99699_uga_edu/EQB4ODI2o45DpMgeI2sCQ9oBAoX_ThrV9VhL-R2rfjfDrg?e=oTh6NR) for variable definistions and coverage. 
 
-With an 65/35 split for training and testing data, $n_{train} = 149$, and $n_{test} = 79$. The data is split so that the proportion of positive and negative observations is equal between training and testing sets. 
+The binary response variable indicates whether a protozoa species is zoonotic or not.
+
+```{r load_dataset}
+protraits <- read.csv("./data/modified/protraits_final", row.names = 1)
+
+head(protraits)
+
+```
 
 
-```{r load_data}
+```{r load_data, include=FALSE, eval = F}
 
 rm(list = ls())
 
@@ -58,136 +62,119 @@ df_names <- gsub(".csv", "", file_list)
 #initiate a blank data frame, each iteration of the loop will append the data from the given file to this variable
 protraits <- data.frame(protnames)
 
-#had to specify columns to get rid of the total column
 for (i in 1:length(file_list)){
-  x <- read.csv(file_list_full[i])[-1] #each file will be read in, specify which columns
+  x <- read.csv(file_list_full[i])[-1]
   assign(df_names[i], x)
   protraits <- left_join(protraits, x, by = "protname")
 }
 
-# names(protraits)
-
-# write.csv(protraits, "./data/modified/protraits_full")
+head(protraits)
 
 ```
 
-```{r feature_selection}
+```{r feature_selection, include=F, eval = F}
 
 # Create correlation matrix
 
 data <- select_if(protraits, is.numeric)
+
+# # don't try this at home
+# ggdata <- data %>% mutate(zoostat = factor(zoostat))
+# ggpairs(ggdata)
+
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
 correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
 
 corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
 corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
-
-# Plot
-
-# corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.6, number.cex = 0.5, 
-#          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
 
 highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
-
-# Remove highly correlated or redundant vars
-protraits_trimmed <- protraits %>% select(-c(prot_degree, 
-                                             prot_normalised.degree,
-                                             prot_betweenness,
-                                             prot_closeness,
-                                             mean_host_degree,
-                                             mean_host_normalised.degree,
-                                             mean_host_betweenness,
-                                             mean_host_closeness,
-                                             starts_with("med_host_bipartite_"),
-                                             med_host_degree,
-                                             med_host_close,
-                                             med_host_between,
-                                             med_host_eigen,
-                                             med_host_AdultBodyMass_wEXT,
-                                             med_host_NeonateBodyMass_wEXT,
-                                             med_host_LittersPerYear_wEXT,
-                                             med_host_SexualMaturityAge,
-                                             med_host_Terrestrial,
-                                             med_host_Aerial,
-                                             med_host_Marine,
-                                             med_host_Freshwater,
-                                             n_realms,
-                                             n_biomes,
-                                             muscular,
-                                             skeletal,
-                                             circulatory,
-                                             respiratory,
-                                             digestive,
-                                             immune,
-                                             urinary,
-                                             nervous,
-                                             endocrine,
-                                             reproductive,
-                                             lymphatic,
-                                             integumentary,
-                                             ocular,
-                                             multi,
-                                             mean_.GDP_2015,
-                                             host_phylo_range),
-                                          mean_HDI = mean_.HDI_2015)
-
-# Update corr matrix
-
-data <- select_if(protraits_trimmed, is.numeric)
-correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
-
-corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
-corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
-
-highlyCorrelated_trimmed <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
 
 #Plot
 
 corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.4, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
 
-# Calculate coverage
+# remove tm_nonclose
 
-feature_names <- names(protraits_trimmed)
-completeness <- protraits_trimmed %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
-datacompleteness <- cbind(names(protraits_trimmed), completeness) %>% as.data.frame()
-protraits_trimmed %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric() %>% plot(type = 'h')
+protraits <- protraits %>% select(-tm_nonclose)
 
-# I'm keeping max phylogenetic distance even though it's got such low coverage because I'm curious
+# write.csv(protraits, "./data/modified/protraits_final")
+
 
 ```
 
+### Variable groups
 
+In order to investigate the relative importance of different groups of variables in predicting zoonotic potential, I grouped the variables (n = 33) into six sets: parasite specialism-generalism, community variables, intrinsic traits, host traits, regional/environmental triats, and sampling effort.
 
-```{r grouping variables, include=F}
-# predictors, grouped by cateogory (A, B, C, D)
+```{r group_variables}
+# predictors, grouped by cateogory
 
-A_preds <- c("tm_close", "tm_nonclose")
+spec_gen <- c("prot_species.specificity.index",
+              "mean_host_species.specificity.index",
+              "n_ecoregions",
+              "num_tm",
+              "med_host_fairProp",
+              "med_host_DietBreadth",
+              "med_host_GR_Area_Combined_IUCN_preferred",
+              "med_host_Island.Endemicity",
+              "numsys")
 
-B_preds <- c("tm_vector", "tm_intermediate")
+community <- c("mean_host_weighted.betweenness",
+               "parcommsize",
+               "propparcommzoon",
+               "prophostzoon",
+               "med_host_numparzoons",
+               "dom_host")
 
-C_preds <- c()
+intrinsic <- c("parorder",
+               "parfamily",
+               "intra_extra",
+               "flagella",
+               "cyst",
+               "sexual", "tm_close", 
+               "tm_vector", 
+               "tm_intermediate")
 
-D_preds <- c()
+hosts <- c("med_host_TrophicLevel",
+           "med_host_InterbirthInterval",
+           "med_host_PopulationDensity",
+           "med_host_Diet.Invertebrate")
+
+regional <- c("main_biome", 
+              "med_host_HuPopDen_Mean_n.km2", 
+              "med_host_Precip_Mean_mm", 
+              "med_host_Temp_Mean_01degC")
+
+sampling <- c("protWOS")
 
 response <- "zoostat"
 
-# tmp_prot <- data.table(protraits[, c(A_preds, B_preds, C_preds, D_preds, response)])
-
-
 ```
 
 
+### Prepare model matrix
 
-Prepare model matrix
+The data is split so that the proportion of positive and negative observations is equal between training and testing sets, with an 65/35 split for training and testing data ($n_{train} = 149$, and $n_{test} = 79$). 
 
 ```{r train_test}
 
 
-tmp_protraits <- protraits_trimmed %>% as_tibble() %>% select(-protname)
-tmp_protraits2 <- protraits %>% as_tibble() %>% select(-protname)
-tmp_prot <- data.table(tmp_protraits2)
+tmp_protraits <- protraits %>% as_tibble() %>% select(-protname)
+tmp_prot <- data.table(tmp_protraits[, c(spec_gen, community, intrinsic, hosts, regional, sampling, response)])
+
+# Calculate coverage
+
+feature_names <- names(tmp_prot)
+
+completeness <- tmp_prot %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
+completeness.pos <- tmp_prot %>% filter(zoostat == 1) %>% 
+  summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
+datacompleteness <- cbind(names(tmp_prot), completeness, completeness.pos) %>% as.data.frame()
+
+# tmp_prot %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric() %>% plot(type = 'h')
+
 
 # subset data into training vs testing 
 set.seed(191212)
@@ -213,30 +200,28 @@ dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
 
 ```
 
+# Model tuning
 
-After partitioning the data into training and testing sets, I ran 5 fold cross-validation using a tuning function to determine the best parameters for the model
+After partitioning the data into training and testing sets, I ran 5 fold cross-validation using a custom tuning function to determine the best parameters for the model. In order to reduce overfitting, I selected parameters based on the average test-error, true skill statistic (TSS), and average test-logloss. I reduced the eta (learning rate) to 0.02, and increased alpha and gamma (regularization parameters) to 0.4 and 0.25, respectively, to reduce overfitting. 
 
-To reduce overfitting, I reduced the eta (learning rate), and increased gamma and alpha (regularization parameters).
+### Parameter definitions:
 
 eta [default=0.3]
 - Step size shrinkage used to shrink the feature weights after each boosting step. Make the boosting process more conservative to prevent overfitting.
 - Analogous to learning rate in GBM
 - Typical final values to be used: 0.01-0.2
-- The tuning function below cycles through the following values: 0.01, 0.02, 0.03, 0.04, 0.05
 
 gamma [default=0] 
 - Minimum loss reduction required to make a further partition on a leaf node of the tree (a node is split only when the resulting split gives a positive reduction in the loss function). 
 - The larger gamma is, the more conservative the algorithm will be. 
-- The tuning function below cycles through the following values: 0.10, 0.15, 0.20, 0.25, 0.30, 0.35
 
 alpha [default=0] 
 - L1 regularization term on weights (analogous to Lasso regression). 
 - Increasing this value will make model more conservative. 
 - Can be used in case of very high dimensionality so that the algorithm runs faster.
-- The tuning function below cycles through the following values: 0.35, 0.40, 0.45, 0.50, 0.55
 
 
-```{r tune parameters}
+```{r tune parameters, eval = F}
 
 # source tune.BRT function
 source("./scripts/tuneBRT_function.R")
@@ -248,87 +233,89 @@ param_log <- tune.brt(dtrain = dtrain, n.rounds = 512, n.thread = 4)
 toc()
 skrrrahh("soulja")
 
-# print(param_log) 
+print(param_log) 
 
 # returns a df of parameter combinations and the mean test logloss, mean test error, and TSS
 
 ```
 
-After inspecting the evaluation log, the best parameter combination is eta = 0.01, gamma = 0.35, and alpha = 0.5.
-The gives the highest TSS (0.17122302), lowest error (0.0819228), and 2nd lowest logloss (0.3215248)
 
+### Cross-validation
 
-Perform 5-fold crossvalidation using these parameters
 ```{r}
 
 # reproducibility
-set.seed(1024) # this is the same seed as what is in the tune.BRT function
+set.seed(1024)
 
-# 5-fold cross validated XGBoost model with 1024 trees and tuned parameters
+# 5-fold cross validated XGBoost model with 512 trees and tuned parameters
 cv_bst_prot <- xgb.cv(params = list(max.depth = 3, nthread = 4, 
-                                    eta = 0.01,
-                                    gamma = 0.35, 
-                                    alpha = 0.5,
+                                    eta = 0.02,
+                                    gamma = 0.25, 
+                                    alpha = 0.4,
                                     objective = "binary:logistic"),
                       data = dtrain,
                       stratified = TRUE,
                       verbose = F,
                       nfold = 5, 
-                      nrounds = 1024,
+                      nrounds = 512,
                       metrics = list("logloss", "error"),
                       scale_pos_weight = 15,
                       prediction = T
                       )
+
+cv_bst_prot[["evaluation_log"]] %>% tail()
+
+```
+
+### Choosing a threshold to convert probabilities to binary predictions
+
+```{r}
+
 # Prediction probabilities
 pred <- cv_bst_prot$pred
 
 pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
                       pred.zoostat = pred)
 
-# What is the proportion of positives in the training dataset?
-10/149 # 0.06711409
-
-# What is the proportion of positives in the full dataset?
-13/228 # 0.05701754
-
-
 # Could cut it off at the lowest true positive (min pred when zoostat = 1)
-
+threshold1 <- 
 filter(pred.df, true.zoostat == 1) %>%
-  summarise(min(pred.zoostat)) # 0.00947009
+  summarise(min(pred.zoostat)) %>% as.numeric()
+
+# Set cutoff threshold1
+pred.class1 <- ifelse(pred >= threshold1, 1, 0) %>% as.factor()
+
+# Create the confusion matrix
+confusionMatrix(pred.class1, real.class, positive="1")
 
 #AUC (to explore that threshold)
 roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
-pROC::auc(roc.test) # 0.7043
+pROC::auc(roc.test)
 plot(roc.test)
-roc.test$thresholds[which.max(roc.test$sensitivities+ roc.test$specificities)] #0.02291124
+threshold2 <- roc.test$thresholds[which.max(roc.test$sensitivities + roc.test$specificities)]
 
-# Set cutoff threshold
-pred.class <- ifelse(pred >= 0.02323, 1, 0) %>% as.factor()
+# Set cutoff threshold2
+pred.class2 <- ifelse(pred >= threshold2, 1, 0) %>% as.factor()
 
 # Create the confusion matrix
-confusionMatrix(pred.class, real.class, positive="1")
+confusionMatrix(pred.class2, real.class, positive="1")
+
+# Set cutoff threshold3
+threshold3 <- 13/228
+pred.class3 <- ifelse(pred >= threshold3, 1, 0) %>% as.factor()
+
+# Create the confusion matrix
+confusionMatrix(pred.class3, real.class, positive="1")
 
 ```
+
+## Deviance curves
 
 Plot logloss curve showing how mean train and test logloss varies with the number of trees
 
 ```{r}
 # plot of logloss vs number of trees
 ggplot(cv_bst_prot$evaluation_log) +
-  geom_line(aes(iter, train_logloss_mean, color = "turquoise")) +
-  geom_line(aes(iter, test_logloss_mean, color = "orange")) +
-  scale_color_discrete(name = "Key", labels = c("Test logloss mean", "Train logloss mean")) +
-  ylab("logloss (mean)") + xlab("number of trees")
-
-cv_bst_prot[["evaluation_log"]] %>% tail()
-```
-
-Replot curve with a smaller number of trees (350)
-
-```{r}
-# replot upto 350 trees
-ggplot(cv_bst_prot$evaluation_log[1:512]) +
   geom_line(aes(iter, train_logloss_mean, color = "turquoise")) +
   geom_line(aes(iter, test_logloss_mean, color = "orange")) +
   scale_color_discrete(name = "Key", labels = c("Test logloss mean", "Train logloss mean")) +
@@ -360,16 +347,6 @@ ggplot(cv_bst_prot$evaluation_log) +
   scale_color_discrete(name = "Key", labels = c("Test error mean", "Train error mean")) +
   ylab("Error (mean)") + xlab("number of trees")
 
-cv_bst_prot[["evaluation_log"]] %>% tail()
-
-# Replot with 640 trees
-ggplot(cv_bst_prot$evaluation_log[1:640]) +
-  geom_line(aes(iter, train_error_mean, color = "turquoise")) +
-  geom_line(aes(iter, test_error_mean, color = "orange")) +
-  scale_color_discrete(name = "Key", labels = c("Test error mean", "Train error mean")) +
-  ylab("Error (mean)") + xlab("number of trees")
-
-
 ```
 
 
@@ -385,23 +362,25 @@ cv_bst_prot$evaluation_log %>%
 
 ```
 
+Can stick with the same number of trees (nrounds = 512)
 
-Still not sure what is the best number of trees.
+# Model fitting
 
+I built the model using the optimal parameter values identified above. I recorded the error, logloss, and AUC.
 
-```{r}
+```{r fit_model}
 
 
 BRT_prot <- xgboost(dtrain,
-                    params = list(max.depth = 3, eta = 0.01, 
-                                  nthread = 4, gamma = 0.35, alpha = 0.5,
+                    params = list(max.depth = 3, eta = 0.02, 
+                                  nthread = 4, gamma = 0.25, alpha = 0.4,
                                   objective = "binary:logistic",
                                   eval_metric = "logloss",
                                   eval_metric = "error"),
                     verbose = F,
-                    nrounds = 1024)
+                    nrounds = 512)
 
-BRT_prot[["evaluation_log"]]
+BRT_prot[["evaluation_log"]] %>% tail()
 
 ggplot(BRT_prot$evaluation_log) +
   geom_line(aes(iter, train_logloss)) +
@@ -411,23 +390,48 @@ ggplot(BRT_prot$evaluation_log) +
   geom_line(aes(iter, train_error)) +
   ylab("logloss") + xlab("iter")
 
+pred <- predict(BRT_prot, dtrain)
+
+pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+                      pred.zoostat = pred)
+
+pred.class <- ifelse(pred >= 13/228, 1, 0) %>% as.factor()
+
+# Create the confusion matrix
+confusionMatrix(pred.class, real.class, positive="1")
+
+#AUC (to explore that threshold)
+roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
+pROC::auc(roc.test)
 
 #change na.action back to default
 options(na.action=previous_na_action$na.action)
 ```
+Low logloss and error, high sensitivity and specificity, and an AUC of 1. Hmm.
+
+
+# Results
+
+## Variable importance
 
 ```{r vip, echo=F, comment=F, warning = F}
 
-
-
 importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot), model = BRT_prot)
 
-xgb.plot.importance(importance_prot, rel_to_first = TRUE, xlab = "Relative importance")
+# xgb.plot.importance(importance_prot, rel_to_first = TRUE, xlab = "Relative importance")
 
 gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
 gg_prot
 
 ```
+
+Species specificity of protozoa has the highest relative importance by far. This is a bipartite network property. The R documentation description of the index: 
+"Coefficient of variation of interactions, normalised to values between 0 and 1, following the idea of Julliard et al. (2006), as proposed by Poisot et al. (2012). Values of 0 indicate low, those of 1 a high variability (and hence suggesting low and high specificity). Since not corrected for number of observations, this index will yield high specificity for singletons, even though there is no information to support this conclusion."
+
+
+## Partial dependence plots
+
+Plotted for the eight most important features.
 
 ```{r pdps, echo=F, warning=F, message=F}
 ## partial dependence plots
@@ -460,70 +464,190 @@ p6 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[6]), ice = T
               plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
               train = sparse_matrix_prot, type = "classification", prob = T)
 
+p7 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[7]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
+
+p8 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[8]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot, type = "classification", prob = T)
 
 
 grid.arrange(p1, p2, ncol = 2)
 grid.arrange(p3, p4, ncol = 2)
 grid.arrange(p5, p6, ncol = 2)
+grid.arrange(p7, p8, ncol = 2)
 
 ```
 
+Interesting that parasite specificity and host specificity trend in opposite directions.
 
-```{r permuting by group, eval = F, include=F}
+The main_biome variable is actually a factor with 16 levels (see below), so I'll have to go back and fix that. 
+
+1. Tropical & Subtropical Moist Broadleaf Forests 
+2. Tropical & Subtropical Dry Broadleaf Forests 
+3. Tropical & Subtropical Coniferous Forests 
+4. Temperate Broadleaf & Mixed Forests 
+5. Temperate Conifer Forests 
+6. Boreal Forests/Taiga 
+7. Tropical & Subtropical Grasslands Savannas & Shrublands 
+8. Temperate Grasslands Savannas & Shrublands 
+9. Flooded Grasslands & Savannas 
+10. Montane Grasslands & Shrublands 
+11. Tundra 
+12. Mediterranean Forests Woodlands & Scrub 
+13. Deserts & Xeric Shrublands 
+14. Mangroves
+
+98. Lake 
+99. Rock & Ice
+
+# Permuting features by group
+
+This code is not working :(
+
+```{r permutations, eval = F}
 # For the code for my permutations see below (not run here due to compuation time)
 
 # now try permuting variables by group; but independently of one another to break any correlation
 
-iter <- 3
-auc_A <- NULL
-auc_B <- NULL
-auc_C <- NULL
-auc_D <- NULL
+iter <- 16
+nrounds <- 16
+auc_spec_gen <- NULL
+auc_community <- NULL
+auc_intrinsic <- NULL
+auc_hosts <- NULL
+auc_regional <- NULL
+auc_sampling <- NULL
 
 auc_df <- data.frame(NULL)
+
 for(i in 1:iter){
-  
-  for(j in 1:length(A_preds)){
-    for(k in 1:2){
-      # create a model matrix of A predictor variables
-      perm_tmp_prot_Train <- tmp_prot_Train[, c(1:2, 9)]
-      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
+  for(j in 1:length(spec_gen)){
+    for(k in 1:9){
+      # create a model matrix of specialism-generalism predictor variables
+      perm_tmp_prot_Train <- tmp_prot_Train[, c(1:9, 34)]
+      perm_tmp_prot_Train[,j] <- tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
       perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
       dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
     
       perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.025, 
-                                    nthread = 4, gamma = 0.15, alpha = 0.4,
+                               params = list(max.depth = 3, eta = 0.02, 
+                                    nthread = 4, gamma = 0.25, alpha = 0.4,
                                     objective = "binary:logistic",
                                     eval_metric = list("auc")),
-                               nrounds = 4)
-      auc_A[i] <- perm_bst_prot$evaluation_log[4]$train_auc
+                               verbose = F,
+                               nrounds = nrounds)
+      auc_spec_gen[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
     }
     
   }
-    
-  for(j in 1:length(B_preds)){
-    # create a model matrix of B predictor variables
-    perm_tmp_prot_Train <- tmp_prot_Train[, c(3:4, 9)]
-    for(k in 3:4){
+  
+  for(j in 1:length(community)){
+    for(k in 10:15){
+      # create a model matrix of community predictor variables
+      perm_tmp_prot_Train <- tmp_prot_Train[, c(10:15, 34)]
       perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
       perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
       dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
     
       perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.025, 
-                                    nthread = 4, gamma = 0.15, alpha = 0.4,
+                               params = list(max.depth = 3, eta = 0.02, 
+                                    nthread = 4, gamma = 0.25, alpha = 0.4,
                                     objective = "binary:logistic",
                                     eval_metric = list("auc")),
-                               nrounds = 4)
-      auc_B[i] <- perm_bst_prot$evaluation_log[4]$train_auc
+                               verbose = F,
+                               nrounds = nrounds)
+      auc_community[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
+    }
+    
+  }
+  
+  for(j in 1:length(intrinsic)){
+    for(k in 16:24){
+      # create a model matrix of intrinsic predictor variables
+      perm_tmp_prot_Train <- tmp_prot_Train[, c(16:24, 34)]
+      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
+      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
+      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+    
+      perm_bst_prot <- xgboost(dtrain,
+                               params = list(max.depth = 3, eta = 0.02, 
+                                    nthread = 4, gamma = 0.25, alpha = 0.4,
+                                    objective = "binary:logistic",
+                                    eval_metric = list("auc")),
+                               verbose = F,
+                               nrounds = nrounds)
+      auc_intrinsic[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
+    }
+    
+  }
+  
+  for(j in 1:length(hosts)){
+    for(k in 25:28){
+      # create a model matrix of host predictor variables
+      perm_tmp_prot_Train <- tmp_prot_Train[, c(25:28, 34)]
+      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
+      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
+      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+    
+      perm_bst_prot <- xgboost(dtrain,
+                               params = list(max.depth = 3, eta = 0.02, 
+                                    nthread = 4, gamma = 0.25, alpha = 0.4,
+                                    objective = "binary:logistic",
+                                    eval_metric = list("auc")),
+                               verbose = F,
+                               nrounds = nrounds)
+      auc_hosts[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
+    }
+    
+  }
+  
+  for(j in 1:length(regional)){
+    for(k in 29:32){
+      # create a model matrix of regional predictor variables
+      perm_tmp_prot_Train <- tmp_prot_Train[, c(29:32, 34)]
+      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
+      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
+      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+    
+      perm_bst_prot <- xgboost(dtrain,
+                               params = list(max.depth = 3, eta = 0.02, 
+                                    nthread = 4, gamma = 0.25, alpha = 0.4,
+                                    objective = "binary:logistic",
+                                    eval_metric = list("auc")),
+                               verbose = F,
+                               nrounds = nrounds)
+      auc_regional[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
+    }
+    
+  }
+  
+  for(j in length(sampling)){
+    # create a model matrix of sampling predictor variables
+    perm_tmp_prot_Train <- tmp_prot_Train[, c(33, 34)]
+    for(k in 33){
+      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
+      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
+      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+    
+      perm_bst_prot <- xgboost(dtrain,
+                               params = list(max.depth = 3, eta = 0.02, 
+                                    nthread = 4, gamma = 0.25, alpha = 0.4,
+                                    objective = "binary:logistic",
+                                    eval_metric = list("auc")),
+                               verbose = F,
+                               nrounds = nrounds)
+      auc_sampling[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
     }
    
 
   }
-  auc_df <- data.frame(auc_A, auc_B)
+  auc_df <- data.frame(auc_spec_gen, auc_community, auc_intrinsic, auc_hosts, auc_regional, auc_sampling)
    
 }
+
+auc_df
 
 ```
 
