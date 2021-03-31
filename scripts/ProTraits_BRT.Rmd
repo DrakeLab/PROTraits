@@ -2,7 +2,12 @@
 title: "Protraits: Results"
 author: "Joy Vaz"
 date: "March 09, 2021"
-output: html_document
+output: html_document:
+    toc: TRUE # table of contents
+    toc_depth: 3  # upto three depths of headings (specified by #, ## and ###)
+    number_sections: TRUE  # number sections at each table header
+    theme: united 
+    highlight: tango  # syntax highlighting style
 ---
 
 
