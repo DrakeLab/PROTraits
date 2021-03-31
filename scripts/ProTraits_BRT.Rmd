@@ -122,7 +122,8 @@ protraits_trimmed <- protraits %>% select(-c(prot_degree,
                                              integumentary,
                                              ocular,
                                              multi,
-                                             mean_.GDP_2015),
+                                             mean_.GDP_2015,
+                                             host_phylo_range),
                                           mean_HDI = mean_.HDI_2015)
 
 # Update corr matrix
@@ -188,6 +189,8 @@ set.seed(191212)
 trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
                                      list = FALSE, 
                                      times = 1)
+testIndex_prot <- setdiff(c(1:nrow(tmp_prot)), trainIndex_prot)
+
 tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
 tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
 
@@ -236,7 +239,7 @@ source("./scripts/tuneBRT_function.R")
 # Use tune.BRT to determine best combination of eta, gamma, and alpha.
 
 tic()
-# param_log <- tune.brt(dtrain = dtrain, n.rounds = 512, n.thread = 4) 
+param_log <- tune.brt(dtrain = dtrain, n.rounds = 512, n.thread = 4) 
 toc()
 skrrrahh("soulja")
 
@@ -273,8 +276,30 @@ cv_bst_prot <- xgb.cv(params = list(max.depth = 3, nthread = 4,
                       )
 # Prediction probabilities
 pred <- cv_bst_prot$pred
+
+pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+                      pred.zoostat = pred)
+
+# What is the proportion of positives in the training dataset?
+10/149 # 0.06711409
+
+# What is the proportion of positives in the full dataset?
+13/228 # 0.05701754
+
+
+# Could cut it off at the lowest true positive (min pred when zoostat = 1)
+
+filter(pred.df, true.zoostat == 1) %>%
+  summarise(min(pred.zoostat)) # 0.00947009
+
+#AUC (to explore that threshold)
+roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
+pROC::auc(roc.test) # 0.7043
+plot(roc.test)
+roc.test$thresholds[which.max(roc.test$sensitivities+ roc.test$specificities)] #0.02291124
+
 # Set cutoff threshold
-pred.class <- ifelse(pred >= 0.5, 1, 0) %>% as.factor()
+pred.class <- ifelse(pred >= 0.02323, 1, 0) %>% as.factor()
 
 # Create the confusion matrix
 confusionMatrix(pred.class, real.class, positive="1")
