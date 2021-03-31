@@ -27,9 +27,12 @@ getmode <- function(v) {
   uniqv[which.max(tabulate(match(v, uniqv)))]
 }
 
-ecoprotraits_agg <- summarise(ecoprotraits_grp, n_realms = n_distinct(realm),
-                              n_ecoregions = n_distinct(ecoregion), n_biomes = n_distinct(biome),
-                              eco_range = sum(eco_area), main_biome = getmode(biome),
+ecoprotraits_agg <- summarise(ecoprotraits_grp, 
+                              # n_realms = n_distinct(realm),
+                              n_ecoregions = n_distinct(ecoregion), 
+                              # n_biomes = n_distinct(biome),
+                              # eco_range = sum(eco_area), 
+                              # main_biome = getmode(biome),
                               main_ecoregion = getmode(ecoregion)) 
 protnames <- read.csv("./data/modified/protnames.csv")
 
