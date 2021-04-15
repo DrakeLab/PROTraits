@@ -1,0 +1,164 @@
+---
+title: "Protraits: Exploratory Analyses"
+author: "Joy Vaz"
+date: "March 09, 2021"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=FALSE}
+rm(list = ls())
+
+library("knitr")
+opts_chunk$set(tidy=T, warning=F, message=F, include = T)
+opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
+```
+
+
+```{r brt xgboost}
+
+library(Matrix)
+library(data.table)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+library(caret)
+library(mlbench)
+
+
+protraits <- read.csv("data/modified/protraits_210305.csv", row.names = 1) %>% 
+  as_tibble() %>% select(-protname)
+
+tmp_prot <- data.table(protraits)
+
+
+```
+
+```{r train_test}
+
+library(caret)
+library(xgboost)
+library(tictoc)
+library(BRRR)
+
+# subset data into training vs testing 
+set.seed(191212)
+trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
+                                     list = FALSE, 
+                                     times = 1)
+tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
+tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+
+
+
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] # create a model matrix of the training data predictor variables  
+
+dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+
+```
+
+```{r tune parameters}
+
+# source tune.BRT function
+source("./scripts/tuneBRT_function.R")
+
+# use tune.BRT to determine best model parameters
+# tic()
+# param_log <- tune.brt(dtrain = dtrain, n.rounds = 15) 
+# returns a df of parameter combinations and the mean test AUCs and errors 
+# for each combo. Each combo is in there 5 times because it was repeated using 5 different seeds. 
+# print(param_log) #
+# toc()
+# skrrrahh("soulja")
+
+```
+
+Perform 5-fold crossvalidation and save evaluation metrics (AUC and RMSE)
+
+```{r}
+
+# reproducibility
+set.seed(2148) # this is the same seed as what is in the tune.BRT function
+
+# 5-fold cross validated XGBoost model with 1024 trees and tuned parameters
+cv_bst_prot <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+                                nthread = 4, gamma = 0.15, alpha = 0.4,
+                                objective = "binary:logistic"),
+                    data = dtrain,
+                    stratified = TRUE,
+                    verbose = F,
+                    nfold = 5, 
+                    nrounds = 156,
+                    metrics = list("auc", "rmse"),
+                    prediction = T,
+                    scale_pos_weight = 15
+                    )
+# prediction probabilities
+pred <- cv_bst_prot$pred
+# Set cutoff threshold
+pred.class <- ifelse(pred >= 0.5, 1, 0) %>% as.factor()
+# actual zoostat
+real.class <- tmp_prot_Train$zoostat %>% as.factor()
+table(real.class) # the training set has 149 out of 228 rows in the full dataset. 9/149 are zoonotic and 140/149 are non-zoonotic.
+# Create the confusion matrix
+confusionMatrix(pred.class, real.class, positive="1")
+
+
+# only some seeds work, most do not - for example:
+
+# reproducibility
+set.seed(2048) # this seed does not work (most don't)
+
+# 5-fold cross validated XGBoost model with 1024 trees and tuned parameters
+cv_bst_prot <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+                                nthread = 4, gamma = 0.15, alpha = 0.4,
+                                objective = "binary:logistic"),
+                    data = dtrain,
+                    stratified = TRUE,
+                    verbose = F,
+                    nfold = 5, 
+                    nrounds = 156,
+                    metrics = list("auc", "rmse"),
+                    prediction = T,
+                    scale_pos_weight = 15
+                    )
+
+# The above gives the following error: 
+# Error in xgb.iter.eval(fd$bst, fd$watchlist, iteration - 1, feval): [13:29:05] amalgamation/../src/metric/rank_metric.cc:200: Check failed: !auc_error: AUC: the dataset only contains pos or neg samples
+
+
+# But if we take out AUC as an eval metric, there is no error. From looking online, others also seem to have the same issue
+
+# reproducibility
+set.seed(2048) # this seed does not work (most don't)
+
+# 5-fold cross validated XGBoost model with 1024 trees and tuned parameters
+cv_bst_prot <- xgb.cv(params = list(max.depth = 3, eta = 0.025, 
+                                nthread = 4, gamma = 0.15, alpha = 0.4,
+                                objective = "binary:logistic"),
+                    data = dtrain,
+                    stratified = TRUE,
+                    verbose = F,
+                    nfold = 5, 
+                    nrounds = 156,
+                    metrics = list("logloss", "rmse"), #replaced auc with logloss
+                    prediction = T,
+                    scale_pos_weight = 15
+                    )
+# prediction probabilities
+pred <- cv_bst_prot$pred
+# Set cutoff threshold
+pred.class <- ifelse(pred >= 0.5, 1, 0) %>% as.factor()
+# actual zoostat
+real.class <- tmp_prot_Train$zoostat %>% as.factor()
+table(real.class) # the training set has 149 out of 228 rows in the full dataset. 9/149 are zoonotic and 140/149 are non-zoonotic.
+# Create the confusion matrix
+confusionMatrix(pred.class, real.class, positive="1")
+```
+
+
