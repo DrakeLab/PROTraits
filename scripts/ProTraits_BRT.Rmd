@@ -194,9 +194,15 @@ table(real.class) # the training set has 149 out of 228 rows in the full dataset
 previous_na_action <- options('na.action')
 options(na.action='na.pass')
 
-sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1] # create a model matrix of the training data predictor variables  
+ # create a model matrix of the training data predictor variables  
+sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1]
 
 dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+
+# create a model matrix of the testing data predictor variables
+sparse_matrix_prot2 <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Test)[,-1]  
+
+dtest <- xgb.DMatrix(data = sparse_matrix_prot2, label = tmp_prot_Test$zoostat)
 
 ```
 
@@ -242,26 +248,42 @@ print(param_log)
 
 ### Cross-validation
 
-```{r}
+```{r cv}
 
 # reproducibility
-set.seed(1024)
+set.seed(2)
 
 # 5-fold cross validated XGBoost model with 512 trees and tuned parameters
 cv_bst_prot <- xgb.cv(params = list(max.depth = 3, nthread = 4, 
-                                    eta = 0.02,
-                                    gamma = 0.25, 
-                                    alpha = 0.4,
+                                    eta = 0.01,
+                                    gamma = 0.325, 
+                                    alpha = 0.35,
                                     objective = "binary:logistic"),
                       data = dtrain,
                       stratified = TRUE,
                       verbose = F,
                       nfold = 5, 
                       nrounds = 512,
-                      metrics = list("logloss", "error"),
+                      metrics = list("logloss", "error", "auc"),
                       scale_pos_weight = 15,
                       prediction = T
                       )
+
+# # this one gave the awesome ranked predictions (it was when the g-measure was messed up, had + instead of * # in the tuning function. fixed that, now parameters changed see above)
+# cv_bst_prot <- xgb.cv(params = list(max.depth = 3, nthread = 4, 
+#                                     eta = 0.03,
+#                                     gamma = 0.325, 
+#                                     alpha = 0.55,
+#                                     objective = "binary:logistic"),
+#                       data = dtrain,
+#                       stratified = TRUE,
+#                       verbose = F,
+#                       nfold = 5, 
+#                       nrounds = 512,
+#                       metrics = list("logloss", "error", "auc"),
+#                       scale_pos_weight = 15,
+#                       prediction = T
+#                       )
 
 cv_bst_prot[["evaluation_log"]] %>% tail()
 
@@ -269,7 +291,7 @@ cv_bst_prot[["evaluation_log"]] %>% tail()
 
 ### Choosing a threshold to convert probabilities to binary predictions
 
-```{r}
+```{r binary_classification}
 
 # Prediction probabilities
 pred <- cv_bst_prot$pred
@@ -277,22 +299,23 @@ pred <- cv_bst_prot$pred
 pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
                       pred.zoostat = pred)
 
-# Could cut it off at the lowest true positive (min pred when zoostat = 1)
-threshold1 <- 
-filter(pred.df, true.zoostat == 1) %>%
-  summarise(min(pred.zoostat)) %>% as.numeric()
+# # Could cut it off at the lowest true positive (min pred when zoostat = 1)
+# threshold1 <- 
+# filter(pred.df, true.zoostat == 1) %>%
+#   summarise(min(pred.zoostat)) %>% as.numeric()
+# 
+# # Set cutoff threshold1
+# pred.class1 <- ifelse(pred >= threshold1, 1, 0) %>% as.factor()
+# 
+# # Create the confusion matrix
+# confusionMatrix(pred.class1, real.class, positive="1")
 
-# Set cutoff threshold1
-pred.class1 <- ifelse(pred >= threshold1, 1, 0) %>% as.factor()
-
-# Create the confusion matrix
-confusionMatrix(pred.class1, real.class, positive="1")
-
-#AUC (to explore that threshold)
+# Get AUC
 roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
 pROC::auc(roc.test)
-plot(roc.test)
-threshold2 <- roc.test$thresholds[which.max(roc.test$sensitivities + roc.test$specificities)]
+
+# Choose threshold that maximizes G-means
+threshold2 <- roc.test$thresholds[which.max(sqrt(roc.test$sensitivities*roc.test$specificities))]
 
 # Set cutoff threshold2
 pred.class2 <- ifelse(pred >= threshold2, 1, 0) %>% as.factor()
@@ -300,12 +323,12 @@ pred.class2 <- ifelse(pred >= threshold2, 1, 0) %>% as.factor()
 # Create the confusion matrix
 confusionMatrix(pred.class2, real.class, positive="1")
 
-# Set cutoff threshold3
-threshold3 <- 13/228
-pred.class3 <- ifelse(pred >= threshold3, 1, 0) %>% as.factor()
-
-# Create the confusion matrix
-confusionMatrix(pred.class3, real.class, positive="1")
+# # Set cutoff threshold3
+# threshold3 <- 13/228
+# pred.class3 <- ifelse(pred >= threshold3, 1, 0) %>% as.factor()
+# 
+# # Create the confusion matrix
+# confusionMatrix(pred.class3, real.class, positive="1")
 
 ```
 
@@ -313,7 +336,7 @@ confusionMatrix(pred.class3, real.class, positive="1")
 
 Plot logloss curve showing how mean train and test logloss varies with the number of trees
 
-```{r}
+```{r logloss_dev_plot}
 # plot of logloss vs number of trees
 ggplot(cv_bst_prot$evaluation_log) +
   geom_line(aes(iter, train_logloss_mean, color = "turquoise")) +
@@ -321,24 +344,41 @@ ggplot(cv_bst_prot$evaluation_log) +
   scale_color_discrete(name = "Key", labels = c("Test logloss mean", "Train logloss mean")) +
   ylab("logloss (mean)") + xlab("number of trees")
 
+# plot of AUC vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_auc_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_auc_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test AUC mean", "Train AUC mean")) +
+  ylab("AUC (mean)") + xlab("number of trees")
+
 ```
 
 
-```{r}
-# get max number of trees that minimize train and test logloss
+```{r logloss_iter}
+# get min number of trees that minimize train and test logloss
 cv_bst_prot$evaluation_log %>%
   dplyr::summarise(
-    ntrees.train = max(which(train_logloss_mean == min(train_logloss_mean))),
+    ntrees.train = min(which(train_logloss_mean == min(train_logloss_mean))),
     logloss.train   = min(train_logloss_mean),
-    ntrees.test  = max(which(test_logloss_mean == min(test_logloss_mean))),
+    ntrees.test  = min(which(test_logloss_mean == min(test_logloss_mean))),
     logloss.test   = min(test_logloss_mean)
   )
+
+# get min number of trees that maximize train and test auc
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = min(which(train_auc_mean == max(train_auc_mean))),
+    auc.train   = min(train_auc_mean),
+    ntrees.test  = min(which(test_auc_mean == max(test_auc_mean))),
+    auc.test   = max(test_auc_mean)
+  )
+
 
 ```
 
 Plot deviance curve showing how mean train and test errors vary with the number of trees
 
-```{r}
+```{r error_dev_plot}
 
 # Plot error vs number of trees
 ggplot(cv_bst_prot$evaluation_log) +
@@ -350,13 +390,13 @@ ggplot(cv_bst_prot$evaluation_log) +
 ```
 
 
-```{r}
+```{r error_iter}
 # get max number of trees that minimize train and test error
 cv_bst_prot$evaluation_log %>%
   dplyr::summarise(
-    ntrees.train = max(which(train_error_mean == min(train_error_mean))),
+    ntrees.train = min(which(train_error_mean == min(train_error_mean))),
     error.train   = min(train_error_mean),
-    ntrees.test  = max(which(test_error_mean == min(test_error_mean))),
+    ntrees.test  = min(which(test_error_mean == min(test_error_mean))),
     error.test   = min(test_error_mean)
   )
 
@@ -372,11 +412,12 @@ I built the model using the optimal parameter values identified above. I recorde
 
 
 BRT_prot <- xgboost(dtrain,
-                    params = list(max.depth = 3, eta = 0.02, 
-                                  nthread = 4, gamma = 0.25, alpha = 0.4,
+                    params = list(max.depth = 3, eta = 0.01, 
+                                  nthread = 4, gamma = 0.325, alpha = 0.55,
                                   objective = "binary:logistic",
                                   eval_metric = "logloss",
-                                  eval_metric = "error"),
+                                  eval_metric = "error",
+                                  eval_metric = "auc"),
                     verbose = F,
                     nrounds = 512)
 
@@ -384,24 +425,34 @@ BRT_prot[["evaluation_log"]] %>% tail()
 
 ggplot(BRT_prot$evaluation_log) +
   geom_line(aes(iter, train_logloss)) +
-  ylab("logloss") + xlab("iter")
+  ylab("train logloss") + xlab("iter")
 
 ggplot(BRT_prot$evaluation_log) +
   geom_line(aes(iter, train_error)) +
-  ylab("logloss") + xlab("iter")
+  ylab("train error") + xlab("iter")
+
+ggplot(BRT_prot$evaluation_log) +
+  geom_line(aes(iter, train_auc)) +
+  ylab("train auc") + xlab("iter")
 
 pred <- predict(BRT_prot, dtrain)
 
 pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
                       pred.zoostat = pred)
 
-pred.class <- ifelse(pred >= 13/228, 1, 0) %>% as.factor()
+# Choose threshold at which gives the largest G-mean score - sqrt(TPR*TNR)
+roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
+threshold <- roc.test$thresholds[which.max(sqrt(roc.test$sensitivities*roc.test$specificities))]
+
+plot(x=roc.test$thresholds, y= sqrt(roc.test$sensitivities*roc.test$specificities), type = "b")
+
+# generate binary predicitons
+pred.class <- ifelse(pred >= threshold, 1, 0) %>% as.factor()
 
 # Create the confusion matrix
 confusionMatrix(pred.class, real.class, positive="1")
 
-#AUC (to explore that threshold)
-roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
+#AUC
 pROC::auc(roc.test)
 
 #change na.action back to default
@@ -435,7 +486,6 @@ Plotted for the eight most important features.
 
 ```{r pdps, echo=F, warning=F, message=F}
 ## partial dependence plots
-
 important_vars <- importance_prot$Feature
 
 v <- importance_prot$Feature
@@ -504,150 +554,153 @@ The main_biome variable is actually a factor with 16 levels (see below), so I'll
 
 # Permuting features by group
 
-This code is not working :(
 
 ```{r permutations, eval = F}
-# For the code for my permutations see below (not run here due to compuation time)
+#create a function that does the permutation for each group
 
-# now try permuting variables by group; but independently of one another to break any correlation
-
-iter <- 16
-nrounds <- 16
-auc_spec_gen <- NULL
-auc_community <- NULL
-auc_intrinsic <- NULL
-auc_hosts <- NULL
-auc_regional <- NULL
-auc_sampling <- NULL
-
-auc_df <- data.frame(NULL)
-
-for(i in 1:iter){
-  for(j in 1:length(spec_gen)){
-    for(k in 1:9){
-      # create a model matrix of specialism-generalism predictor variables
-      perm_tmp_prot_Train <- tmp_prot_Train[, c(1:9, 34)]
-      perm_tmp_prot_Train[,j] <- tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
-      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
-      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+permute_func <- function(group_vars, niter, start.seed){
+  #function to do permutation to look at group variable importance
+  #' @param group_vars vector of variable/column names in the group, ex. c("var1", "var2")
+  #' @param niter number of iterations to do
+  #' @param start.seed random seed to start with
+  #' 
+  #' @return AUC for each round of permutation in a vector
+  
+  perm_auc <- list()
+  for(i in 1:niter){
+    #set the seed for random permutation
+    set.seed(start.seed+i)
     
-      perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.02, 
-                                    nthread = 4, gamma = 0.25, alpha = 0.4,
-                                    objective = "binary:logistic",
-                                    eval_metric = list("auc")),
-                               verbose = F,
-                               nrounds = nrounds)
-      auc_spec_gen[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
-    }
+    #create one permuted dataset
+    perm_df <- tmp_prot_Train %>%
+      mutate_at(.vars = group_vars, function(x) x[sample(nrow(tmp_prot_Train), replace = F)])
+    #turn into sparseMatrix
+    perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_df)[,-1]  
+    dtrain <- xgb.DMatrix(data = perm_sparse_matrix_prot, label = tmp_prot_Train$zoostat)
     
+    pred <- predict(BRT_prot, dtrain)
+    
+    pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+                          pred.zoostat = pred)
+    
+    # Create ROC object
+    roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred)
+    
+    #AUC
+    perm_auc[[i]] <- pROC::auc(roc.test)
   }
   
-  for(j in 1:length(community)){
-    for(k in 10:15){
-      # create a model matrix of community predictor variables
-      perm_tmp_prot_Train <- tmp_prot_Train[, c(10:15, 34)]
-      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
-      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
-      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
-    
-      perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.02, 
-                                    nthread = 4, gamma = 0.25, alpha = 0.4,
-                                    objective = "binary:logistic",
-                                    eval_metric = list("auc")),
-                               verbose = F,
-                               nrounds = nrounds)
-      auc_community[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
-    }
-    
-  }
-  
-  for(j in 1:length(intrinsic)){
-    for(k in 16:24){
-      # create a model matrix of intrinsic predictor variables
-      perm_tmp_prot_Train <- tmp_prot_Train[, c(16:24, 34)]
-      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
-      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
-      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
-    
-      perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.02, 
-                                    nthread = 4, gamma = 0.25, alpha = 0.4,
-                                    objective = "binary:logistic",
-                                    eval_metric = list("auc")),
-                               verbose = F,
-                               nrounds = nrounds)
-      auc_intrinsic[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
-    }
-    
-  }
-  
-  for(j in 1:length(hosts)){
-    for(k in 25:28){
-      # create a model matrix of host predictor variables
-      perm_tmp_prot_Train <- tmp_prot_Train[, c(25:28, 34)]
-      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
-      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
-      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
-    
-      perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.02, 
-                                    nthread = 4, gamma = 0.25, alpha = 0.4,
-                                    objective = "binary:logistic",
-                                    eval_metric = list("auc")),
-                               verbose = F,
-                               nrounds = nrounds)
-      auc_hosts[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
-    }
-    
-  }
-  
-  for(j in 1:length(regional)){
-    for(k in 29:32){
-      # create a model matrix of regional predictor variables
-      perm_tmp_prot_Train <- tmp_prot_Train[, c(29:32, 34)]
-      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
-      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
-      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
-    
-      perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.02, 
-                                    nthread = 4, gamma = 0.25, alpha = 0.4,
-                                    objective = "binary:logistic",
-                                    eval_metric = list("auc")),
-                               verbose = F,
-                               nrounds = nrounds)
-      auc_regional[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
-    }
-    
-  }
-  
-  for(j in length(sampling)){
-    # create a model matrix of sampling predictor variables
-    perm_tmp_prot_Train <- tmp_prot_Train[, c(33, 34)]
-    for(k in 33){
-      perm_tmp_prot_Train[,j] <-tmp_prot_Train[sample(1:nrow(tmp_prot_Train)), ..k]
-      perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_tmp_prot_Train)[,-1]  
-      dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
-    
-      perm_bst_prot <- xgboost(dtrain,
-                               params = list(max.depth = 3, eta = 0.02, 
-                                    nthread = 4, gamma = 0.25, alpha = 0.4,
-                                    objective = "binary:logistic",
-                                    eval_metric = list("auc")),
-                               verbose = F,
-                               nrounds = nrounds)
-      auc_sampling[i] <- perm_bst_prot$evaluation_log[nrounds]$train_auc
-    }
-   
-
-  }
-  auc_df <- data.frame(auc_spec_gen, auc_community, auc_intrinsic, auc_hosts, auc_regional, auc_sampling)
-   
+  #turn into a vector & return
+  return(do.call(c, perm_auc))
 }
 
-auc_df
+# Get AUCs for each round of permutation
+
+# First create a list of the variable groups with their names
+group.list <- list("spec_gen" = spec_gen, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "regional" = regional, "sampling" = sampling)
+
+# # test on one group along
+# test_perm <- permute_func(group_vars = intrinsic, niter = 10, start.seed = 500)
+
+# Apply the permute_func over each variable group
+perm.list <- lapply(group.list, permute_func, niter = 128, start.seed = 500)
+skrrrahh("biggie") # play notification sound to alert when permutations are done
+
+#turn the list into a dataframe and turn it long so it works well with dplyr and ggplot
+perm.df <- bind_rows(perm.list) %>%
+  mutate(perm_id = 1:n()) %>%
+  pivot_longer(cols = spec_gen:sampling, names_to = "var_group", values_to = "AUC")
+
+#look at summary statistics and plot
+#pretend this is the full model AUC
+full.AUC = 0.995
+#plot
+relative.imp.grp <- 
+perm.df %>%
+  group_by(var_group) %>%
+  summarise(med_AUC = median(AUC),
+            sd_AUC = sd(AUC)) %>%
+  mutate(delta_AUC = full.AUC - med_AUC) %>% 
+  arrange(desc(delta_AUC))
+
+relative.imp.grp$var_group <- factor(relative.imp.grp$var_group, levels = relative.imp.grp$var_group)
+
+relative.imp.grp %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = F)) %>%
+ggplot(aes(y = var_group, x = med_AUC)) +
+geom_point(aes(color = var_group), stat = "identity") +
+geom_errorbarh(aes(color = var_group, xmin = med_AUC-sd_AUC, xmax = med_AUC+sd_AUC), 
+               alpha = 0.8, width = 0, height = 0)
+
+
+
+relative.imp.grp %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = T)) %>%
+ggplot(aes(y = var_group, x = delta_AUC)) +
+geom_point(aes(color = var_group)) +
+geom_errorbarh(aes(color = var_group, xmin = delta_AUC-sd_AUC, xmax = delta_AUC+sd_AUC), 
+               alpha = 0.8, width = 0, height = 0) 
+
+
+```
+
+```{r ranked predictions}
+
+
+# Adapted from Ania's helminth code
+
+df1 <- cbind(pred.df, trainIndex_prot) %>% rename(trainIndex = Resample1)
+df2 <- protnames %>% rownames_to_column() %>% rename(trainIndex = rowname) 
+
+df2$trainIndex <- as.integer(df2$trainIndex)
+
+df3 <- df2 %>% left_join(df1, by = "trainIndex") %>% select(-trainIndex) %>% na.omit()
+
+df3$true.zoostat <- factor(df3$true.zoostat, labels = c("not known to be zoonotic", "known to be zoonotic"))
+
+df4 <- df3 %>% arrange(desc(pred.zoostat))
+
+ggplot(data=df4, aes(x=reorder(protname, -pred.zoostat), y=pred.zoostat, color = true.zoostat, fill = true.zoostat, label = protname)) +
+  geom_bar(position="dodge",stat="identity") +
+  labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
+  theme_classic() +
+  theme(axis.text=element_text(size=15),
+        axis.title.x = element_text(size=15),
+        axis.title.y = element_text(size=15),
+        legend.title = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y = element_text(size=15), legend.position = c(0.80,0.94)) +
+  scale_fill_manual(values = c("#009B9F","#C75DAA")) +
+  scale_color_manual(values = c("#009B9F","#C75DAA")) # +
+  # annotate("text", x =15.75, y = 0.98, label = "Hepatocystic kochi") +
+  # annotate("text", x =17.5, y = 0.945, label = "Neospora caninum")
+
+gmpd_zooscored <- read.csv("data/modified/gmpd_zooscored.csv")
+
+df5 <- gmpd_zooscored %>% filter(partype == "Protozoa") %>% 
+  select(protname = gmpdparname, zscore) %>% 
+  left_join(df4) %>% distinct(protname, .keep_all = T) %>% 
+  na.omit()
+
+df5$zscore <- as.factor(df5$zscore)
+
+ggplot(data=df5, aes(x=reorder(protname, -pred.zoostat), y=pred.zoostat, 
+                     color = zscore, fill = zscore, label = protname)) +
+  geom_bar(position="dodge",stat="identity") +
+  labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
+  theme_classic() +
+  theme(axis.text=element_text(size=15),
+        axis.title.x = element_text(size=15),
+        axis.title.y = element_text(size=15),
+        legend.title = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y = element_text(size=15)) +
+  scale_fill_manual(values = c("#009B9F","#7DC5C7", "#E4C1D8", "#D691C1", "#C75DAA"))+
+  scale_color_manual(values = c("#009B9F","#7DC5C7", "#E4C1D8", "#D691C1", "#C75DAA"))
+
 
 ```
 
