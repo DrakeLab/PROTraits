@@ -17,10 +17,10 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
   
   k = 5
   
-  evalmetrics <- list("error", "logloss")
+  #evalmetrics <- list("error", "logloss")
   
-  eval.log <- matrix(0 , ncol = 7)
-  colnames(eval.log) <- c("TSS", "AUC", "mean.logloss","mean.error", "eta","gamma", "alpha")
+  eval.log <- matrix(0 , ncol = 6)
+  colnames(eval.log) <- c("TSS", "AUC", "F1", "eta","gamma", "alpha")
   for(alpha in seq(0.35, 0.55, by = 0.05)) {
     output.BRT <- list()
     for (eta in seq(0.01, 0.05, by = 0.01)) {
@@ -38,37 +38,45 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
                         verbose = F,
                         nfold = k,
                         nrounds = n.rounds,
-                        metrics = evalmetrics,
+                        #metrics = evalmetrics,
                         scale_pos_weight = 15,
                         prediction = T
                         )
         # prediction probabilities
         pred <- xgbcv$pred
+        
         # Set cutoff threshold
         pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
                               pred.zoostat = pred)
         # threshold <- filter(pred.df, true.zoostat == 1) %>% 
         #   summarise(min(pred.zoostat)) %>% as.numeric()
-        threshold <- 13/228
+        # threshold <- 13/228
+        
+        # Choose threshold at which gives the largest G-mean score - sqrt(TPR*TNR)
+        roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
+        threshold <- roc.test$thresholds[which.max(sqrt(roc.test$sensitivities*roc.test$specificities))]
         
         pred.class <- ifelse(pred >= threshold, 1, 0) %>% as.factor()
         # actual zoostat
         real.class <- tmp_prot_Train$zoostat %>% as.factor()
         
-        # Create the confusion matrix and get TSS
+        # Create the confusion matrix and get TSS and F1
         conf.mat <- confusionMatrix(pred.class, real.class, positive="1")
         TPR <- conf.mat[["byClass"]][["Sensitivity"]]
         TNR <- conf.mat[["byClass"]][["Specificity"]]
         TSS <- TPR + TNR - 1
         
-        # Calculate AUC
-        roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred.df$pred.zoostat)
+        F1 <- conf.mat[["byClass"]][["F1"]]
+        
+        # Get AUC
+        
         AUC <- pROC::auc(roc.test)
         
-        mean.logloss <- tail(xgbcv$evaluation_log$test_logloss_mean, 1)
-        mean.error <- tail(xgbcv$evaluation_log$test_error_mean, 1)
+        #mean.logloss <- tail(xgbcv$evaluation_log$test_logloss_mean, 1)
+        #mean.error <- tail(xgbcv$evaluation_log$test_error_mean, 1)
+        
         # save eval log for each parameter combo
-        eval.metrics <- c(TSS, AUC, mean.logloss, mean.error, eta, gamma, alpha)
+        eval.metrics <- c(TSS, AUC, F1, eta, gamma, alpha)
         eval.log <- rbind(eval.log, eval.metrics) %>% as.data.frame()
       }    
     }
