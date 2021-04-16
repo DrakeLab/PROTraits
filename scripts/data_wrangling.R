@@ -2,15 +2,15 @@
 # Title:   Clean data    #
 # Project: Protraits     #
 
-### Attach packages
+### Attach packages ------
 
 library(tidyverse) 
 library(magrittr)
+library(here)
 
 rm(list = ls())
 
-# ALL GMPD PARS ------------
-### Load data
+### Load data -------
 
 ## GMPD data # rows are records of host-par associations. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
 
@@ -18,25 +18,59 @@ rm(list = ls())
 gmpd_allpars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
   filter(HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName))
 
-# Select only desired vars
+
+# # Remove marine and domestic hosts a la Dallas et al 2018 --------
+#  
+# remove seals and walruses since they are not terrestrial
+# gmpd_allpars <- gmpd_allpars[-which(gmpd_allpars$HostFamily %in% c("Otariidae","Phocidae","Odobenidae")), ]
+# 
+# # these are the 33 species I was goin to remove because they removed domestic animals in
+# gmpddomhosts <- c('Felis catus', #domestic cat (no gmpd records)
+#                   'Micropotamogale lamottei','Micropotamogale ruwenzorii','Potamogale velox', # otter shrews
+#                   'Rhagamys orthodon', # extinct rodent
+#                   'Myocastor coypus', # semiaquatic rodent
+#                   'Cynogale bennettii', # otter civet (semiaquatic civet)
+# 
+#                   # whole bunch of otters:
+#                   'Aonyx capensis',  'Aonyx capensis','Aonyx cinerea','Enhydra lutris','Hydrictis maculicollis',
+#                   'Lontra canadensis','Lontra felina','Lontra longicaudis','Lontra provocax','Lutra lutra',
+#                   'Lutra nippon','Lutra sumatrana','Lutrogale perspicillata','Pteronura brasiliensis',
+# 
+#                   "Ovis aries", # domestic sheep (a bunch of records, but actually for all of these except one, the original host reported name is Ovis aries musimon or Ovis musimon, which is a wild goat)
+#                   "Bos taurus",  # domestic cattle (no records)
+#                   "Capra hircus",  # domestic goat (1 record, but the original reported name was Capra aegagrus which is a whole!! different!! WILD!! species!!)
+#                   "Sus scrofa",  # wild boar
+#                   "Equus caballus", # domestic horse (all records from 1 study - Mathee et al. 2004, re: helminths)
+#                   "Equus asinus",  # wild ass or domestic donkey (all records from 1 study - Mathee et al. 2004, re: helminths)
+#                   "Bubalis bubalis",  # domestic water buffalo (no gmpd records)
+#                   "Camelus dromedarius",  # domestic dromedary camel (two records from 1 study - Mihok et al. 1994, re: T. simiae)
+#                   "Camelus bactrianus", # domestic bactrian camel (no gmpd records)
+#                   "Llama glama", # domestic llama (first of all: typo. Genus is spelled Lama, not Llama. 4 records but the origianl host reported name is Lama guanicoe, which is a whole!! another!! wild!! species!!)
+#                   "Llama pacos", # domestic alpaca (same typo in genus. no gmpd records)
+#                   "Ursus maritimus" # polar bear 
+#                   )
+# # this all doesn't make sense, screw it and just use GMPD as is. the dromedary and one ovis aries records are probably the only ones i'd change. idk, maybe the marine things too?
+
+# Select only desired vars ----
 gmpd_allpars <- gmpd_allpars  %>% 
   select(gmpdparname=ParasiteCorrectedName, -HasBinomialName, partype = ParType, 
          gmpdhostname=HostCorrectedName, hosttype=Group, 
          hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
          location=LocationName, lat=Latitude, long=Longitude)
 
-# Update this prot spp name
+# Update this prot spp name ------
 gmpd_allpars$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpd_allpars$gmpdparname)
   
 length(unique(gmpd_allpars$gmpdparname)) # 1998 unique pars
 table(gmpd_allpars %>% distinct(gmpdparname, .keep_all = T) %>% select(partype)) # 255 protozoa
 
-# save all pairs (every unique combo of host-par interaction)
+# Save all pairs (every unique combo of host-par interaction)
 gmpd_allpairs <- gmpd_allpars %>% 
   select(gmpdparname, gmpdhostname) %>% 
   distinct()
 
 # write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
+
 
 # Add zoostat to zscores to GMPD ---------
 
