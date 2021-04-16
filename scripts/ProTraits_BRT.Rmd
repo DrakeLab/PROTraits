@@ -469,10 +469,32 @@ Low logloss and error, high sensitivity and specificity, and an AUC of 1. Hmm.
 
 importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot), model = BRT_prot)
 
-# xgb.plot.importance(importance_prot, rel_to_first = TRUE, xlab = "Relative importance")
 
-gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
-gg_prot
+ggprot1 <- xgb.plot.importance(importance_prot, rel_to_first = TRUE,
+                               xlab = "Relative importance")
+# # Old
+# gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
+# gg_prot
+
+# Create a list of the variable groups with their names
+group.list <- list("spec_gen" = spec_gen, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "regional" = regional, "sampling" = sampling)
+
+feature_grps <- unlist(group.list) %>% as.data.frame() %>% rownames_to_column()
+colnames(feature_grps) <- c("Group", "Feature")
+feature_grps$Group <- gsub('[[:digit:]]+', '', feature_grps$Group)
+
+importance_prot_grp <- inner_join(ggprot1, feature_grps)
+importance_prot_grp$Feature <- factor(importance_prot_grp$Feature, 
+                                      levels = rev(importance_prot_grp$Feature))
+
+ggplot(importance_prot_grp, aes(x = Feature, y = Importance)) +
+  geom_bar(stat = "identity", aes(fill = Group), 
+           show.legend = T) +
+  coord_flip() + 
+  ylab("Relative importance") + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_fill_discrete(guide = guide_legend(reverse = TRUE))
 
 ```
 
@@ -598,7 +620,7 @@ permute_func <- function(group_vars, niter, start.seed){
 
 # First create a list of the variable groups with their names
 group.list <- list("spec_gen" = spec_gen, "community" = community, "hosts" = hosts,
-                   "intrinsic"= intrinsic, "regional" = regional, "sampling" = sampling)
+                   "intrinsic"= intrinsic, "environmental" = regional, "sampling" = sampling)
 
 # # test on one group along
 # test_perm <- permute_func(group_vars = intrinsic, niter = 10, start.seed = 500)
@@ -636,11 +658,14 @@ geom_errorbarh(aes(color = var_group, xmin = med_AUC-sd_AUC, xmax = med_AUC+sd_A
 
 
 relative.imp.grp %>%
-mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = T)) %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = F)) %>%
 ggplot(aes(y = var_group, x = delta_AUC)) +
-geom_point(aes(color = var_group)) +
+geom_point(aes(color = var_group), size = 2) +
 geom_errorbarh(aes(color = var_group, xmin = delta_AUC-sd_AUC, xmax = delta_AUC+sd_AUC), 
-               alpha = 0.8, width = 0, height = 0) 
+               alpha = 1, height = 0) + 
+  guides(colour = guide_legend(reverse=T, title = "Variable Group")) + 
+  xlab("delta AUC") + 
+  ylab("Variable Group") 
 
 
 ```
