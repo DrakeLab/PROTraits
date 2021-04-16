@@ -10,14 +10,21 @@ host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), 
 # load wwf terrestrial ecoregion data
 teow_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
 
+# replace NAs in realm with "RL" for "Rock and ice or Lake area" (see metadata)
+teow_sf$REALM <- factor(teow_sf$REALM, levels = c(levels(teow_sf$REALM), "RL"))
+teow_sf <- teow_sf %>% dplyr::mutate(REALM = replace_na(REALM, "RL"))
 
 # create df with each point and corresponding TEOW vars
 teowprot <- st_intersection(teow_sf, host_par_points_sf) %>% 
   as.data.frame()
 
+
 ecoprotraits_tmp <- left_join(host_par_points_df, 
-                              teowprot %>% select(ID, ecoregion = ECO_NUM, realm = REALM, 
-                                                  biome = BIOME, eco_area = AREA), 
+                              teowprot %>% select(ID, 
+                                                  ecoregion = ECO_NUM, 
+                                                  realm = REALM, 
+                                                  biome = BIOME, 
+                                                  eco_area = AREA), 
                               by = "ID")
 
 ecoprotraits_grp <- ecoprotraits_tmp[-1] %>% group_by(protname) 
@@ -28,12 +35,12 @@ getmode <- function(v) {
 }
 
 ecoprotraits_agg <- summarise(ecoprotraits_grp, 
-                              # n_realms = n_distinct(realm),
-                              n_ecoregions = n_distinct(ecoregion), 
+                              n_realms = n_distinct(realm),
+                              # n_ecoregions = n_distinct(ecoregion), 
                               # n_biomes = n_distinct(biome),
                               # eco_range = sum(eco_area), 
                               # main_biome = getmode(biome),
-                              main_ecoregion = getmode(ecoregion)) 
+                              main_realm = getmode(realm)) 
 protnames <- read.csv("./data/modified/protnames.csv")
 
 ecoprotraits <- left_join(protnames, ecoprotraits_agg)
@@ -117,3 +124,13 @@ ggplot() +
   scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
   geom_point(data = host_par_points_df, aes(x = long, y = lat)) 
 
+##############
+
+zoogeo <- sf::read_sf("./data/original/holt_etal_zoogeoregions/Taxon_Specific_regions/mam.shp")
+names(zoogeo)
+plot(zoogeo)
+
+zoogeo <- zoogeo %>% 
+  sf::st_simplify(dTolerance = 0.01) %>% 
+  dplyr::group_by(mam_upgma_) %>% 
+  dplyr::summarise()
