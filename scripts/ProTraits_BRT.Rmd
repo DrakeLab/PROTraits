@@ -43,6 +43,7 @@ The binary response variable indicates whether a protozoa species is zoonotic or
 protraits <- read.csv("./data/modified/protraits_final", row.names = 1)
 
 head(protraits)
+names(protraits) %>% sort()
 
 ```
 
@@ -545,9 +546,8 @@ p8 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[8]), ice = T
               train = sparse_matrix_prot, type = "classification", prob = T)
 
 
-grid.arrange(p1, p2, ncol = 2)
-grid.arrange(p3, p4, ncol = 2)
-grid.arrange(p5, p6, ncol = 2)
+grid.arrange(p1, p2, p3, ncol = 3)
+grid.arrange(p4, p5, p6, ncol = 3)
 grid.arrange(p7, p8, ncol = 2)
 
 ```
