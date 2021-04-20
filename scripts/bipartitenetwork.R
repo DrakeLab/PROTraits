@@ -7,16 +7,16 @@ library(bipartite)
 library(tictoc)
 library(BRRR)
 
-# create df from which to build network
+# create df from which to build network -------
 hostparnetwork <- read.csv("./data/modified/allgmpdpairs.csv", stringsAsFactors = F)[, -1] %>% 
   select(parname = gmpdparname, hostname = gmpdhostname) %>% mutate(netID = "1")
 
-## Setup for bipartite
+## Setup for bipartite ---------
 
 # convert to web format needed for bipartite functions
 web <- frame2webs(hostparnetwork, varnames = c("parname", "hostname", "netID"))
 
-# calculate bipartite network indices for all prots and hosts
+# calculate bipartite network indices for all prots and hosts -----------
 tic()
 parnet <- specieslevel(web[["1"]], level = "lower", index = c("degree", 
                                                                 "normalised degree", 
@@ -27,11 +27,9 @@ parnet <- specieslevel(web[["1"]], level = "lower", index = c("degree",
 toc()
 BRRR::skrrrahh("soulja")
 
-data <- select_if(parnet, is.numeric)
+# Create correlation matrix ----------
 
-# # don't try this at home
-# ggdata <- data %>% mutate(zoostat = factor(zoostat))
-# ggpairs(ggdata)
+data <- select_if(parnet, is.numeric)
 
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
 correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
@@ -41,14 +39,16 @@ corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))
 
 highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
 
-# degree, normalised degree, and proportion generality ate the same (corr coeff = 1.00)
 
 #Plot
 
-corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.4, 
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 1, number.cex = 1, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
 
-# limit to prots
+# degree, normalised degree, and proportion generality ate the same (corr coeff = 1.00), so just keep one - degree
+# SSI is hard to explain so choose a highly correlated one - weighted closeness
+
+# limit to prots, select only degree and weighted closeness
 parnet <- parnet %>% rownames_to_column() %>% rename(protname = rowname)
 protnames <- read.csv("./data/modified/allprots.csv")[-1]
 
