@@ -12,11 +12,19 @@ rm(list = ls())
 
 ### Load data -------
 
-## GMPD data # rows are records of host-par associations. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
+## GMPD data 
+# rows are records of host-par associations. Data from: Stephens et al. 2017, downloaded from https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecy.1799 on 2018.09.11
 
-# Entire GMPD minus species with no binomial name ---------
+# Entire GMPD minus species with no binomial name
 gmpd_allpars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>% 
   filter(HasBinomialName == "yes", !grepl("no binomial name", HostCorrectedName))
+
+# Select only desired vars
+gmpd_allpars <- gmpd_allpars  %>% 
+  select(gmpdparname=ParasiteCorrectedName, -HasBinomialName, partype = ParType, 
+         gmpdhostname=HostCorrectedName, hosttype=Group, 
+         hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
+         location=LocationName, lat=Latitude, long=Longitude)
 
 
 # # Remove marine and domestic hosts a la Dallas et al 2018 --------
@@ -51,14 +59,8 @@ gmpd_allpars <- read.csv("./data/original/GMPD_datafiles/GMPD_main.csv") %>%
 #                   )
 # # this all doesn't make sense, screw it and just use GMPD as is. the dromedary and one ovis aries records are probably the only ones i'd change. idk, maybe the marine things too?
 
-# Select only desired vars ----
-gmpd_allpars <- gmpd_allpars  %>% 
-  select(gmpdparname=ParasiteCorrectedName, -HasBinomialName, partype = ParType, 
-         gmpdhostname=HostCorrectedName, hosttype=Group, 
-         hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
-         location=LocationName, lat=Latitude, long=Longitude)
 
-# Update this prot spp name ------
+# Correct prot spp name ------
 gmpd_allpars$gmpdparname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpd_allpars$gmpdparname)
   
 length(unique(gmpd_allpars$gmpdparname)) # 1998 unique pars
@@ -72,7 +74,7 @@ gmpd_allpairs <- gmpd_allpars %>%
 # write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
 
 
-# Add zoostat to zscores to GMPD ---------
+# Add zooscores to GMPD ---------
 
 # this is from Tao - a CSV of all the zooscored gmpd parasites
 zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
