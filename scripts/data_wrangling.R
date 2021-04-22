@@ -33,77 +33,70 @@ gmpd_allpars <- gmpd_allpars  %>%
 
 # Correct prot spp name ------
 gmpd_allpars$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpd_allpars$parname)
-  
-length(unique(gmpd_allpars$parname)) # 1998 unique pars
-table(gmpd_allpars %>% distinct(parname, .keep_all = T) %>% select(partype)) # 255 protozoa
+gmpd_allpars$parname <- gsub("Plasmodium rodhani", "Plasmodium rodhaini", gmpd_allpars$parname)
+gmpd_allpars$parname <- gsub("Plasmodium praefalciparum", "Plasmodium falciparum", gmpd_allpars$parname)
+gmpd_allpars$parname <- gsub("Babesia equi", "Theileria equi", gmpd_allpars$parname)
+
+length(unique(gmpd_allpars$parname)) # 1594 unique pars
+table(gmpd_allpars %>% distinct(parname, .keep_all = T) %>% select(partype)) # 253 protozoa
 
 # Save all associations (every combo of host-par interaction)
 gmpd_allobs <- gmpd_allpars %>% 
   select(parname, hostname)
 
-# write.csv(gmpd_allobs, "./data/modified/allgmpdobs.csv")
+write.csv(gmpd_allobs, "./data/modified/allgmpdobs.csv")
 
 # Save all uniquie pairs (every unique combo of host-par interaction)
 gmpd_allpairs <- gmpd_allpars %>% 
   select(parname, hostname) %>% 
   distinct()
 
-# write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
+write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
 
 
 # Add zooscores to GMPD ---------
 
 # this is from Tao - a CSV of all the zooscored gmpd parasites
-zooscore_all <- read.csv("./data/original/Zooscore_datafiles/ZooScore_GMPD_201906-201908.csv") %>% 
-  filter(!Non.GMPD == 1) %>% 
-  select(parname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, zscore=XC_ZooScore)
-length(unique(zooscore_all$parname)) # 1992 unique pars, but there are 1993 rows
+zooscore_data <- read.csv("./data/modified/Zooscore_GMPD_JV_21042021.csv")
 
-# find duplicate parasite
-table(zooscore_all$parname) %>% as.data.frame() %>% filter(Freq == 2) # Ascaris suum has two entries (rows 111 and 112) and they are almost identical but the zscores differ. Row 111 says 2 while row 112 says 1. I looked it up and I actually think it should be a 3 (tranmissible to other humans). Source: https://www.cdc.gov/parasites/ascariasis/prevent.html
-# remove row with duplicate
-zooscore_all <- zooscore_all %>% distinct(parname, .keep_all = T)
-# get rownumber of Ascaris suum
-zooscore_all %>% rownames_to_column() %>% filter(parname == "Ascaris suum") # row number 111
-# replace Ascaris suum zscore with the correct one
-zooscore_all$zscore[111]  <- 3 
+zooscore_all <- zooscore_data %>% 
+  select(rawparname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, zscore=XC_ZooScore, gmpdmatch = Match)
 
-#' Other errors:
-#' Entamoeba histolytica is misspelled
-#' Trypanosoma brucei is zoonotic (at least two subspecies of it are) Source: CDC https://www.cdc.gov/parasites/sleepingsickness/gen_info/faqs.html
-#' Isospora canis and Isospora belli should be Cystoisospora ____ instead
+length(unique(zooscore_all$rawparname)) # 1850 unique pars
+length(unique(zooscore_all$gmpdmatch)) #1753 because there are 98 NAs - zooscore parnames that did not match GMPD names
 
-# correct E. histolytica spelling
-zooscore_all$parname <- gsub("Entamoemba histolytica", "Entamoeba histolytica", zooscore_all$parname)
-
-# correct T. brucei zscore
-zooscore_all %>% rownames_to_column() %>% filter(parname == "Trypanosoma brucei") # row number 1929
-# replace zscore with the correct one
-zooscore_all$zscore[1929]  <- 3
-
-# Correct genus name
-zooscore_all$parname <- gsub("Isospora canis", "Cystoisospora canis", zooscore_all$parname)
-zooscore_all$parname <- gsub("Isospora belli", "Cystoisospora belli", zooscore_all$parname)
-zooscore_all$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", zooscore_all$parname)
+# #' Other errors:
+# #' Entamoeba histolytica is misspelled
+# #' Isospora canis and Isospora belli should be Cystoisospora ____ instead
+# 
+# # correct E. histolytica spelling
+# zooscore_all$parname <- gsub("Entamoemba histolytica", "Entamoeba histolytica", zooscore_all$parname)
+# 
+# # Correct genus name
+# zooscore_all$parname <- gsub("Isospora canis", "Cystoisospora canis", zooscore_all$parname)
+# zooscore_all$parname <- gsub("Isospora belli", "Cystoisospora belli", zooscore_all$parname)
+# zooscore_all$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", zooscore_all$parname)
 
 #see if any zscores are missing
 table(zooscore_all$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() 
-# sum is 1992 which means each row has a zscore
+# sum is 1850 which means each row has a zscore
 
 setdiff(gmpd_allpars$parname, 
-        zooscore_all$parname) %>% sort() # 276
-setdiff(zooscore_all$parname,
-        gmpd_allpars$parname) # 517 (i guess the zooscores file had more pars from outside gmpd???)
+        zooscore_all$gmpdmatch) %>% sort() # 141
+setdiff(zooscore_all$gmpdmatch,
+        gmpd_allpars$parname) %>% sort() # 299 (i guess the zooscores file has names that don't match up or parasites outside the GMPD?)
 intersect(gmpd_allpars$parname, 
-          zooscore_all$parname) #1474
+          zooscore_all$gmpdmatch) #1453
+
+zooscore_all <- zooscore_all %>% select(parname = gmpdmatch, zscore)
 
 # add zscores to gmpd
 gmpd_zooscored <- left_join(gmpd_allpars, zooscore_all, by = "parname")
 
 # see how many have zscores
-table(gmpd_zooscored$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # 13681/19333 rows have a zscore
+table(gmpd_zooscored$zscore) %>% as.data.frame() %>% select(Freq) %>% sum() # 15563/16595 rows have a zscore
 
-setdiff(gmpd_zooscored$parname, gmpd_allpars$parname)
+setdiff(gmpd_zooscored$parname, gmpd_allpars$parname) # should be 0
 
 #remove those without zscore
 completeFun <- function(data, desiredCols) {
@@ -111,7 +104,7 @@ completeFun <- function(data, desiredCols) {
   return(data[completeVec, ])
 }
 
-gmpd_zooscored <- completeFun(gmpd_zooscored, "zscore") # 13681 obs YAAAY :)
+gmpd_zooscored <- completeFun(gmpd_zooscored, "zscore") # 15563 obs YAAAY :)
 
 setdiff(gmpd_zooscored$parname, gmpd_allpars$parname) # should be 0
 
@@ -132,7 +125,7 @@ table(gmpd_zooscored$zoostat)
 
 # SAVE THIS MF
 
-# write.csv(gmpd_zooscored, "./data/modified/gmpd_zooscored.csv") # does not have parasite taxo or tm_mode
+write.csv(gmpd_zooscored, "./data/modified/gmpd_zooscored.csv") # does not have parasite taxo or tm_mode
 
 # Prots -------
 
@@ -141,8 +134,8 @@ gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv")[-1]
 gmpdprot <- gmpd_zooscored %>% filter(partype == "Protozoa") 
 
 
-length(unique(gmpdprot$parname)) # 228 prots
-gmpdprot %>% distinct(parname, .keep_all = T) %>% select(zoostat) %>% table() # 13 zoonotic
+length(unique(gmpdprot$parname)) # 226 prots
+gmpdprot %>% distinct(parname, .keep_all = T) %>% select(zoostat) %>% table() # 20 zoonotic
 gmpdprot %>% distinct(parname, .keep_all = T) %>% filter(zoostat == 1) %>% select(parname)
 
 
@@ -155,11 +148,14 @@ gmpdtaxo <- gmpdtaxo %>% select(parname=ParasiteCorrectedName, partype = ParType
   distinct()
 
 # Update this prot spp name
-gmpdtaxo$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdtaxo$parname)
-# fix spelling
+gmpdtaxo$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdtaxo$parname)# fix spelling
 gmpdtaxo$parname <- gsub("Plasmodium rodhani", "Plasmodium rodhaini", gmpdtaxo$parname)
+gmpdtaxo$parname <- gsub("Plasmodium praefalciparum", "Plasmodium falciparum", gmpdtaxo$parname)
+gmpdtaxo$parname <- gsub("Babesia equi", "Theileria equi", gmpdtaxo$parname)
 
-length(unique(gmpdtaxo$parname)) # 2031 unique pars but the df has 2048 rows?
+gmpdtaxo <- gmpdtaxo %>% distinct()
+
+length(unique(gmpdtaxo$parname)) # 2029 unique pars but the df has 2046 rows?
 
 # find duplicate parasites
 gmpdtaxo %>% select(parname) %>% 
@@ -185,19 +181,41 @@ gmpdtaxo %>% filter(partype == "Protozoa") %>% select(parname) %>%
 
 # Subset to just prots
 gmpdprottaxo <- gmpdtaxo %>% filter(partype == "Protozoa")
-length(unique(gmpdprottaxo$parname)) # 255
-# WHY are there more than 228? Is it because 27 of those were not zooscored?
+length(unique(gmpdprottaxo$parname)) # 254
+# 28 of those were not zooscored, I guess, since we have only 226 prots
 
-setdiff(gmpdprottaxo$parname, gmpdprot$parname) # 27, one of which is T. brimonti which we don't want anyway
+setdiff(gmpdprottaxo$parname, gmpdprot$parname) # 28, one of which is T. brimonti which we don't want anyway, plus the 8 hepatozoons.
 setdiff(gmpdprot$parname, gmpdprottaxo$parname) # 0
-intersect(gmpdprottaxo$parname, zooscore_all$parname) # HOW CAN THIS BE 229 WHEN TAXO ONLY HAS 255 PARS ASDFASDLFKJ?
+intersect(gmpdprottaxo$parname, zooscore_all$parname) # 227 - the extra one is T. brimonti
 
 ## Merge GMPD prots with GMPD prots taxo
-gmpdprottaxo <- left_join(gmpdprot, gmpdprottaxo)
+gmpdprot_taxo <- left_join(gmpdprot, gmpdprottaxo) # do i need this?
+
+
 
 # Save as csvs
 #write.csv(gmpdprot, "./data/modified/gmpdprot.csv")
 #write.csv(gmpdprottaxo, "./data/modified/gmpdprottaxo.csv")
+
+# add tranmission mode data --------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Clean data from zooscore files ------
