@@ -198,6 +198,20 @@ gmpdprot_taxo <- left_join(gmpdprot, gmpdprottaxo) # do i need this?
 #write.csv(gmpdprottaxo, "./data/modified/gmpdprottaxo.csv")
 
 # add tranmission mode data --------------
+gmpdtm <- read.csv("./data/original/GMPD_datafiles/GMPD_parasite_traits.csv") %>% # rows are unique parasite species, columns are taxonomic classifications of each species
+  select(-ParasiteTraitsCitation) %>% rename(parname = ParasiteCorrectedName)
+
+unique(gmpdtm$parname)
+
+# Update this prot spp name
+gmpdtaxo$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpdtaxo$parname)# fix spelling
+gmpdtaxo$parname <- gsub("Plasmodium rodhani", "Plasmodium rodhaini", gmpdtaxo$parname)
+gmpdtaxo$parname <- gsub("Plasmodium praefalciparum", "Plasmodium falciparum", gmpdtaxo$parname)
+gmpdtaxo$parname <- gsub("Babesia equi", "Theileria equi", gmpdtaxo$parname)
+
+gmpdtaxo <- gmpdtaxo %>% distinct()
+
+length(unique(gmpdtaxo$parname)) # 2029 unique pars but the df has 2046 rows?
 
 
 
