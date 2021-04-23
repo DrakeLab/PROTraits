@@ -1,11 +1,31 @@
+
 library(sf)
+library(tidyverse) 
+library(magrittr)
+library(tictoc)
+library(BRRR)
+library(corrplot)
+library(here)
+
+
+rm(list = ls())
 
 # assign a ecoregion data to each host-parasite location
+gmpd_zooscored_prot <- read.csv("./data/modified/gmpd_zooscored_prot.csv")
 
-host_par_points_df <- read.csv("./data/modified/gmpdprotraits.csv") %>%
-  select(ID = X, protname, long, lat) %>% na.omit() # extract lat longs and remove empty rows
-host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) # convert to sf
-#host_par_points_df$geometry <- host_par_points_sf$geometry # add geometry column to original dataframe
+
+host_par_points_df <- gmpd_zooscored_prot %>%
+  select(ID = X, parname, location, long, lat) %>% 
+  na.omit() # extract lat longs and remove empty rows
+
+protnames <- read.csv("./data/modified/protnames.csv")
+
+nrow(gmpd_zooscored_prot) - nrow(host_par_points_df) # 88 obs don't have lat/longs
+length(unique(gmpd_zooscored_prot$parname)) - length(unique(host_par_points_df$parname))  # lost 2 prots
+setdiff(protnames$parname, host_par_points_df$parname)
+
+# convert to sf
+host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) 
 
 # load wwf terrestrial ecoregion data
 teow_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
@@ -15,9 +35,11 @@ teow_sf$REALM <- factor(teow_sf$REALM, levels = c(levels(teow_sf$REALM), "RL"))
 teow_sf <- teow_sf %>% dplyr::mutate(REALM = replace_na(REALM, "RL"))
 
 # create df with each point and corresponding TEOW vars
+tic()
 teowprot <- st_intersection(teow_sf, host_par_points_sf) %>% 
   as.data.frame()
-
+toc()
+skrrrahh("soulja")
 
 ecoprotraits_tmp <- left_join(host_par_points_df, 
                               teowprot %>% select(ID, 
@@ -27,7 +49,11 @@ ecoprotraits_tmp <- left_join(host_par_points_df,
                                                   eco_area = AREA), 
                               by = "ID")
 
-ecoprotraits_grp <- ecoprotraits_tmp[-1] %>% group_by(protname) 
+unique(ecoprotraits_tmp$parname)
+
+
+
+ecoprotraits_grp <- ecoprotraits_tmp[-1] %>% group_by(parname) 
 
 getmode <- function(v) {
   uniqv <- unique(v)
@@ -36,29 +62,49 @@ getmode <- function(v) {
 
 ecoprotraits_agg <- summarise(ecoprotraits_grp, 
                               n_realms = n_distinct(realm),
-                              # n_ecoregions = n_distinct(ecoregion), 
-                              # n_biomes = n_distinct(biome),
-                              # eco_range = sum(eco_area), 
-                              # main_biome = getmode(biome),
+                              n_ecoregions = n_distinct(ecoregion), 
+                              n_biomes = n_distinct(biome),
+                              eco_range = sum(eco_area), 
+                              main_biome = getmode(biome),
                               main_realm = getmode(realm)) 
-protnames <- read.csv("./data/modified/protnames.csv")
 
-ecoprotraits <- left_join(protnames, ecoprotraits_agg)
+table(ecoprotraits_agg$main_realm)
+
+ecoprotraits_agg$main_realm <- factor(ecoprotraits_agg$main_realm, levels = c("AT", "IM", "NA", "NT", "PA"))
+
+data <- select_if(ecoprotraits_agg, is.numeric)
+
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+
+#Plot
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 2, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
+
+
+# correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+# corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+# corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+# 
+# highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+
+
+ecoprotraits <- left_join(protnames, ecoprotraits_agg) %>% select(parname, eco_range, main_realm)
+
+
 
 
 # write.csv(ecoprotraits, "./data/modified/protraits/ecoprotraits.csv")
 
 
 # create df of the GMPD prot records that did NOT overlap with TEOW polygons
-noteows <- anti_join(gmpdprotraits, teowprot, by = "protname") 
-# 14 records did not match, 5 of them don't have lat longs
-length(noteows$lat %>% na.omit()) 
-#' 9 records have lat/longs but still did not overlap with TEOW polygons because they were not in 
-#' terrestrial ecoregions. 8 of the records are at the exact same point in Japan, 9th one is in Taiwan.
+noteows <- anti_join(gmpd_zooscored_prot, teowprot, by = "parname") 
+# 5 records did not match, 4 of them don't have lat longs
+noteows %>% na.omit()
+#' Hepatocystis taiwanensis has lat/long coordinates but still did not overlap with TEOW polygons 
+#' because the point falls in the ocean off the coast of Taiwan.
 
 # plot for fun ------------
-
-library(ggplot2)
 
 # plot global distribution of GMPD protozoa records across TEOW biomes
 
@@ -105,32 +151,34 @@ biome_map <- ggplot(teow_sf) +
 biome_map +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("Global distribution of protozoa records in GMPD") +
-  geom_point(data = host_par_points_df, aes(x = long, y = lat),  color = "#fffffa", alpha = 0.5, size = 1) +
+  geom_point(data = gmpd_zooscored_prot, aes(x = long, y = lat, 
+                                             color = factor(zoostat)), alpha = 0.5, size = 1) +
+  scale_colour_manual(values=c("white", "red")) +
   theme(panel.background = element_rect(fill = "azure")) +
   coord_sf(crs = 4326)
+
+# I used realm for the model though. Realm map: https://commons.wikimedia.org/wiki/File:Ecozones.svg
 
 # plot global distribution of GMPD protozoa records by country 
 
 library(rnaturalearth)
 library(rnaturalearthdata)
 
-world <- ne_countries(scale = "medium", returnclass = "sf")
+world <- ne_countries(scale = "medium", returnclass = "sf") %>% filter(!admin == "Antarctica")
 class(world)
 
 ggplot() +
-  geom_sf(data = world, aes(fill = gdp_md_est/pop_est), color = "black") +
+  geom_sf(data = world, aes(fill = log(gdp_md_est/pop_est)), color = "black") +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("Global distribution of protozoa records in GMPD") +
-  scale_fill_viridis_c(option = "plasma", trans = "sqrt") +
-  geom_point(data = host_par_points_df, aes(x = long, y = lat)) 
+  scale_fill_viridis_c() +
+  geom_point(data = gmpd_zooscored_prot, aes(x = long, y = lat, 
+                                            color = factor(zoostat)), alpha = 0.7, size = 1.2) +
+  scale_colour_manual(values=c("white", "red")) +
+  theme(panel.background = element_rect(fill = "azure")) +
+  coord_sf(crs = 4326)
 
-##############
+GDPworld <- world %>% 
 
-zoogeo <- sf::read_sf("./data/original/holt_etal_zoogeoregions/Taxon_Specific_regions/mam.shp")
-names(zoogeo)
-plot(zoogeo)
-
-zoogeo <- zoogeo %>% 
-  sf::st_simplify(dTolerance = 0.01) %>% 
-  dplyr::group_by(mam_upgma_) %>% 
-  dplyr::summarise()
+GDPprot <- st_intersection(teow_sf, host_par_points_sf) %>% 
+  as.data.frame()
