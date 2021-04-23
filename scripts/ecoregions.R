@@ -10,7 +10,7 @@ library(here)
 
 rm(list = ls())
 
-# assign a ecoregion data to each host-parasite location
+# assign a ecoregion data  -------
 gmpd_zooscored_prot <- read.csv("./data/modified/gmpd_zooscored_prot.csv")
 
 
@@ -93,7 +93,7 @@ ecoprotraits <- left_join(protnames, ecoprotraits_agg) %>% select(parname, eco_r
 
 
 
-
+# Save csv
 # write.csv(ecoprotraits, "./data/modified/protraits/ecoprotraits.csv")
 
 
@@ -178,7 +178,18 @@ ggplot() +
   theme(panel.background = element_rect(fill = "azure")) +
   coord_sf(crs = 4326)
 
-GDPworld <- world %>% 
+# extract gdp data
 
-GDPprot <- st_intersection(teow_sf, host_par_points_sf) %>% 
-  as.data.frame()
+GDPworld <- world %>% select(pop_est, gdp_md_est) %>% mutate(gdp_per_cap = gdp_md_est/pop_est)
+
+GDPprot <- st_intersection(st_make_valid(GDPworld), host_par_points_sf)
+
+GDPprot_grp <- GDPprot %>% select(parname, gdp_per_cap, gdp_md_est) %>% group_by(parname)
+GDPprot_agg <- GDPprot_grp %>% summarise(meanGDP_per_cap = mean(gdp_per_cap), meanGDP = mean(gdp_md_est))
+
+GDPprotraits <- left_join(protnames, GDPprot_agg) %>% select(parname, meanGDP_per_cap)
+
+# Save csv
+# write.csv(GDPprotraits, "./data/modified/protraits/gdpprotraits.csv")
+
+
