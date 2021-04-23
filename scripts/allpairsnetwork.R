@@ -9,19 +9,16 @@ rm(list = ls())
 
 # load data
 
-gmpd_zooscored <- read.csv("./data/modified/gmpd_zooscored.csv", row.names = 1, stringsAsFactors = F) %>% 
-  rename(parname = gmpdparname, hostname = gmpdhostname)
+gmpd_obs <- read.csv("./data/modified/gmpd_zooscored.csv", row.names = 1, stringsAsFactors = F) 
 
-allpairs <- read.csv("./data/modified/allpairs.csv", row.names = 1, stringsAsFactors = F) %>% 
-  rename(parname = gmpdparname, hostname = gmpdhostname)
+# gmpd_obs <- read.csv("./data/modified/gmpd_obs.csv", row.names = 1, stringsAsFactors = F) 
 
 # ALL HOSTS ----------
 
 # create empty dfs
 
 # Hosts
-allhosts <- read.csv("./data/modified/allhosts.csv", row.names = 1, stringsAsFactors = F) %>% 
-  rename(hostname = gmpdhostname) %>% 
+allhosts <- gmpd_obs %>% select(hostname) %>% distinct() %>% 
   add_column(hostpars = NA, 
              numpars = NA,
              parzoos = NA,
@@ -30,8 +27,7 @@ allhosts <- read.csv("./data/modified/allhosts.csv", row.names = 1, stringsAsFac
              zoores = NA)
 
 # pars
-allpars <- gmpd_zooscored %>% select(parname, zoostat) %>% 
-  distinct() %>% 
+allpars <- gmpd_obs %>% select(parname, zoostat) %>% distinct() %>% 
   add_column(parhosts = NA, 
              numhosts = NA,
              parcomm = NA,
@@ -48,7 +44,7 @@ allpars <- gmpd_zooscored %>% select(parname, zoostat) %>%
 # fill in allhosts
 
 for (i in 1:nrow(allhosts)) {
-  allhosts$hostpars[i] <- allpairs %>% filter(hostname == allhosts$hostname[i]) %>% 
+  allhosts$hostpars[i] <- gmpd_obs %>% filter(hostname == allhosts$hostname[i]) %>% 
     select(parname) %>% 
     as.vector()
   allhosts$numpars[i] <- length(allhosts$hostpars[[i]])
@@ -70,10 +66,10 @@ hostcomm_allpars <- allhosts %>% select(hostname, numpars, numparzoons, propparz
 # fill in allpars
 
 for (i in 1:nrow(allpars)) {
-  allpars$parhosts[i] <- allpairs %>% filter(parname == allpars$parname[i]) %>% 
+  allpars$parhosts[i] <- gmpd_obs %>% filter(parname == allpars$parname[i]) %>% 
     select(hostname) %>% as.vector()
   allpars$numhosts[i] <- length(allpars$parhosts[[i]])
-  allpars$parcomm[i] <- allpairs %>% filter(hostname %in% allpars$parhosts[[i]], !grepl(allpars$parname[i], parname)) %>% 
+  allpars$parcomm[i] <- gmpd_obs %>% filter(hostname %in% allpars$parhosts[[i]], !grepl(allpars$parname[i], parname)) %>% 
     distinct(parname) %>% as.vector()
   allpars$parcommsize[i] <- length(allpars$parcomm[[i]])
   # need to add proportion of parcomm that is zoonotic!
@@ -88,18 +84,34 @@ for (i in 1:nrow(allpars)) {
   allpars$numhostzoons[i] <- length(allpars$hostzoos[[i]])
   allpars$prophostzoon[i] <- allpars$numhostzoons[i]/allpars$numhosts[i]
 }
+skrrrahh("biggie")
 
 allpars$propcommzoon[is.nan(allpars$propcommzoon)] <- 0
 
 #limit to protozoa
 
-protnames <- read.csv("./data/modified/allprots.csv", row.names = 1, stringsAsFactors = F) %>% 
-  rename(parname = protname)
+protnames <- read.csv("./data/modified/protnames.csv", row.names = 1, stringsAsFactors = F) 
 
 protcomm_all <- left_join(protnames, allpars, by = "parname") %>% 
   select(protname = parname, parcommsize, propparcommzoon = propcommzoon, prophostzoon)
 
+# Create and plot correlation matrix
+data <- select_if(protcomm_all, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 2, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
+
+
+# correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+# corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+# corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+# 
+# highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+
 write.csv(protcomm_all, "./data/modified/protraits/commprotraits.csv")
+
+
 
 # select which vars you want to go into parraits and add join them
 
