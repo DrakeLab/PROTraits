@@ -6,26 +6,31 @@ library(igraph)
 library(bipartite)
 library(tictoc)
 library(BRRR)
+library(reshape2)
 
 # create df from which to build network -------
-hostparnetwork <- read.csv("./data/modified/allgmpdpairs.csv", stringsAsFactors = F)[, -1] %>% 
-  select(parname = gmpdparname, hostname = gmpdhostname) %>% mutate(netID = "1")
+
+gmpd_obs <- read.csv("./data/modified/allgmpdobs.csv", stringsAsFactors = F)[, -1]
+x <- gmpd_obs %>% mutate(pair = paste(parname, hostname)) 
+
+y <- x %>% group_by(pair) %>% summarise(freq = n())
+
+hostparnetwork <- inner_join(y, x) %>% distinct() %>% select(hostname, parname, freq)
+
+hostparnetwork <- read.csv("./data/modified/gmpd_main_clean.csv", stringsAsFactors = F)[, -1] %>% 
+  select(hostname, parname, location)
 
 ## Setup for bipartite ---------
 
 # convert to web format needed for bipartite functions
-web <- frame2webs(hostparnetwork, varnames = c("parname", "hostname", "netID"))
+web <- frame2webs(hostparnetwork, varnames = c("hostname", "parname", "location"))
 
 # calculate bipartite network indices for all prots and hosts -----------
 tic()
-parnet <- specieslevel(web[["1"]], level = "lower", index = c("degree", 
-                                                                "normalised degree", 
-                                                                "betweenness",
-                                                                "closeness",
-                                                                "species specificity",
-                                                                "proportional generality")) # a quantitative version of normalised degree
+parnet <- specieslevel(web[["1"]], level = "lower", index = c("degree", "betweenness", "closeness", "PDI")) # a quantitative version of normalised degree
 toc()
 BRRR::skrrrahh("soulja")
+
 
 # Create correlation matrix ----------
 
@@ -43,36 +48,58 @@ highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
 #Plot
 
 corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 1, number.cex = 1, 
-         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
-# degree, normalised degree, and proportion generality ate the same (corr coeff = 1.00), so just keep one - degree
-# SSI is hard to explain so choose a highly correlated one - weighted closeness
+#' keep degree, betweeness (or weighted betweeness), and closeness. Keep all for now
 
-# limit to prots, select only degree and weighted closeness
-parnet <- parnet %>% rownames_to_column() %>% rename(protname = rowname)
-protnames <- read.csv("./data/modified/allprots.csv")[-1]
+# Clean and save the full parnet --------
 
 
-protnet <- inner_join(protnames, parnet, by = "protname") # one protname is not in allgmpdpairs
+allparnet <- parnet %>% rownames_to_column() %>% rename(parname = rowname)
 
-setdiff(protnames$protname, protnet$protname)
-setdiff(protnet$protname, protnames$protname)
+protnames <- read.csv("./data/modified/protnames.csv")[-1]
+
+protnet <- inner_join(protnames, allparnet, by = "parname") # one protname is not in allgmpdpairs
+
+setdiff(protnames$parname, protnet$parname)
+setdiff(protnet$parname, protnames$parname)
 
 
-write.csv(parnet, "./data/modified/parnet.csv")
+write.csv(allparnet, "./data/modified/allparnet.csv")
 write.csv(protnet, "./data/modified/protnet.csv")
 
 tic()
 hostnet <- specieslevel(web[["1"]], level = "higher", index = c("degree", 
                                                                  "normalised degree", 
                                                                  "betweenness",
-                                                                 "closeness",
-                                                                 "species specificity",
-                                                                 "proportional generality")) # a quantitative version of normalised degree
+                                                                 "closeness", "PDI", 
+                                                                "proportion generality")) # a quantitative version of normalised degree
 toc()
-BRRR::skrrrahh("soulja")
+BRRR::skrrrahh("biggie")
 
-hostnet <- hostnet %>% rownames_to_column() %>% rename(hostname = rowname)
+
+# Create correlation matrix ----------
+
+data <- select_if(hostnet, is.numeric)
+
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+
+highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+
+#Plot
+
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 1, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
+
+# save all hosts net
+
+
+allhostnet <- hostnet %>% rownames_to_column() %>% rename(hostname = rowname)
 write.csv(hostnet, "./data/modified/hostnet.csv")
 
 
