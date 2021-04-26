@@ -2,6 +2,8 @@
 
 library(tidyverse)
 library(magrittr)
+library(reshape2)
+library(corrplot)
 
 rm(list = ls())
 
@@ -98,7 +100,8 @@ setdiff(Dallas2018Finaltraits$hostname, Dallas2018GMPDtraits$hostname) %>% sort(
 #' So I'm going to add add all variables I want from all three datasets
 #' The variables from Dallas datasets that are not from PanTHERIA:
 #' Network measures (degree, closeness, betweenness, and eigenvector centrality)
-#' Brain weight (GMPD one has two versions idk why), the fair proportion measure of evolutionary distinctiveness,
+#' Brain weight (GMPD one has two versions idk why), 
+#' the fair proportion measure of evolutionary distinctiveness,
 #' GR_Area_combined (is this geographic range?), and wos
 
 
@@ -194,11 +197,112 @@ completenessFinalhosttraits_df <- completenessFinalhosttraits[[1]] %>% unlist() 
 
 rm(list = ls())
 
-allhosttraits <- read.csv("./data/modified/allhosttraits.csv")[-1]
-allprothosts <- read.csv("./data/modified/allprothosts.csv")[-1] %>% rename(hostname = prothostname)
-allprotpairs <- read.csv("./data/modified/allprotpairs.csv")[-1] %>% rename(hostname = prothostname)
+hosttraits <- read.csv("./data/modified/allhosttraits.csv") %>% 
+  select(hostname, HostDietBreadth = DietBreadth, HostHomeRange = HomeRange, HostHabitatBreadth = HabitatBreadth,
+         HostGeographicRange = GR_Area_Combined_IUCN_preferred, HostInterbirthInterval = InterbirthInterval,
+         HostTrophicLevel = TrophicLevel, HostDietInvertebrate = Diet.Invertebrate, 
+         MeanHumanPopDensity = HuPopDen_Mean_n.km2, MeanTemp = Temp_Mean_01degC, MeanPrecipitation = Precip_Mean_mm,
+         HostSocialGrpSize = SocialGrpSize, HostIslandEndemicity = Island.Endemicity)
 
-# Let's add host network stuff that I calculated! (because why tf not)
+prothosts <- read.csv("./data/modified/gmpd_zooscored_prot.csv") %>% 
+  select(hostname) %>% distinct()
+protpairs<- read.csv("./data/modified/gmpd_zooscored_prot.csv") %>% 
+  select(parname, hostname) %>% distinct()
+
+prothosttraits <- left_join(prothosts, hosttraits)
+
+# Correlation analysis
+
+# Create correlation matrix
+
+data <- select_if(prothosttraits, is.numeric)
+
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+
+highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+#Plot
+
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
+# cool, keep them all for next step - aggregate to the prot spp level
+
+hostprotpairtraits <- left_join(protpairs, prothosttraits)
+
+# aggregate by mean and median
+# mean
+prothosttraits_agg <- hostprotpairtraits %>% group_by(parname) %>% 
+  summarise_if(is.numeric, mean, na.rm = TRUE) # gives NaNs
+
+# replace NaNs
+
+is.nan.data.frame <- function(x){
+  do.call(cbind, lapply(x, is.nan))
+}
+
+prothosttraits_agg[is.nan.data.frame(prothosttraits_agg)] <- NA
+
+# median
+prothosttraits_agg2 <- hostprotpairtraits %>% group_by(parname) %>% 
+  summarise_if(is.numeric, median, na.rm = TRUE)
+
+# compare
+plot(prothosttraits_agg$HostHomeRange, prothosttraits_agg2$HostHomeRange)
+plot(prothosttraits_agg$HostGeographicRange, prothosttraits_agg2$HostGeographicRange)
+plot(prothosttraits_agg$MeanHumanPopDensity, prothosttraits_agg2$MeanHumanPopDensity)
+plot(prothosttraits_agg$HostInterbirthInterval, prothosttraits_agg2$HostInterbirthInterval)
+
+#' from these plots, can see that means are influenced by extreme values, so often higher than medians,
+#' but i think it's close enough to just use mean
+
+#Check for completeness
+completenessprothosttraits_agg  <- prothosttraits_agg %>% as.data.frame() %>% 
+  summarise_all(function(x) mean(!is.na(x))) %>% transpose()
+completenessprothosttraits_agg_df <- completenessprothosttraits_agg[[1]] %>% unlist() %>% 
+  as.data.frame() %>% rownames_to_column()
+
+prothosttraits_agg %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric() %>% plot(type = 'h')
+prothosttraits_agg %>% summarise_all(function(x) mean(!is.na(x))) %>% min() # Good enough!
+
+# Correlation analysis
+
+# Create correlation matrix
+
+data <- select_if(prothosttraits_agg, is.numeric)
+
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+
+highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+#Plot
+
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
+# cool, keep them all
+
+hostprotpairtraits <- left_join(protpairs, prothosttraits)
+
+# Add host community vars -------
+hostcommtraits <- read.csv("./data/modified/hostcomm_allpars.csv")[-1] %>% 
+  select(hostname, HostPropParZoonootic = propparzoon)
+
+setdiff(protpairs$hostname, hostcommtraits$hostname) # no diff!
+
+prothostcommtraits <- left_join(protpairs, hostcommtraits)
+
+prothostcommtraits_agg <- prothostcommtraits %>% group_by(parname) %>% 
+  summarise_if(is.numeric, mean, na.rm = TRUE)
+
+
+# Add host network properties -------
 
 prothostsnet <- read.csv("./data/modified/prothostsnet.csv")[-1] %>% rename(hostname = prothostname) %>% 
   select(-types)
@@ -206,16 +310,7 @@ colnames(prothostsnet)[2:10] <- paste0("bipartite_", colnames(prothostsnet)[2:10
 
 allhosttraits <- allhosttraits %>% left_join(prothostsnet)
 
-# Add host community vars!
-hostcommtraits <- read.csv("./data/modified/hostcomm_allpars.csv")[-1] %>% select(hostname, numparzoons)
 
-
-setdiff(hostcommtraits$hostname, allhosttraits$hostname)
-setdiff(allhosttraits$hostname, hostcommtraits$hostname) # no diff!
-
-allhosttraits_tmp <- allhosttraits %>% left_join(hostcommtraits)
-
-colnames(allhosttraits_tmp)[2:50] <- paste0("host_", colnames(allhosttraits_tmp)[2:50])
 
 # Change host trait vars of the factor class into numeric
 
@@ -241,9 +336,10 @@ allhosttraits_tmp$host_IUCN.Status <- allhosttraits_tmp$host_IUCN.Status %>% as.
 # check if all numeric
 select_if(allhosttraits_tmp, is.numeric) %>% names() # 49/50 vars - all numeric except for protname, which is good
 
-# Join to make host-par pair dataframe
+# Join to make host-par pair dataframe --------------
 
-allprotpairtraits <- left_join(allprotpairs, allhosttraits_tmp) %>% select(-pairname)
+#allprotpairtraits <- left_join(allprotpairs, allhosttraits_tmp) %>% select(-pairname)
+
 
 prothosttraits_agg <- allprotpairtraits %>% group_by(protname) %>% 
   summarise_if(is.numeric, median, na.rm = TRUE)
