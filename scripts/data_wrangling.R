@@ -29,8 +29,6 @@ gmpd_allpars <- gmpd_allpars  %>%
          hostorder=HostOrder, hostfamily=HostFamily, hostenv=HostEnvironment, 
          location=LocationName, lat=Latitude, long=Longitude)
 
-
-
 # Correct prot spp name ------
 gmpd_allpars$parname <- gsub("Plasmodium malariae", "Plasmodium rodhaini", gmpd_allpars$parname)
 gmpd_allpars$parname <- gsub("Plasmodium rodhani", "Plasmodium rodhaini", gmpd_allpars$parname)
@@ -38,11 +36,15 @@ gmpd_allpars$parname <- gsub("Plasmodium praefalciparum", "Plasmodium falciparum
 gmpd_allpars$parname <- gsub("Babesia equi", "Theileria equi", gmpd_allpars$parname)
 
 length(unique(gmpd_allpars$parname)) # 1594 unique pars
+length(unique(gmpd_allpars$hostname)) # 406 unique hosts
 table(gmpd_allpars %>% distinct(parname, .keep_all = T) %>% select(partype)) # 253 protozoa
+
+# save cleaned gmpd
+write.csv(gmpd_allpars, "./data/modified/gmpd_main_clean.csv")
 
 # Save all associations (every combo of host-par interaction)
 gmpd_allobs <- gmpd_allpars %>% 
-  select(-starts_with("host"))
+  select(parname, hostname)
 
 write.csv(gmpd_allobs, "./data/modified/allgmpdobs.csv")
 
@@ -53,6 +55,11 @@ gmpd_allpairs <- gmpd_allpars %>%
 
 write.csv(gmpd_allpairs, "./data/modified/allgmpdpairs.csv")
 
+# Save prots
+gmpd_allprots <- gmpd_allpars %>% 
+  filter(partype == "Protozoa")
+
+write.csv(gmpd_allprots, "./data/modified/gmpd_main_prot.csv")
 
 # Add zooscores to GMPD ---------
 
