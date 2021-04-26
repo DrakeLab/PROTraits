@@ -72,11 +72,10 @@ table(ecoprotraits_agg$main_realm)
 
 ecoprotraits_agg$main_realm <- factor(ecoprotraits_agg$main_realm, levels = c("AT", "IM", "NA", "NT", "PA"))
 
+
+# Create and plot correlation matrix
 data <- select_if(ecoprotraits_agg, is.numeric)
-
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-
-#Plot
 corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 2, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
 
@@ -104,9 +103,9 @@ noteows %>% na.omit()
 #' Hepatocystis taiwanensis has lat/long coordinates but still did not overlap with TEOW polygons 
 #' because the point falls in the ocean off the coast of Taiwan.
 
-# plot for fun ------------
+# plot for fun
 
-# plot global distribution of GMPD protozoa records across TEOW biomes
+# plot global distribution of GMPD protozoa records across TEOW biomes ------
 
 biome_names <- c("Tropical & Subtropical Moist Broadleaf Forests", 
                  "Tropical & Subtropical Dry Broadleaf Forests", 
@@ -159,7 +158,7 @@ biome_map +
 
 # I used realm for the model though. Realm map: https://commons.wikimedia.org/wiki/File:Ecozones.svg
 
-# plot global distribution of GMPD protozoa records by country 
+# plot global distribution of GMPD protozoa records by country -----
 
 library(rnaturalearth)
 library(rnaturalearthdata)
@@ -178,7 +177,7 @@ ggplot() +
   theme(panel.background = element_rect(fill = "azure")) +
   coord_sf(crs = 4326)
 
-# extract gdp data
+# extract gdp data -----
 
 GDPworld <- world %>% select(pop_est, gdp_md_est) %>% mutate(gdp_per_cap = gdp_md_est/pop_est)
 
