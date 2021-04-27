@@ -408,7 +408,8 @@ corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, num
 
 # take out host numpars. the last 5 network ones have correlation problems, but need to decide which ones to include
 
-hosttraits <- allhosttraits %>% select(-HostNumPars)
+hosttraits <- allhosttraits %>% select(-c(HostNumPars, Hostbetweenness, Hostcloseness)) %>% 
+  rename(HostBetweenness = Hostweighted.betweenness, HostCloseness = Hostweighted.closeness)
 
 data <- select_if(hosttraits, is.numeric)
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
@@ -416,11 +417,10 @@ corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, num
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
 
-# write.csv(completenessprothosttraits_aggs_df, "./data/modified/completenesshostprotraits.csv")
 
 # Save CSV
 
-# write.csv(prothosttraits_agg, "./data/modified/protraits/hostprotraits.csv")
+# write.csv(hosttraits, "./data/modified/protraits/hostprotraits.csv")
 
 
 
