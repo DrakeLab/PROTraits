@@ -211,6 +211,22 @@ protpairs<- read.csv("./data/modified/gmpd_zooscored_prot.csv") %>%
 
 prothosttraits <- left_join(prothosts, hosttraits)
 
+# Change host trait vars of the factor class into numeric
+
+select_if(prothosttraits, is.numeric) %>% names()
+select_if(prothosttraits, is.factor) %>% names() # "HostIslandEndemicity" 
+
+#Island
+prothosttraits$HostIslandEndemicity %>% levels()
+prothosttraits$HostIslandEndemicity %>% table()
+levels(prothosttraits$HostIslandEndemicity) <- c(0, 1, 0, 2)
+prothosttraits$HostIslandEndemicity %>% table()
+
+prothosttraits$HostIslandEndemicity <- prothosttraits$HostIslandEndemicity %>% as.numeric()
+
+# check if all numeric
+select_if(prothosttraits, is.numeric) %>% names() # 12 are numeric - all except for protname, which is good
+
 # Correlation analysis
 
 # Create correlation matrix
@@ -288,72 +304,117 @@ corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, num
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
 # cool, keep them all
 
-hostprotpairtraits <- left_join(protpairs, prothosttraits)
 
 # Add host community vars -------
 hostcommtraits <- read.csv("./data/modified/hostcomm_allpars.csv")[-1] %>% 
-  select(hostname, HostPropParZoonootic = propparzoon)
+  select(hostname, HostNumPars = numpars, HostPropParZoonootic = propparzoon)
 
 setdiff(protpairs$hostname, hostcommtraits$hostname) # no diff!
 
 prothostcommtraits <- left_join(protpairs, hostcommtraits)
 
-prothostcommtraits_agg <- prothostcommtraits %>% group_by(parname) %>% 
+prothostcommtraits_agg1 <- prothostcommtraits %>% group_by(parname) %>% 
   summarise_if(is.numeric, mean, na.rm = TRUE)
+prothostcommtraits_agg2 <- prothostcommtraits %>% group_by(parname) %>% 
+  summarise_if(is.numeric, median, na.rm = TRUE)
 
+plot(prothostcommtraits_agg1$HostNumPars, prothostcommtraits_agg2$HostNumPars)
+plot(prothostcommtraits_agg1$HostPropParZoonootic, prothostcommtraits_agg2$HostPropParZoonootic)
+# gonna stick with means again *shrug*
+
+prothostcommtraits_agg <- prothostcommtraits_agg1
+
+# Correlation analysis
+
+# Create correlation matrix
+
+data <- select_if(prothostcommtraits_agg, is.numeric)
+
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+
+highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+#Plot
+
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
+# cool, keep both
+
+prothosttraits2 <- left_join(prothosttraits_agg, prothostcommtraits_agg)
 
 # Add host network properties -------
 
-prothostsnet <- read.csv("./data/modified/prothostsnet.csv")[-1] %>% rename(hostname = prothostname) %>% 
-  select(-types)
-colnames(prothostsnet)[2:10] <- paste0("bipartite_", colnames(prothostsnet)[2:10])
+prothostsnet <- read.csv("./data/modified/hostnet.csv")[-1] %>% 
+  select(-c(species.specificity.index, normalised.degree, proportional.generality))
 
-allhosttraits <- allhosttraits %>% left_join(prothostsnet)
+colnames(prothostsnet)[2:6] <- paste0("Host", colnames(prothostsnet)[2:10])
+
+setdiff(protpairs$hostname, prothostsnet$hostname) # no diff!
+
+prothostnettraits <- left_join(protpairs, prothostsnet)
+
+prothostnettraits_agg <- prothostnettraits %>% group_by(parname) %>% 
+  summarise_if(is.numeric, mean, na.rm = TRUE)
+
+# Hostdegree and HostNumPars should be the same, right?
+plot(prothostnettraits_agg$Hostdegree, prothostcommtraits_agg$HostNumPars) # nope. ok, idk. can choose after final corr plot
+
+# Correlation analysis
+
+# Create correlation matrix
+
+data <- select_if(prothostnettraits_agg, is.numeric)
+
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+
+highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+#Plot
+
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
+# idk, choose later? haven't chosen protnet ones either. keep all for now.
 
 
 
-# Change host trait vars of the factor class into numeric
+allhosttraits <- left_join(prothosttraits2, prothostnettraits_agg)
 
-select_if(allhosttraits_tmp, is.numeric) %>% names()
-select_if(allhosttraits_tmp, is.factor) %>% names() # "Island.Endemicity" "IUCN.Status"
+# Full correlation analysis
 
-#Island
-allhosttraits_tmp$host_Island.Endemicity %>% levels()
-allhosttraits_tmp$host_Island.Endemicity %>% table()
-levels(allhosttraits_tmp$host_Island.Endemicity) <- c(0, 1, 0, 2)
-allhosttraits_tmp$host_Island.Endemicity %>% table()
+# Create correlation matrix
 
-allhosttraits_tmp$host_Island.Endemicity <- allhosttraits_tmp$host_Island.Endemicity %>% as.numeric()
+data <- select_if(allhosttraits, is.numeric)
 
-# IUCN
-allhosttraits_tmp$host_IUCN.Status %>% levels()
-allhosttraits_tmp$host_IUCN.Status %>% table()
-levels(allhosttraits_tmp$host_IUCN.Status) <- c(5, 0, 4, 6, 1, 2, 3)
-allhosttraits_tmp$host_IUCN.Status %>% table()
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
 
-allhosttraits_tmp$host_IUCN.Status <- allhosttraits_tmp$host_IUCN.Status %>% as.numeric()
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
 
-# check if all numeric
-select_if(allhosttraits_tmp, is.numeric) %>% names() # 49/50 vars - all numeric except for protname, which is good
+highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
 
-# Join to make host-par pair dataframe --------------
+#Plot
 
-#allprotpairtraits <- left_join(allprotpairs, allhosttraits_tmp) %>% select(-pairname)
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
+# take out host numpars. the last 5 network ones have correlation problems, but need to decide which ones to include
 
-prothosttraits_agg <- allprotpairtraits %>% group_by(protname) %>% 
-  summarise_if(is.numeric, median, na.rm = TRUE)
+hosttraits <- allhosttraits %>% select(-HostNumPars)
 
-colnames(prothosttraits_agg)[2:50] <- paste0("med_", colnames(prothosttraits_agg)[2:50])
+data <- select_if(hosttraits, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
-#Check for completeness
-completenessprothosttraits_agg  <- prothosttraits_agg %>% as.data.frame() %>% 
-  summarise_all(function(x) mean(!is.na(x))) %>% transpose()
-completenessprothosttraits_aggs_df <- completenessprothosttraits_agg[[1]] %>% unlist() %>% 
-  as.data.frame() %>% rownames_to_column()
-
-prothosttraits_agg %>% as.data.frame() %>% summarise_all(function(x) mean(!is.na(x))) %>% min()
-# Good!
 
 # write.csv(completenessprothosttraits_aggs_df, "./data/modified/completenesshostprotraits.csv")
 
