@@ -8,26 +8,37 @@ library(tictoc)
 library(BRRR)
 library(reshape2)
 
+rm(list = ls())
+
 # create df from which to build network -------
 
-gmpd_obs <- read.csv("./data/modified/allgmpdobs.csv", stringsAsFactors = F)[, -1]
-x <- gmpd_obs %>% mutate(pair = paste(parname, hostname)) 
+x <- read.csv("./data/modified/gmpd_main_clean.csv", stringsAsFactors = F)[, -1] %>% 
+  select(hostname, parname, location) %>% mutate(ID = paste(hostname, parname, location)) %>% 
+  na.omit()
 
-y <- x %>% group_by(pair) %>% summarise(freq = n())
+y <- x %>% group_by(ID) %>% summarise(freq = n())
 
-hostparnetwork <- inner_join(y, x) %>% distinct() %>% select(hostname, parname, freq)
+z <- x %>% distinct()
 
-hostparnetwork <- read.csv("./data/modified/gmpd_main_clean.csv", stringsAsFactors = F)[, -1] %>% 
-  select(hostname, parname, location)
+hostparnetwork <- left_join(y, z) %>% distinct() %>% select(hostname, parname, 
+                                                            location, freq)
+
+# rm(list = c("x", "y", "z"))
 
 ## Setup for bipartite ---------
 
 # convert to web format needed for bipartite functions
-web <- frame2webs(hostparnetwork, varnames = c("hostname", "parname", "location"))
+web <- frame2webs(x, varnames = c("hostname", "parname", "location"))
+
+web <- frame2webs(hostparnetwork, varnames = c("hostname", "parname", "location", "freq"))
 
 # calculate bipartite network indices for all prots and hosts -----------
 tic()
-parnet <- specieslevel(web[["1"]], level = "lower", index = c("degree", "betweenness", "closeness", "PDI")) # a quantitative version of normalised degree
+parnet <- specieslevel(web[["1"]], level = "lower", index = c("degree", 
+                                                              "normalised.degree", 
+                                                              "betweenness", 
+                                                              "closeness", 
+                                                              "PDI")) # a quantitative version of normalised degree
 toc()
 BRRR::skrrrahh("soulja")
 
@@ -68,6 +79,26 @@ setdiff(protnet$parname, protnames$parname)
 write.csv(allparnet, "./data/modified/allparnet.csv")
 write.csv(protnet, "./data/modified/protnet.csv")
 
+# clean and save prot net traits ------------
+
+protnet <- read.csv("./data/modified/protnet.csv")[-1] 
+
+data <- select_if(protnet, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
+
+protnettraits <- protnet %>% select(parname, ProtDegree = degree, ProtBetweenness = weighted.betweenness,
+                                    ProtCloseness = weighted.closeness)
+
+data <- select_if(protnettraits, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
+
+write.csv(protnettraits, "./data/modified/protraits/protnetraits.csv")
+
+# Host net ----------
 tic()
 hostnet <- specieslevel(web[["1"]], level = "higher", index = c("degree", 
                                                                  "normalised degree", 
