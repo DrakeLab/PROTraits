@@ -88,8 +88,7 @@ corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, num
 
 
 
-ecoprotraits <- left_join(protnames, ecoprotraits_agg) %>% select(parname, eco_range, main_realm)
-
+ecoprotraits <- left_join(protnames, ecoprotraits_agg) %>% select(parname, main_realm, n_ecoregions)
 
 
 # Save csv
@@ -163,11 +162,13 @@ biome_map +
 library(rnaturalearth)
 library(rnaturalearthdata)
 
-world <- ne_countries(scale = "medium", returnclass = "sf") %>% filter(!admin == "Antarctica")
+world <- ne_countries(scale = "medium", returnclass = "sf") %>% 
+  filter(!admin == "Antarctica", !sovereignt == "Vatican") %>% 
+  mutate(gdp_per_cap = gdp_md_est/pop_est)
 class(world)
 
 ggplot() +
-  geom_sf(data = world, aes(fill = log(gdp_md_est/pop_est)), color = "black") +
+  geom_sf(data = world, aes(fill = log(gdp_per_cap)), color = "black") +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("Global distribution of protozoa records in GMPD") +
   scale_fill_viridis_c() +
@@ -177,14 +178,35 @@ ggplot() +
   theme(panel.background = element_rect(fill = "azure")) +
   coord_sf(crs = 4326)
 
+# factorize economy
+
+world <- world %>% mutate(DevelopmentIndex = as.factor(economy))
+
+world$DevelopmentIndex %>% levels()
+world$DevelopmentIndex %>% table()
+levels(world$DevelopmentIndex) <- c("Developed", "Developed", 
+                                    "Emerging", "Emerging", "Emerging", 
+                                    "Developing", "LeastDeveloped")
+world$DevelopmentIndex %>% table()
+
 # extract gdp data -----
 
-GDPworld <- world %>% select(pop_est, gdp_md_est) %>% mutate(gdp_per_cap = gdp_md_est/pop_est)
+GDPworld <- world %>% select(gdp_per_cap, DevelopmentIndex)
 
 GDPprot <- st_intersection(st_make_valid(GDPworld), host_par_points_sf)
+class(GDPprot) <- "data.frame"
 
-GDPprot_grp <- GDPprot %>% select(parname, gdp_per_cap, gdp_md_est) %>% group_by(parname)
-GDPprot_agg <- GDPprot_grp %>% summarise(meanGDP_per_cap = mean(gdp_per_cap), meanGDP = mean(gdp_md_est))
+GDPprot_grp <- GDPprot %>% select(parname, gdp_per_cap) %>% 
+  mutate(DevelopmentIndex = as.numeric(GDPprot$DevelopmentIndex)) %>% 
+  group_by(parname)
+GDPprot_agg <- GDPprot_grp %>% summarise(meanGDP_per_cap = mean(gdp_per_cap), 
+                                         DevelopmentIndex = mean(DevelopmentIndex))
+
+# Create and plot correlation matrix
+data <- select_if(GDPprot_agg, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 2, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
 
 GDPprotraits <- left_join(protnames, GDPprot_agg) %>% select(parname, meanGDP_per_cap)
 
