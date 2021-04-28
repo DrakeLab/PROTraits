@@ -197,12 +197,21 @@ completenessFinalhosttraits_df <- completenessFinalhosttraits[[1]] %>% unlist() 
 
 rm(list = ls())
 
-hosttraits <- read.csv("./data/modified/allhosttraits.csv") %>% 
-  select(hostname, HostDietBreadth = DietBreadth, HostHomeRange = HomeRange, HostHabitatBreadth = HabitatBreadth,
-         HostGeographicRange = GR_Area_Combined_IUCN_preferred, HostInterbirthInterval = InterbirthInterval,
-         HostTrophicLevel = TrophicLevel, HostDietInvertebrate = Diet.Invertebrate, 
-         MeanHumanPopDensity = HuPopDen_Mean_n.km2, MeanTemp = Temp_Mean_01degC, MeanPrecipitation = Precip_Mean_mm,
-         HostSocialGrpSize = SocialGrpSize, HostIslandEndemicity = Island.Endemicity)
+allhosttraits <- read.csv("./data/modified/allhosttraits.csv") 
+
+hosttraits <- allhosttraits %>% 
+  select(hostname, HostDietBreadth = DietBreadth, 
+         HostHabitatBreadth = HabitatBreadth,
+         HostGeographicRange = GR_Area_Combined_IUCN_preferred, 
+         HostInterbirthInterval = InterbirthInterval,
+         HostTrophicLevel = TrophicLevel, 
+         MeanHumanPopDensity = HuPopDen_Mean_n.km2, 
+         MeanTemp = Temp_Mean_01degC, 
+         MeanPrecipitation = Precip_Mean_mm,
+         # HostSocialGrpSize = SocialGrpSize, 
+         HostIslandEndemicity = Island.Endemicity,
+         HostPopDensity = PopulationDensity,
+         HostEvolutionaryDistinctiveness = fairProp)
 
 prothosts <- read.csv("./data/modified/gmpd_zooscored_prot.csv") %>% 
   select(hostname) %>% distinct()
@@ -289,18 +298,9 @@ prothosttraits_agg %>% summarise_all(function(x) mean(!is.na(x))) %>% min() # Go
 # Create correlation matrix
 
 data <- select_if(prothosttraits_agg, is.numeric)
-
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
-
-corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
-corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
-
-highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
-
 #Plot
-
-corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.7, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
 # cool, keep them all
 
@@ -320,26 +320,16 @@ prothostcommtraits_agg2 <- prothostcommtraits %>% group_by(parname) %>%
 
 plot(prothostcommtraits_agg1$HostNumPars, prothostcommtraits_agg2$HostNumPars)
 plot(prothostcommtraits_agg1$HostPropParZoonootic, prothostcommtraits_agg2$HostPropParZoonootic)
-# gonna stick with means again *shrug*
+# gonna stick with median as it avoids the effect of extremes
 
-prothostcommtraits_agg <- prothostcommtraits_agg1
+prothostcommtraits_agg <- prothostcommtraits_agg2
 
 # Correlation analysis
 
 # Create correlation matrix
-
 data <- select_if(prothostcommtraits_agg, is.numeric)
-
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
-
-corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
-corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
-
-highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
-
 #Plot
-
 corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
 # cool, keep both
@@ -357,8 +347,15 @@ setdiff(protpairs$hostname, prothostsnet$hostname) # no diff!
 
 prothostnettraits <- left_join(protpairs, prothostsnet)
 
-prothostnettraits_agg <- prothostnettraits %>% group_by(parname) %>% 
+prothostnettraits_agg1 <- prothostnettraits %>% group_by(parname) %>% 
   summarise_if(is.numeric, mean, na.rm = TRUE)
+prothostnettraits_agg2 <- prothostnettraits %>% group_by(parname) %>% 
+  summarise_if(is.numeric, median, na.rm = TRUE)
+# compare mean vs median
+plot(prothostnettraits_agg1$Hostweighted.betweenness, prothostnettraits_agg2$Hostweighted.betweenness)
+
+# choose median for consistency
+prothostnettraits_agg <- prothostnettraits_agg2
 
 # Hostdegree and HostNumPars should be the same, right?
 plot(prothostnettraits_agg$Hostdegree, prothostcommtraits_agg$HostNumPars) # nope. ok, idk. can choose after final corr plot
@@ -366,32 +363,20 @@ plot(prothostnettraits_agg$Hostdegree, prothostcommtraits_agg$HostNumPars) # nop
 # Correlation analysis
 
 # Create correlation matrix
-
 data <- select_if(prothostnettraits_agg, is.numeric)
-
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
-
-corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
-corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
-
-highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
-
 #Plot
-
 corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
 # idk, choose later? haven't chosen protnet ones either. keep all for now.
 
-
-
-allhosttraits <- left_join(prothosttraits2, prothostnettraits_agg)
+hostprotraits_tmp <- left_join(prothosttraits2, prothostnettraits_agg)
 
 # Full correlation analysis
 
 # Create correlation matrix
 
-data <- select_if(allhosttraits, is.numeric)
+data <- select_if(hostprotraits_tmp, is.numeric)
 
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
 
@@ -406,7 +391,7 @@ highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
 corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
-# take out host numpars. the last 5 network ones have correlation problems, but need to decide which ones to include
+# take out hostnumpars. the last 5 network ones have correlation problems, but need to decide which ones to include
 
 hosttraits <- allhosttraits %>% select(-c(HostNumPars, Hostbetweenness, Hostcloseness)) %>% 
   rename(HostBetweenness = Hostweighted.betweenness, HostCloseness = Hostweighted.closeness)
