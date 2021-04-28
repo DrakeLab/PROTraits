@@ -69,7 +69,7 @@ names(zooscore_data)
 
 zooscore_all <- zooscore_data %>% 
   select(rawparname=ParasiteCorrectedName_Zooscores_VR_Ver5.0_Final, zscore=XC_ZooScore, 
-         gmpdmatch = Match, wOShits = WOShits..As.of.2.6.2017.)
+         gmpdmatch = Match, WoSHits = WOShits..As.of.2.6.2017.)
 
 
 length(unique(zooscore_all$rawparname)) # 1850 unique pars
@@ -98,7 +98,7 @@ setdiff(zooscore_all$gmpdmatch,
 intersect(gmpd_allpars$parname, 
           zooscore_all$gmpdmatch) #1453
 
-zooscore_all <- zooscore_all %>% select(parname = gmpdmatch, zscore)
+zooscore_all <- zooscore_all %>% select(parname = gmpdmatch, zscore, WoSHits)
 setdiff(gmpd_zooscored$parname, gmpd_allpars$parname) # should be 0
 
 # check if all rows have zscore
@@ -250,7 +250,7 @@ write.csv(gmpdtm_prot, "./data/modified/gmpd_tm_prot.csv")
 rm(list = ls())
 
 gmpd_zoostat_prot <- read.csv("./data/modified/gmpd_zooscored_prot.csv") %>% 
-  select(parname, zoostat) %>% distinct()
+  select(parname, zoostat, WoSHits) %>% distinct()
 gmpd_taxo_prot <- read.csv("./data/modified/gmpd_taxo_prot.csv")[-1]
 gmpd_tm_prot <- read.csv("./data/modified/gmpd_tm_prot")[-1]
 
