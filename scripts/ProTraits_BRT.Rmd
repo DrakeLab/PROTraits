@@ -39,15 +39,6 @@ Traitsof 228 protozoa species are recorded in the dataset. See [this data table]
 
 The binary response variable indicates whether a protozoa species is zoonotic or not.
 
-```{r load_dataset}
-protraits <- read.csv("./data/modified/protraits_final", row.names = 1)
-
-head(protraits)
-names(protraits) %>% sort()
-
-```
-
-
 ```{r load_data, include=FALSE, eval = F}
 
 rm(list = ls())
@@ -64,12 +55,29 @@ df_names <- gsub(".csv", "", file_list)
 protraits <- data.frame(protnames)
 
 for (i in 1:length(file_list)){
-  x <- read.csv(file_list_full[i])[-1]
+  x <- read.csv(file_list_full[i], row.names = 1)
   assign(df_names[i], x)
-  protraits <- left_join(protraits, x, by = "protname")
+  protraits <- left_join(protraits, x, by = "parname")
 }
 
 head(protraits)
+names(protraits)
+
+protraits <- protraits %>% rename(ParasiteBinomialName = parname, CommunitySize = parcommsize,
+                                  PropCommunityZoonotic = propparcommzoon,
+                                  PropHostsZoonoticCarriers = prophostzoon, 
+                                  EcoRealm = main_realm, NumEcoregions = n_ecoregions, 
+                                  MeanGDP = meanGDP_per_cap, ZoonoticStatus = zoostat, 
+                                  WebOfScienceHits = WoSHits, REMOVE = partype,
+                                  Phylum = parphylum, Class = parclass, 
+                                  Order = parorder, Family = parfamily,
+                                  CloseContactTransmission = close, NonCloseContactTransmission = nonclose,
+                                  VectorTransmission = vector, IntermediateTransmission = intermediate) %>% 
+  mutate(NumTransmissionModes = CloseContactTransmission + NonCloseContactTransmission +
+                                    VectorTransmission + IntermediateTransmission) %>% 
+  select(-REMOVE)
+
+names(protraits)
 
 ```
 
@@ -78,10 +86,6 @@ head(protraits)
 # Create correlation matrix
 
 data <- select_if(protraits, is.numeric)
-
-# # don't try this at home
-# ggdata <- data %>% mutate(zoostat = factor(zoostat))
-# ggpairs(ggdata)
 
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
 correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
@@ -93,15 +97,48 @@ highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
 
 #Plot
 
-corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.4, 
-         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 1)
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.5, number.cex = 0.5, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
-# remove tm_nonclose
+rowMeans(correlation.df[1:34]) %>% cbind(names(correlation.df)[1:34]) %>% view()
+# remove CommunitySize
 
-protraits <- protraits %>% select(-tm_nonclose)
+protraits_tmp <- protraits %>% select(-CommunitySize)
+data <- select_if(protraits_tmp, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+highlyCorrelated <- filter(corrPairs, PCC > 0.6 | PCC < (-0.6)) 
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.75, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
+# remove NonCloseContactTransmission, MeanGDP, HostPropParZoonootic, ProportionalGenerality, IntermediateTransmission, SexualReproduction
 
-# write.csv(protraits, "./data/modified/protraits_final")
+protraits_tmp2 <- protraits_tmp %>% select(-c(NonCloseContactTransmission, MeanGDP, 
+                                              HostPropParZoonootic, ProportionalGenerality,
+                                              IntermediateTransmission, SexualReproduction))
+data <- select_if(protraits_tmp2, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+highlyCorrelated <- filter(corrPairs, PCC > 0.6 | PCC < (-0.6)) # YAY!
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.75, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
+# write.csv(protraits_tmp2, "./data/modified/protraits_final_final.csv")
+
+
+```
+
+
+
+```{r load_final_dataset}
+protraits_final <- read.csv("./data/modified/protraits_final_final.csv", row.names = 1)
+
+head(protraits_final)
+names(protraits_final)
+# names(protraits_final) %>% sort()
 
 ```
 
@@ -110,47 +147,38 @@ protraits <- protraits %>% select(-tm_nonclose)
 In order to investigate the relative importance of different groups of variables in predicting zoonotic potential, I grouped the variables (n = 33) into six sets: parasite specialism-generalism, community variables, intrinsic traits, host traits, regional/environmental triats, and sampling effort.
 
 ```{r group_variables}
-# predictors, grouped by cateogory
+# predictors, grouped by category
 
-spec_gen <- c("prot_species.specificity.index",
-              "mean_host_species.specificity.index",
-              "n_ecoregions",
-              "num_tm",
-              "med_host_fairProp",
-              "med_host_DietBreadth",
-              "med_host_GR_Area_Combined_IUCN_preferred",
-              "med_host_Island.Endemicity",
-              "numsys")
-
-community <- c("mean_host_weighted.betweenness",
-               "parcommsize",
-               "propparcommzoon",
-               "prophostzoon",
-               "med_host_numparzoons",
-               "dom_host")
-
-intrinsic <- c("parorder",
-               "parfamily",
-               "intra_extra",
-               "flagella",
-               "cyst",
-               "sexual", "tm_close", 
-               "tm_vector", 
-               "tm_intermediate")
-
-hosts <- c("med_host_TrophicLevel",
-           "med_host_InterbirthInterval",
-           "med_host_PopulationDensity",
-           "med_host_Diet.Invertebrate")
-
-regional <- c("main_biome", 
-              "med_host_HuPopDen_Mean_n.km2", 
-              "med_host_Precip_Mean_mm", 
-              "med_host_Temp_Mean_01degC")
-
-sampling <- c("protWOS")
-
-response <- "zoostat"
+generalism <- c("NumTransmissionModes",
+              "HostDietBreadth",
+              "HostHabitatBreadth",
+              "HostGeographicRange",
+              "HostIslandEndemicity",
+              "NumOrganSystems",
+              "HostEvolutionaryDistinctiveness",
+              "ParasiteBetweenness", 
+              "HostBetweenness",
+              "NumEcoregions")
+community <- c("PropCommunityZoonotic",
+               "PropHostsZoonoticCarriers",
+               "ParasiteCloseness",
+               "HasDomesticHost",
+               "HostProportionalGenerality")
+intrinsic <- c("Class",
+               "Family",
+               "Intracellular", 
+               "CloseContactTransmission", 
+               "VectorTransmission")
+hosts <- c("HostInterbirthInterval",
+           "HostTrophicLevel",
+           "HostPopDensity",
+           "HostDietInvertebrate") # remove?
+regional <- c("EcoRealm", #main biome (numeric) replaced with factor realm
+              "MeanHumanPopDensity",
+              "MeanTemp", 
+              "MeanPrecipitation") 
+sampling <- c("WebOfScienceHits")
+response <- "ZoonoticStatus"
 
 ```
 
@@ -162,48 +190,49 @@ The data is split so that the proportion of positive and negative observations i
 ```{r train_test}
 
 
-tmp_protraits <- protraits %>% as_tibble() %>% select(-protname)
-tmp_prot <- data.table(tmp_protraits[, c(spec_gen, community, intrinsic, hosts, regional, sampling, response)])
+tmp_protraits <- protraits_final %>% as_tibble() %>% select(-ParasiteBinomialName)
+tmp_prot <- data.table(tmp_protraits[, c(generalism, community, intrinsic, hosts, regional, sampling, response)])
 
-# Calculate coverage
-
-feature_names <- names(tmp_prot)
-
-completeness <- tmp_prot %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
-completeness.pos <- tmp_prot %>% filter(zoostat == 1) %>% 
-  summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
-datacompleteness <- cbind(names(tmp_prot), completeness, completeness.pos) %>% as.data.frame()
+# # Calculate coverage
+# 
+# feature_names <- names(tmp_prot)
+# 
+# completeness <- tmp_prot %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
+# completeness.pos <- tmp_prot %>% filter(ZoonoticStatus == 1) %>% 
+#   summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
+# datacompleteness <- cbind(names(tmp_prot), completeness, completeness.pos) %>% as.data.frame()
 
 # tmp_prot %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric() %>% plot(type = 'h')
 
 
 # subset data into training vs testing 
-set.seed(191212)
-trainIndex_prot <- createDataPartition(tmp_prot$zoostat, p = .65, 
+
+tmp_prot$ZoonoticStatus <- as.factor(tmp_prot$ZoonoticStatus)
+
+set.seed(1024)
+trainIndex_prot <- createDataPartition(tmp_prot$ZoonoticStatus, p = .65, 
                                      list = FALSE, 
                                      times = 1)
-testIndex_prot <- setdiff(c(1:nrow(tmp_prot)), trainIndex_prot)
+# testIndex_prot <- setdiff(c(1:nrow(tmp_prot)), trainIndex_prot)
 
-tmp_prot_Train <- data.table(tmp_prot[ trainIndex_prot,])
-tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+tmp_prot$ZoonoticStatus <- as.numeric(tmp_prot$ZoonoticStatus)-1 # turn back to 1s ans 0s
+
+tmp_prot_Train <- data.table(tmp_prot[trainIndex_prot,])
+# tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
 
 # Actual zoostat
-real.class <- tmp_prot_Train$zoostat %>% as.factor()
-table(real.class) # the training set has 149 out of 228 rows in the full dataset. 10/149 are zoonotic and 139/149 are non-zoonotic.
+real.class <- tmp_prot_Train$ZoonoticStatus %>% as.factor()
+table(real.class) # the training set has 147 out of 226 rows in the full dataset. 13/147 are zoonotic
+tmp_prot_Test$ZoonoticStatus %>% as.factor() %>% table() # the test set has 79 out of 226 rows in the full dataset. 7/79 are zoonotic
 
 # in order for model matrix to work properly, need to set na.action to pass
 previous_na_action <- options('na.action')
 options(na.action='na.pass')
 
- # create a model matrix of the training data predictor variables  
-sparse_matrix_prot <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Train)[,-1]
+# create a model matrix of the training data predictor variables 
+sparse_matrix_prot <- Matrix::sparse.model.matrix(ZoonoticStatus ~ ., data = tmp_prot_Train)[,-1]
 
-dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$zoostat)
-
-# create a model matrix of the testing data predictor variables
-sparse_matrix_prot2 <- Matrix::sparse.model.matrix(zoostat ~ ., data = tmp_prot_Test)[,-1]  
-
-dtest <- xgb.DMatrix(data = sparse_matrix_prot2, label = tmp_prot_Test$zoostat)
+dtrain <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot_Train$ZoonoticStatus)
 
 ```
 
@@ -240,25 +269,25 @@ param_log <- tune.brt(dtrain = dtrain, n.rounds = 512, n.thread = 4)
 toc()
 skrrrahh("soulja")
 
-print(param_log) 
+#print(param_log) 
 
 # returns a df of parameter combinations and the mean test logloss, mean test error, and TSS
 
 ```
-
+0.02, 0.4, 0.45 (compromise between AUC and F1)
 
 ### Cross-validation
 
 ```{r cv}
 
 # reproducibility
-set.seed(2)
+set.seed(2048)
 
 # 5-fold cross validated XGBoost model with 512 trees and tuned parameters
 cv_bst_prot <- xgb.cv(params = list(max.depth = 3, nthread = 4, 
-                                    eta = 0.01,
-                                    gamma = 0.325, 
-                                    alpha = 0.35,
+                                    eta = 0.02,
+                                    gamma = 0.4, 
+                                    alpha = 0.45,
                                     objective = "binary:logistic"),
                       data = dtrain,
                       stratified = TRUE,
@@ -285,8 +314,8 @@ cv_bst_prot <- xgb.cv(params = list(max.depth = 3, nthread = 4,
 #                       scale_pos_weight = 15,
 #                       prediction = T
 #                       )
-
-cv_bst_prot[["evaluation_log"]] %>% tail()
+# 
+# cv_bst_prot[["evaluation_log"]] %>% view() #best test AUC mean at 56 iter
 
 ```
 
@@ -297,7 +326,7 @@ cv_bst_prot[["evaluation_log"]] %>% tail()
 # Prediction probabilities
 pred <- cv_bst_prot$pred
 
-pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+pred.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
                       pred.zoostat = pred)
 
 # # Could cut it off at the lowest true positive (min pred when zoostat = 1)
@@ -413,14 +442,14 @@ I built the model using the optimal parameter values identified above. I recorde
 
 
 BRT_prot <- xgboost(dtrain,
-                    params = list(max.depth = 3, eta = 0.01, 
-                                  nthread = 4, gamma = 0.325, alpha = 0.55,
+                    params = list(max.depth = 3, eta = 0.02, 
+                                  nthread = 4, gamma = 0.4, alpha = 0.45,
                                   objective = "binary:logistic",
                                   eval_metric = "logloss",
                                   eval_metric = "error",
                                   eval_metric = "auc"),
                     verbose = F,
-                    nrounds = 512)
+                    nrounds = 64)
 
 BRT_prot[["evaluation_log"]] %>% tail()
 
@@ -438,7 +467,7 @@ ggplot(BRT_prot$evaluation_log) +
 
 pred <- predict(BRT_prot, dtrain)
 
-pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+pred.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
                       pred.zoostat = pred)
 
 # Choose threshold at which gives the largest G-mean score - sqrt(TPR*TNR)
@@ -454,12 +483,12 @@ pred.class <- ifelse(pred >= threshold, 1, 0) %>% as.factor()
 confusionMatrix(pred.class, real.class, positive="1")
 
 #AUC
-pROC::auc(roc.test)
+trainAUC <- pROC::auc(roc.test)
 
 #change na.action back to default
 options(na.action=previous_na_action$na.action)
 ```
-Low logloss and error, high sensitivity and specificity, and an AUC of 1. Hmm.
+
 
 
 # Results
@@ -478,7 +507,7 @@ ggprot1 <- xgb.plot.importance(importance_prot, rel_to_first = TRUE,
 # gg_prot
 
 # Create a list of the variable groups with their names
-group.list <- list("spec_gen" = spec_gen, "community" = community, "hosts" = hosts,
+group.list <- list("generalism" = generalism, "community" = community, "hosts" = hosts,
                    "intrinsic"= intrinsic, "regional" = regional, "sampling" = sampling)
 
 feature_grps <- unlist(group.list) %>% as.data.frame() %>% rownames_to_column()
@@ -495,7 +524,7 @@ ggplot(importance_prot_grp, aes(x = Feature, y = Importance)) +
   coord_flip() + 
   ylab("Relative importance") + 
   scale_y_continuous(expand = c(0, 0)) + 
-  scale_fill_discrete(guide = guide_legend(reverse = TRUE))
+  scale_fill_discrete(guide = guide_legend(reverse = T))
 
 ```
 
@@ -580,6 +609,10 @@ The main_biome variable is actually a factor with 16 levels (see below), so I'll
 ```{r permutations, eval = F}
 #create a function that does the permutation for each group
 
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
 permute_func <- function(group_vars, niter, start.seed){
   #function to do permutation to look at group variable importance
   #' @param group_vars vector of variable/column names in the group, ex. c("var1", "var2")
@@ -597,12 +630,12 @@ permute_func <- function(group_vars, niter, start.seed){
     perm_df <- tmp_prot_Train %>%
       mutate_at(.vars = group_vars, function(x) x[sample(nrow(tmp_prot_Train), replace = F)])
     #turn into sparseMatrix
-    perm_sparse_matrix_prot <- sparse.model.matrix(zoostat ~ ., data = perm_df)[,-1]  
-    dtrain <- xgb.DMatrix(data = perm_sparse_matrix_prot, label = tmp_prot_Train$zoostat)
+    perm_sparse_matrix_prot <- Matrix::sparse.model.matrix(ZoonoticStatus ~ ., data = perm_df)[,-1]  
+    dtrain <- xgb.DMatrix(data = perm_sparse_matrix_prot, label = tmp_prot_Train$ZoonoticStatus)
     
     pred <- predict(BRT_prot, dtrain)
     
-    pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+    pred.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
                           pred.zoostat = pred)
     
     # Create ROC object
@@ -619,7 +652,9 @@ permute_func <- function(group_vars, niter, start.seed){
 # Get AUCs for each round of permutation
 
 # First create a list of the variable groups with their names
-group.list <- list("spec_gen" = spec_gen, "community" = community, "hosts" = hosts,
+group.list <- list("generalism" = generalism, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "environmental" = regional, "sampling" = sampling)
+group.list2 <- c("generalism" = generalism, "community" = community, "hosts" = hosts,
                    "intrinsic"= intrinsic, "environmental" = regional, "sampling" = sampling)
 
 # # test on one group along
@@ -632,11 +667,11 @@ skrrrahh("biggie") # play notification sound to alert when permutations are done
 #turn the list into a dataframe and turn it long so it works well with dplyr and ggplot
 perm.df <- bind_rows(perm.list) %>%
   mutate(perm_id = 1:n()) %>%
-  pivot_longer(cols = spec_gen:sampling, names_to = "var_group", values_to = "AUC")
+  pivot_longer(cols = generalism:sampling, names_to = "var_group", values_to = "AUC")
 
 #look at summary statistics and plot
 #pretend this is the full model AUC
-full.AUC = 0.995
+full.AUC = trainAUC
 #plot
 relative.imp.grp <- 
 perm.df %>%
@@ -675,6 +710,11 @@ geom_errorbarh(aes(color = var_group, xmin = delta_AUC-sd_AUC, xmax = delta_AUC+
 
 # Adapted from Ania's helminth code
 
+pred <- predict(BRT_prot, dtrain)
+
+pred.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
+                      pred.zoostat = pred)
+
 df1 <- cbind(pred.df, trainIndex_prot) %>% rename(trainIndex = Resample1)
 df2 <- protnames %>% rownames_to_column() %>% rename(trainIndex = rowname) 
 
@@ -686,7 +726,8 @@ df3$true.zoostat <- factor(df3$true.zoostat, labels = c("not known to be zoonoti
 
 df4 <- df3 %>% arrange(desc(pred.zoostat))
 
-ggplot(data=df4, aes(x=reorder(protname, -pred.zoostat), y=pred.zoostat, color = true.zoostat, fill = true.zoostat, label = protname)) +
+ggplot(data=df4, aes(x=reorder(parname, -pred.zoostat), y=pred.zoostat, 
+                     color = true.zoostat, fill = true.zoostat, label = parname)) +
   geom_bar(position="dodge",stat="identity") +
   labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
   theme_classic() +
@@ -698,21 +739,22 @@ ggplot(data=df4, aes(x=reorder(protname, -pred.zoostat), y=pred.zoostat, color =
         axis.ticks.x=element_blank(),
         axis.text.y = element_text(size=15), legend.position = c(0.80,0.94)) +
   scale_fill_manual(values = c("#009B9F","#C75DAA")) +
-  scale_color_manual(values = c("#009B9F","#C75DAA")) # +
+  scale_color_manual(values = c("#009B9F","#C75DAA")) + 
+  scale_y_continuous(expand = c(0, 0))# +
   # annotate("text", x =15.75, y = 0.98, label = "Hepatocystic kochi") +
   # annotate("text", x =17.5, y = 0.945, label = "Neospora caninum")
 
 gmpd_zooscored <- read.csv("data/modified/gmpd_zooscored.csv")
 
 df5 <- gmpd_zooscored %>% filter(partype == "Protozoa") %>% 
-  select(protname = gmpdparname, zscore) %>% 
-  left_join(df4) %>% distinct(protname, .keep_all = T) %>% 
+  select(parname = parname, zscore) %>% 
+  left_join(df4) %>% distinct(parname, .keep_all = T) %>% 
   na.omit()
 
 df5$zscore <- as.factor(df5$zscore)
 
-ggplot(data=df5, aes(x=reorder(protname, -pred.zoostat), y=pred.zoostat, 
-                     color = zscore, fill = zscore, label = protname)) +
+ggplot(data=df5, aes(x=reorder(parname, -pred.zoostat), y=pred.zoostat, 
+                     color = zscore, fill = zscore, label = parname)) +
   geom_bar(position="dodge",stat="identity") +
   labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
   theme_classic() +
@@ -724,8 +766,19 @@ ggplot(data=df5, aes(x=reorder(protname, -pred.zoostat), y=pred.zoostat,
         axis.ticks.x=element_blank(),
         axis.text.y = element_text(size=15)) +
   scale_fill_manual(values = c("#009B9F","#7DC5C7", "#E4C1D8", "#D691C1", "#C75DAA"))+
-  scale_color_manual(values = c("#009B9F","#7DC5C7", "#E4C1D8", "#D691C1", "#C75DAA"))
+  scale_color_manual(values = c("#009B9F","#7DC5C7", "#E4C1D8", "#D691C1", "#C75DAA")) + 
+  scale_y_continuous(expand = c(0, 0))
 
 
 ```
 
+## Test model
+
+Same shit I guess but with tmp_prot instead of tmp_prot_Train
+
+```{r}
+
+
+
+
+```
