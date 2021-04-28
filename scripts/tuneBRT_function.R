@@ -27,7 +27,7 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
       for (gamma in seq(0.10, 0.4, by = 0.075)) {
         # 5-fold cross validation to determine best model parameters
         # set gamma > 0, lowered eta, to help with overfitting
-        set.seed(2048)
+        # set.seed(2048)
         xgbcv <- xgb.cv(params = list(max.depth = 3, nthread = n.threads, 
                                       eta = eta, 
                                       alpha = alpha, 
@@ -46,7 +46,7 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
         pred <- xgbcv$pred
         
         # Set cutoff threshold
-        pred.df <- data.frame(true.zoostat = tmp_prot_Train$zoostat,
+        pred.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
                               pred.zoostat = pred)
         # threshold <- filter(pred.df, true.zoostat == 1) %>% 
         #   summarise(min(pred.zoostat)) %>% as.numeric()
@@ -58,7 +58,7 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
         
         pred.class <- ifelse(pred >= threshold, 1, 0) %>% as.factor()
         # actual zoostat
-        real.class <- tmp_prot_Train$zoostat %>% as.factor()
+        real.class <- tmp_prot_Train$ZoonoticStatus %>% as.factor()
         
         # Create the confusion matrix and get TSS and F1
         conf.mat <- confusionMatrix(pred.class, real.class, positive="1")
