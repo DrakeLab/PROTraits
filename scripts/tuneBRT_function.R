@@ -27,7 +27,7 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
       for (gamma in seq(0.10, 0.4, by = 0.075)) {
         # 5-fold cross validation to determine best model parameters
         # set gamma > 0, lowered eta, to help with overfitting
-        # set.seed(2048)
+        set.seed(2048)
         xgbcv <- xgb.cv(params = list(max.depth = 3, nthread = n.threads, 
                                       eta = eta, 
                                       alpha = alpha, 
@@ -39,7 +39,7 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
                         nfold = k,
                         nrounds = n.rounds,
                         #metrics = evalmetrics,
-                        scale_pos_weight = 15,
+                        scale_pos_weight = 10,
                         prediction = T
                         )
         # prediction probabilities
