@@ -1,0 +1,1123 @@
+---
+title: "Protraits: Results"
+author: "Joy Vaz"
+date: "March 30, 2021"
+output: html_document:
+#   toc: TRUE # table of contents
+---
+
+
+
+```{r setup, include=FALSE, echo=FALSE}
+library("knitr")
+opts_chunk$set(tidy=T, warning=F, message=F, include = T)
+opts_knit$set(root.dir = "C:/Rprojects/Protraits_Joy/")
+```
+
+# Load packages
+
+```{r load_packages, echo=F, message=F, warning=F}
+
+library(xgboost)
+library(Matrix)
+library(data.table)
+library(tidyverse)
+library(caret)
+library(magrittr)
+library(corrplot)
+library(mlbench)
+library(MatrixModels)
+library(tictoc)
+library(BRRR)
+library(pdp)
+library(Ckmeans.1d.dp)
+library(readxl)
+library(pROC)
+
+```
+
+# Data summary
+
+Traitsof 228 protozoa species are recorded in the dataset. See [this data table](https://outlookuga-my.sharepoint.com/:x:/g/personal/jjc99699_uga_edu/EQB4ODI2o45DpMgeI2sCQ9oBAoX_ThrV9VhL-R2rfjfDrg?e=oTh6NR) for variable definistions and coverage. 
+
+The binary response variable indicates whether a protozoa species is zoonotic or not.
+
+```{r load_data, include=FALSE, eval = F}
+
+rm(list = ls())
+
+protnames <- read.csv("./data/modified/protnames.csv", row.names = 1)
+
+#create a list of the files from your target directory
+
+file_list_full <- list.files(path="./data/modified/protraits", full.names = T)
+file_list <- list.files(path="./data/modified/protraits")
+df_names <- gsub(".csv", "", file_list)
+
+#initiate a blank data frame, each iteration of the loop will append the data from the given file to this variable
+protraits_tmp <- data.frame(protnames)
+
+for (i in 1:length(file_list)){
+  x <- read.csv(file_list_full[i], row.names = 1)
+  assign(df_names[i], x)
+  protraits_tmp <- left_join(protraits_tmp, x, by = "parname")
+}
+
+head(protraits_tmp)
+names(protraits_tmp)
+
+protraits <- protraits_tmp %>% rename(ParasiteBinomialName = parname, CommunitySize = parcommsize,
+                                  PropCommunityZoonotic = propparcommzoon,
+                                  PropHostsZoonoticCarriers = prophostzoon, 
+                                  EcoRealm = main_realm, NumEcoregions = n_ecoregions, 
+                                  MeanGDP = meanGDP_per_cap, ZoonoticStatus = zoostat, 
+                                  WebOfScienceHits = WoSHits, Phylum = parphylum, Order = parorder,
+                                  CloseContactTransmission = close, NonCloseContactTransmission = nonclose,
+                                  VectorTransmission = vector, IntermediateTransmission = intermediate) %>% 
+  mutate(NumTransmissionModes = CloseContactTransmission + NonCloseContactTransmission +
+                                    VectorTransmission + IntermediateTransmission) %>% 
+  select(-c(partype, parclass, parfamily, ProtType))
+
+names(protraits)
+
+```
+
+```{r feature_selection, include=F, eval = F}
+
+# Create correlation matrix
+
+data <- select_if(protraits, is.numeric)
+
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+
+highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
+
+#Plot
+
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.5, number.cex = 0.5, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
+
+# rowMeans(correlation.df[1:34]) %>% cbind(names(correlation.df)[1:34]) %>% view()
+# remove CommunitySize
+
+protraits_tmp1 <- protraits %>% select(-CommunitySize)
+data <- select_if(protraits_tmp, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+highlyCorrelated <- filter(corrPairs, PCC > 0.6 | PCC < (-0.6)) 
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.75, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
+# remove NonCloseContactTransmission, MeanGDP, HostPropParZoonootic, ProportionalGenerality, IntermediateTransmission, SexualReproduction
+
+protraits_tmp2 <- protraits_tmp1 %>% select(-c(NonCloseContactTransmission, MeanGDP, 
+                                              HostPropParZoonootic, ProportionalGenerality,
+                                              IntermediateTransmission, SexualReproduction))
+data <- select_if(protraits_tmp2, is.numeric)
+correlationMatrix <- cor(data, use = "pairwise.complete.obs")
+correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
+corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
+corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
+highlyCorrelated <- filter(corrPairs, PCC > 0.6 | PCC < (-0.6)) # YAY!
+corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 0.75, 
+         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
+
+# write.csv(protraits_tmp2, "./data/modified/protraits_final_final.csv")
+
+
+```
+
+
+### Variable groups
+
+In order to investigate the relative importance of different groups of variables in predicting zoonotic potential, I grouped the variables (n = 33) into six sets: parasite specialism-generalism, community variables, intrinsic traits, host traits, regional/environmental triats, and sampling effort.
+
+```{r group_variables}
+# predictors, grouped by category
+
+rm(list = ls())
+
+generalism <- c("NumTransmissionModes",
+              "HostDietBreadth",
+              "HostHabitatBreadth",
+              "HostGeographicRange",
+              "HostIslandEndemicity",
+              "NumOrganSystems",
+              "HostEvolutionaryDistinctiveness",
+              "ParasiteBetweenness",
+              "HostBetweenness",
+              "NumEcoregions")
+community <- c("PropCommunityZoonotic",
+               "PropHostsZoonoticCarriers",
+               "ParasiteCloseness",
+               "HasDomesticHost",
+               "HostProportionalGenerality")
+intrinsic <- c("Phylum",
+               "Order",
+               "Intracellular",
+               "CloseContactTransmission",
+               "VectorTransmission")
+hosts <- c("HostInterbirthInterval",
+           "HostTrophicLevel",
+           "HostPopDensity",
+           "HostDietInvertebrate")
+regional <- c("EcoRealm",
+              "MeanHumanPopDensity",
+              "MeanTemp",
+              "MeanPrecipitation")
+sampling <- c("WebOfScienceHits")
+response <- "ZoonoticStatus"
+
+```
+
+
+### Prepare model matrix
+
+The data is split so that the proportion of positive and negative observations is equal between training and testing sets, with an 65/35 split for training and testing data ($n_{train} = 149$, and $n_{test} = 79$). 
+
+```{r train_test}
+
+protraits_final <- read.csv("./data/modified/protraits_final_final.csv", row.names = 1)
+
+# replace P. rodhaini zoostat with the correct one
+rodhainirow <- protraits_final %>% rownames_to_column() %>% filter(ParasiteBinomialName == "Plasmodium rodhaini") %>% select(rowname, ParasiteBinomialName, ZoonoticStatus)
+rownum <- rodhainirow$rowname %>% as.numeric() # row number 138
+# change from 1 to 0
+protraits_final$ZoonoticStatus[rownum]  <- 0 
+# check if it worked
+protraits_final %>% rownames_to_column() %>% filter(ParasiteBinomialName == "Plasmodium rodhaini") %>% select(ParasiteBinomialName, ZoonoticStatus)
+
+rm(list = c("rodhainirow", "rownum"))
+
+head(protraits_final)
+names(protraits_final) # 34 vars - 33 predictor vars and 1 response var
+# names(protraits_final) %>% sort() # alphabetical
+
+tmp_protraits <- protraits_final %>% as_tibble() %>% select(-ParasiteBinomialName)
+tmp_prot <- data.table(tmp_protraits[, c(generalism, community, intrinsic, hosts, regional, sampling, response)])
+
+# # Calculate coverage
+# 
+# feature_names <- names(tmp_prot)
+# 
+# completeness <- tmp_prot %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
+# completeness.pos <- tmp_prot %>% filter(ZoonoticStatus == 1) %>% 
+#   summarise_all(function(x) mean(!is.na(x))) %>% as.numeric()
+# datacompleteness <- cbind(names(tmp_prot), completeness, completeness.pos) %>% as.data.frame()
+# 
+# # Plot
+# tmp_prot %>% summarise_all(function(x) mean(!is.na(x))) %>% as.numeric() %>% plot(type = 'h')
+# # Save
+# write.csv(datacompleteness, "./data/modified/feature_coverage.csv")
+
+# Subset data into training vs testing 
+
+tmp_prot$ZoonoticStatus <- as.factor(tmp_prot$ZoonoticStatus)
+
+set.seed(1024)
+trainIndex_prot <- createDataPartition(tmp_prot$ZoonoticStatus, p = .65, 
+                                     list = FALSE, 
+                                     times = 1) %>% as.integer()
+testIndex_prot <- setdiff(c(1:nrow(tmp_prot)), trainIndex_prot)
+
+tmp_prot$ZoonoticStatus <- as.numeric(tmp_prot$ZoonoticStatus) - 1 # turn back to 1s ans 0s
+
+tmp_prot_Train <- data.table(tmp_prot[trainIndex_prot,])
+tmp_prot_Test  <- data.table(tmp_prot[-trainIndex_prot,])
+
+# Actual zoostat
+real.class.train <- tmp_prot_Train$ZoonoticStatus %>% as.factor()
+table(real.class.train) # the training set has 148 out of 226 rows in the full dataset. 13/148 are zoonotic
+tmp_prot_Test$ZoonoticStatus %>% as.factor() %>% 
+  table() # the test set has 78 out of 226 rows in the full dataset. 6/78 are zoonotic
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action = 'na.pass')
+
+# create a model matrix of the training data predictor variables -------
+
+sparse_matrix_prot_train1 <- model.Matrix(ZoonoticStatus ~ 0+Phylum, data=tmp_prot_Train, sparse=TRUE)
+sparse_matrix_prot_train1@Dim
+
+sparse_matrix_prot_train2 <- model.Matrix(ZoonoticStatus ~ 0+Order, data=tmp_prot_Train, sparse=TRUE)
+sparse_matrix_prot_train2@Dim
+
+sparse_matrix_prot_train3 <- model.Matrix(ZoonoticStatus ~ 0+EcoRealm, data=tmp_prot_Train, sparse=TRUE)
+sparse_matrix_prot_train3@Dim
+
+# tmp_prot_Train[, c(1:15, 18:24, 26:30)]
+
+sparse_matrix_prot_train4 <- model.Matrix(ZoonoticStatus ~ ., 
+                                          data=select_if(tmp_prot_Train, is.numeric), sparse=TRUE)[, -1]
+sparse_matrix_prot_train4@Dim
+
+
+sparse_matrix_prot_train <- cbind(sparse_matrix_prot_train4, sparse_matrix_prot_train1,
+                                  sparse_matrix_prot_train2, sparse_matrix_prot_train3)
+sparse_matrix_prot_train@Dim
+sparse_matrix_prot_train@Dimnames[[2]] %>% sort()
+
+dtrain <- xgb.DMatrix(data = sparse_matrix_prot_train, label = tmp_prot_Train$ZoonoticStatus)
+dimnames(dtrain)[[2]]
+
+# create a model matrix of the testing data predictor variables -----
+
+
+sparse_matrix_prot_test1 <- model.Matrix(ZoonoticStatus ~ 0+Phylum, data=tmp_prot_Test, sparse=TRUE)
+sparse_matrix_prot_test1@Dim
+
+sparse_matrix_prot_test2 <- model.Matrix(ZoonoticStatus ~ 0+Order, data=tmp_prot_Test, sparse=TRUE)
+sparse_matrix_prot_test2@Dim
+
+sparse_matrix_prot_test3 <- model.Matrix(ZoonoticStatus ~ 0+EcoRealm, data=tmp_prot_Test, sparse=TRUE)
+sparse_matrix_prot_test3@Dim
+
+sparse_matrix_prot_test4 <- model.Matrix(ZoonoticStatus ~ ., 
+                                          data=select_if(tmp_prot_Test, is.numeric), sparse=TRUE)[, -1]
+sparse_matrix_prot_test4@Dim
+
+sparse_matrix_prot_test <- cbind(sparse_matrix_prot_test4, sparse_matrix_prot_test1, 
+                                  sparse_matrix_prot_test2, sparse_matrix_prot_test3)
+sparse_matrix_prot_test@Dim
+sparse_matrix_prot_test@Dimnames[[2]]
+
+dtest <- xgb.DMatrix(data = sparse_matrix_prot_test, label = tmp_prot_Test$ZoonoticStatus)
+
+
+#change na.action back to default
+options(na.action = previous_na_action$na.action)
+
+rm(list = c("sparse_matrix_prot_train1",
+            "sparse_matrix_prot_train2",
+            "sparse_matrix_prot_train3",
+            "sparse_matrix_prot_train4",
+            "sparse_matrix_prot_test1",
+            "sparse_matrix_prot_test2",
+            "sparse_matrix_prot_test3",
+            "sparse_matrix_prot_test4",
+            "previous_na_action",
+            "tmp_protraits"))
+
+```
+
+# Model tuning
+
+After partitioning the data into training and testing sets, I ran 5 fold cross-validation using a custom tuning function to determine the best parameters for the model. In order to reduce overfitting, I selected parameters based on the average test-error, true skill statistic (TSS), and average test-logloss. I reduced the eta (learning rate) to 0.02, and increased alpha and gamma (regularization parameters) to 0.4 and 0.25, respectively, to reduce overfitting. 
+
+### Parameter definitions:
+
+eta [default=0.3]
+- Step size shrinkage used to shrink the feature weights after each boosting step. Make the boosting process more conservative to prevent overfitting.
+- Analogous to learning rate in GBM
+- Typical final values to be used: 0.01-0.2
+
+gamma [default=0] 
+- Minimum loss reduction required to make a further partition on a leaf node of the tree (a node is split only when the resulting split gives a positive reduction in the loss function). 
+- The larger gamma is, the more conservative the algorithm will be. 
+
+alpha [default=0] 
+- L1 regularization term on weights (analogous to Lasso regression). 
+- Increasing this value will make model more conservative. 
+- Can be used in case of very high dimensionality so that the algorithm runs faster.
+
+
+```{r tune parameters, eval = F}
+
+# source tune.BRT function
+source("./scripts/tuneBRT_function.R")
+
+# Use tune.BRT to determine best combination of eta, gamma, and alpha.
+
+tic()
+param_log52 <- tune.brt(dtrain = dtrain, n.rounds = 512, n.thread = 4) 
+toc()
+skrrrahh("soulja")
+
+#print(param_log) 
+
+write.csv(param_log52, "./data/modified/paramlog030521.csv")
+
+# returns a df of parameter combinations and the mean test logloss, mean test error, and TSS
+
+```
+0.02, 0.4, 0.45 (compromise between AUC and F1)
+
+### Cross-validation
+
+```{r cv}
+
+param_log_final <- read.csv("./data/modified/paramlog030521.csv", row.names = 1)
+
+# reproducibility
+set.seed(2)
+
+# 5-fold cross validated XGBoost model with 512 trees and tuned parameters to max F1
+cv_bst_prot <- xgb.cv(params = list(max.depth = 3, nthread = 4, 
+                                    eta = 0.02,
+                                    gamma = 0.30, 
+                                    alpha = 0.35,
+                                    objective = "binary:logistic"),
+                      data = dtrain,
+                      stratified = TRUE,
+                      verbose = F,
+                      nfold = 5, 
+                      nrounds = 512,
+                      metrics = list("logloss", "error", "auc"),
+                      scale_pos_weight = 10,
+                      prediction = T
+                      )
+
+```
+
+### Choosing a threshold to convert probabilities to binary predictions
+
+```{r cv predictions}
+
+# Prediction probabilities
+pred.cv <- cv_bst_prot$pred
+
+pred.cv.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
+                         pred.zoostat = pred.cv)
+
+# Get AUC
+roc.cv <- pROC::roc(response = pred.cv.df$true.zoostat, predictor = pred.cv.df$pred.zoostat)
+AUCcv <- pROC::auc(roc.cv)
+
+# Choose threshold that maximizes G-means
+threshold.cv <- roc.cv$thresholds[which.max(sqrt(roc.cv$sensitivities*roc.cv$specificities))]
+
+# Set cutoff threshold2
+pred.class.cv <- ifelse(pred.cv >= threshold.cv, 1, 0) %>% as.factor()
+
+# Create the confusion matrix
+conf.mat.cv <- confusionMatrix(pred.class.cv, real.class.train, positive="1")
+conf.mat.cv
+
+#F1
+F1cv <- conf.mat[["byClass"]][["F1"]]
+
+# Other metrics
+TPRcv <- conf.mat.cv[["byClass"]][["Sensitivity"]]
+TNRcv <- conf.mat.cv[["byClass"]][["Specificity"]]
+TSScv <- TPRcv + TNRcv - 1
+
+```
+
+## Deviance curves
+
+Plot logloss curve showing how mean train and test logloss varies with the number of trees
+
+```{r logloss_dev_plot, eval=F, include=F}
+# plot of logloss vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_logloss_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_logloss_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test logloss mean", "Train logloss mean")) +
+  ylab("logloss (mean)") + xlab("number of trees")
+
+# plot of AUC vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_auc_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_auc_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test AUC mean", "Train AUC mean")) +
+  ylab("AUC (mean)") + xlab("number of trees")
+
+# get min number of trees that minimize train and test logloss
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = min(which(train_logloss_mean == min(train_logloss_mean))),
+    logloss.train   = min(train_logloss_mean),
+    ntrees.test  = min(which(test_logloss_mean == min(test_logloss_mean))),
+    logloss.test   = min(test_logloss_mean),
+    min.diff = min(which(train_logloss_mean - test_logloss_mean == 
+                           min(train_logloss_mean - test_logloss_mean)))) # i don't think the min diff thing works
+
+# get min number of trees that maximize train and test auc
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = min(which(train_auc_mean == max(train_auc_mean))),
+    auc.train   = min(train_auc_mean),
+    ntrees.test  = min(which(test_auc_mean == max(test_auc_mean))),
+    auc.test   = max(test_auc_mean),
+    min.diff = max(which(train_auc_mean - test_auc_mean == 
+                           min(train_auc_mean - test_auc_mean))))
+
+#diff
+loglossdiff <- cv_bst_prot$evaluation_log$test_logloss_mean - cv_bst_prot$evaluation_log$train_logloss_mean %>% as.data.frame()
+
+aucdiff <- cv_bst_prot$evaluation_log$train_auc_mean - cv_bst_prot$evaluation_log$test_auc_mean %>% 
+  as.data.frame()
+
+# Plot error vs number of trees
+ggplot(cv_bst_prot$evaluation_log) +
+  geom_line(aes(iter, train_error_mean, color = "turquoise")) +
+  geom_line(aes(iter, test_error_mean, color = "orange")) +
+  scale_color_discrete(name = "Key", labels = c("Test error mean", "Train error mean")) +
+  ylab("Error (mean)") + xlab("number of trees")
+
+# get max number of trees that minimize train and test error
+cv_bst_prot$evaluation_log %>%
+  dplyr::summarise(
+    ntrees.train = min(which(train_error_mean == min(train_error_mean))),
+    error.train   = min(train_error_mean),
+    ntrees.test  = min(which(test_error_mean == min(test_error_mean))),
+    error.test   = min(test_error_mean)
+  )
+
+```
+
+Can stick with the same number of trees (nrounds = 512)
+
+# Model fitting
+
+I built the model using the optimal parameter values identified above. I recorded the error, logloss, and AUC.
+
+```{r fit_model}
+
+
+BRT_prot <- xgboost(dtrain,
+                    params = list(max.depth = 3, eta = 0.02, 
+                                  nthread = 4, gamma = 0.3, alpha = 0.35,
+                                  objective = "binary:logistic",
+                                  eval_metric = "logloss",
+                                  eval_metric = "error",
+                                  eval_metric = "auc"),
+                    verbose = F,
+                    nrounds = 64)
+
+# Save the model to disk
+
+saveRDS(BRT_prot, "./final_model.rds")
+
+```
+
+```{r train data predictions}
+
+pred.train <- predict(BRT_prot, dtrain)
+
+pred.train.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
+                            pred.zoostat = pred.train)`
+
+# Choose threshold at which gives the largest G-mean score - sqrt(TPR*TNR)
+roc.train <- pROC::roc(response = pred.train.df$true.zoostat, predictor = pred.train.df$pred.zoostat)
+threshold.perm <- roc.train$thresholds[which.max(sqrt(roc.train$sensitivities*roc.train$specificities))]
+
+# plot(x=roc.train$thresholds, y= sqrt(roc.train$sensitivities*roc.train$specificities), type = "b")
+
+# generate binary predicitons
+pred.class.train <- ifelse(pred.train >= threshold, 1, 0) %>% as.factor()
+
+# Create the confusion matrix
+conf.mat.train <- confusionMatrix(pred.class.train, real.class.train, positive="1")
+conf.mat.train
+
+# F1
+F1train <- conf.mat.train[["byClass"]][["F1"]]
+
+#AUC
+AUCtrain <- pROC::auc(roc.train)
+
+# Other metrics
+TPRtrain <- conf.mat.train[["byClass"]][["Sensitivity"]]
+TNRtrain <- conf.mat.train[["byClass"]][["Specificity"]]
+TSStrain <- TPRtrain + TNRtrain - 1
+
+```
+
+
+
+# Results
+
+## Variable importance
+
+```{r vip, echo=F, comment=F, warning = F}
+
+importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot_train), model = BRT_prot)
+
+
+ggprot1 <- xgb.plot.importance(importance_prot, rel_to_first = TRUE,
+                               xlab = "Relative importance")
+# # Old
+# gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
+# gg_prot
+
+# Create a list of the variable groups with their names
+group.list <- list("generalism" = generalism, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "regional" = regional, "sampling" = sampling)
+
+feature_grps <- unlist(group.list) %>% as.data.frame() %>% rownames_to_column()
+colnames(feature_grps) <- c("Group", "Feature")
+feature_grps$Group <- gsub('[[:digit:]]+', '', feature_grps$Group)
+
+importance_prot_grp <- left_join(ggprot1, feature_grps)
+importance_prot_grp$Feature <- factor(importance_prot_grp$Feature, 
+                                      levels = rev(importance_prot_grp$Feature))
+importance_prot_grp$Group[is.na(importance_prot_grp$Group)] <- "intrinsic"
+
+ggplot(importance_prot_grp, aes(x = Feature, y = Importance)) +
+  geom_bar(stat = "identity", aes(fill = Group), 
+           show.legend = T) +
+  coord_flip() + 
+  ylab("Relative importance") + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_fill_discrete(guide = guide_legend(reverse = T))
+
+```
+
+Species specificity of protozoa has the highest relative importance by far. This is a bipartite network property. The R documentation description of the index: 
+"Coefficient of variation of interactions, normalised to values between 0 and 1, following the idea of Julliard et al. (2006), as proposed by Poisot et al. (2012). Values of 0 indicate low, those of 1 a high variability (and hence suggesting low and high specificity). Since not corrected for number of observations, this index will yield high specificity for singletons, even though there is no information to support this conclusion."
+
+
+## Partial dependence plots
+
+Plotted for the eight most important features.
+
+```{r pdps, echo=F, warning=F, message=F}
+## partial dependence plots
+important_vars <- importance_prot$Feature
+
+v <- importance_prot$Feature
+length(v)
+
+# c-ICE curves and PDPs
+
+p1 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[1]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+p2 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[2]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p3 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[3]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+p4 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[4]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+p5 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[5]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p6 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[6]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p7 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[7]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p8 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[8]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+
+# grid.arrange(p1, p2, p3, ncol = 3)
+# grid.arrange(p4, p5, p6, ncol = 3)
+# grid.arrange(p7, p8, ncol = 2)
+
+grid.arrange(p1, p2, ncol = 2)
+grid.arrange(p3, p4, ncol = 2)
+grid.arrange(p5, p6, ncol = 2)
+grid.arrange(p7, p8, ncol = 2)
+
+```
+
+
+## Permuting features by group
+
+
+```{r permutations, eval = F}
+#create a function that does the permutation for each group
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+permute_func <- function(group_vars, niter, start.seed){
+  #function to do permutation to look at group variable importance
+  #' @param group_vars vector of variable/column names in the group, ex. c("var1", "var2")
+  #' @param niter number of iterations to do
+  #' @param start.seed random seed to start with
+  #' 
+  #' @return AUC for each round of permutation in a vector
+  
+  perm_auc <- list()
+  for(i in 1:niter){
+    #set the seed for random permutation
+    set.seed(start.seed+i)
+    
+    #create one permuted dataset
+    perm_df <- tmp_prot_Train %>%
+      mutate_at(.vars = group_vars, function(x) x[sample(nrow(tmp_prot_Train), replace = F)])
+    #turn into sparseMatrix
+    
+    perm_sparse_matrix_prot1 <- model.Matrix(ZoonoticStatus ~ 0+Phylum, data=perm_df, sparse=TRUE)
+    perm_sparse_matrix_prot2 <- model.Matrix(ZoonoticStatus ~ 0+Order, data=perm_df, sparse=TRUE)
+    perm_sparse_matrix_prot3 <- model.Matrix(ZoonoticStatus ~ 0+EcoRealm, data=perm_df, sparse=TRUE)
+    perm_sparse_matrix_prot4 <- model.Matrix(ZoonoticStatus ~ ., 
+                                             data=select_if(perm_df, is.numeric), sparse=TRUE)[, -1]
+    
+    perm_sparse_matrix_prot <- cbind(perm_sparse_matrix_prot4, perm_sparse_matrix_prot1,
+                                     perm_sparse_matrix_prot2, perm_sparse_matrix_prot3)  
+    
+    dtrain <- xgb.DMatrix(data = perm_sparse_matrix_prot, label = tmp_prot_Train$ZoonoticStatus)
+    
+    pred <- predict(BRT_prot, dtrain)
+    
+    pred.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
+                          pred.zoostat = pred)
+    
+    # Create ROC object
+    roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred)
+    
+    #AUC
+    perm_auc[[i]] <- pROC::auc(roc.test)
+  }
+  
+  #turn into a vector & return
+  return(do.call(c, perm_auc))
+}
+
+# Get AUCs for each round of permutation
+
+# First create a list of the variable groups with their names
+group.list <- list("generalism" = generalism, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "environmental" = regional, "sampling" = sampling)
+group.list2 <- c("generalism" = generalism, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "environmental" = regional, "sampling" = sampling)
+
+# # test on one group along
+# test_perm <- permute_func(group_vars = intrinsic, niter = 10, start.seed = 500)
+
+# Apply the permute_func over each variable group
+perm.list <- lapply(group.list, permute_func, niter = 128, start.seed = 500)
+skrrrahh("biggie") # play notification sound to alert when permutations are done
+
+#turn the list into a dataframe and turn it long so it works well with dplyr and ggplot
+perm.df.full <- bind_rows(perm.list) %>%
+  mutate(perm_id = 1:n()) %>%
+  pivot_longer(cols = generalism:sampling, names_to = "var_group", values_to = "AUC")
+
+#look at summary statistics and plot
+#pretend this is the full model AUC
+full.AUC = trainAUC
+#plot
+relative.imp.grp <- 
+perm.df.full %>%
+  group_by(var_group) %>%
+  summarise(med_AUC = median(AUC),
+            sd_AUC = sd(AUC)) %>%
+  mutate(delta_AUC = full.AUC - med_AUC) %>% 
+  arrange(desc(delta_AUC))
+
+relative.imp.grp$var_group <- factor(relative.imp.grp$var_group, levels = relative.imp.grp$var_group)
+
+relative.imp.grp %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = F)) %>%
+ggplot(aes(y = var_group, x = med_AUC)) +
+geom_point(aes(color = var_group), stat = "identity") +
+geom_errorbarh(aes(color = var_group, xmin = med_AUC-sd_AUC, xmax = med_AUC+sd_AUC), 
+               alpha = 0.8, width = 0, height = 0)
+
+
+
+relative.imp.grp %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = F)) %>%
+ggplot(aes(y = var_group, x = delta_AUC)) +
+geom_point(aes(color = var_group), size = 2) +
+geom_errorbarh(aes(color = var_group, xmin = delta_AUC-sd_AUC, xmax = delta_AUC+sd_AUC), 
+               alpha = 1, height = 0) + 
+  #guides(colour = guide_legend(reverse=T, title = "Variable Group")) + 
+  xlab("delta AUC") + 
+  ylab("Variable Group") +
+  theme(legend.position = "none")
+
+
+```
+# Ranked predictions
+
+```{r ranked predictions}
+
+
+# Adapted from Ania's helminth code
+
+# pred <- predict(BRT_prot, dtrain)
+# 
+# pred.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
+#                       pred.zoostat = pred)
+# 
+# protnames <- read.csv("./data/modified/protnames.csv", row.names = 1)
+
+df1 <- cbind(pred.test.df, testIndex_prot) %>% rename(testIndex = testIndex_prot)
+df2 <- protnames %>% rownames_to_column() %>% rename(testIndex = rowname) %>% 
+  select(-X)
+
+df2$testIndex <- as.integer(df2$testIndex)
+
+df3 <- df2 %>% left_join(df1, by = "testIndex") %>% select(-testIndex) %>% na.omit()
+
+df3$true.zoostat <- factor(df3$true.zoostat, labels = c("not known to be zoonotic", "known to be zoonotic"))
+
+df4.test <- df3 %>% arrange(desc(parname))
+
+df4.full <- rbind(df4, df4.test)
+
+ggplot(data=df4.full, aes(x=reorder(parname, -pred.zoostat), y=pred.zoostat, 
+                     color = true.zoostat, fill = true.zoostat, label = parname)) +
+  geom_bar(position="dodge",stat="identity") +
+  labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
+  theme_classic() +
+  theme(axis.text=element_text(size=15),
+        axis.title.x = element_text(size=15),
+        axis.title.y = element_text(size=15),
+        legend.title = element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y = element_text(size=15), legend.position = c(0.80,0.94)) +
+  scale_fill_manual(values = c("#009B9F","#C75DAA")) +
+  scale_color_manual(values = c("#009B9F","#C75DAA")) + 
+  scale_y_continuous(expand = c(0, 0))# +
+  # annotate("text", x =15.75, y = 0.98, label = "Hepatocystic kochi") +
+  # annotate("text", x =17.5, y = 0.945, label = "Neospora caninum")
+
+# gmpd_zooscored <- read.csv("data/modified/gmpd_zooscored.csv", row.names = 1, stringsAsFactors = F)
+# 
+# # replace P. rodhaini zoostat with the correct one
+# rownames(gmpd_zooscored) <- 1:nrow(gmpd_zooscored)
+# rodhainirow <- gmpd_zooscored %>% rownames_to_column() %>% filter(parname == "Plasmodium rodhaini") %>%
+#   select(rowname, parname, zoostat) %>% mutate(rowname = as.numeric(rowname))
+# rownum <- rodhainirow$rowname %>% as.numeric()
+# # change from 1 to 0
+# gmpd_zooscored$zoostat[rownum]  <- 0
+# gmpd_zooscored$zscore[rownum]  <- 0
+# # check if it worked
+# gmpd_zooscored %>% rownames_to_column() %>% filter(parname == "Plasmodium rodhaini") %>%
+#   select(rowname, parname, zscore,zoostat)
+# 
+# rm(list = c("rodhainirow", "rownum"))
+
+df5.full <- gmpd_zooscored %>% filter(partype == "Protozoa") %>% 
+  select(parname = parname, zscore) %>% 
+  left_join(df4.full) %>% distinct(parname, .keep_all = T) %>% 
+  na.omit()
+
+final_preds <- left_join(df4.full, df5.full) %>% 
+  arrange(desc(pred.zoostat)) %>% 
+  rownames_to_column() %>% 
+  select(Rank = rowname, 
+         "Parasite Binomial Name" = parname, 
+         "Zoonotic Status" = true.zoostat, 
+         Zooscore = zscore,
+         "Risk Score" = pred.zoostat)
+
+df5.full$zscore <- as.factor(df5.full$zscore)
+
+#write.csv(final_preds, "./data/modified/zoostat_preds.csv", row.names = F)
+
+ggplot(data=df5.full, aes(x=reorder(parname, -pred.zoostat), y=pred.zoostat, 
+                     color = zscore, fill = zscore, label = parname)) +
+  geom_bar(position="dodge",stat="identity") +
+  labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
+  theme_classic() +
+  theme(axis.text=element_text(),
+        axis.title.x = element_text(),
+        axis.title.y = element_text(),
+        legend.title = element_text(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.y = element_text()) +
+  scale_fill_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA"))+
+  scale_color_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA")) + 
+  scale_y_continuous(expand = c(0, 0))
+
+
+```
+
+## Test model
+
+Same shit I guess but with tmp_prot instead of tmp_prot_Train
+
+```{r}
+
+
+# evaluate with dtest
+
+pred.test <- predict(BRT_prot, dtest)
+
+pred.test.df <- data.frame(true.zoostat = tmp_prot_Test$ZoonoticStatus,
+                      pred.zoostat = pred.test)
+
+# Use same threshold to generate binary predicitons
+pred.class.test <- ifelse(pred.test >= threshold.perm, 1, 0) %>% as.factor()
+
+real.class.test <- tmp_prot_Test$ZoonoticStatus %>% as.factor()
+
+# Create the confusion matrix
+conf.mat.test <- confusionMatrix(pred.class.test, real.class.test, positive="1")
+conf.mat.test
+
+roc.eval <- pROC::roc(response = pred.test.df$true.zoostat, predictor = pred.test.df$pred.zoostat)
+
+#AUC
+AUCtest <- pROC::auc(roc.eval)
+
+#F1
+F1test <- conf.mat.test[["byClass"]][["F1"]]
+
+# Other metrics
+TPRtest <- conf.mat.test[["byClass"]][["Sensitivity"]]
+TNRtest <- conf.mat.test[["byClass"]][["Specificity"]]
+TSStest <- TPRtest + TNRtest - 1
+
+# create a model matrix of all predictor variables -------
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action = 'na.pass')
+
+sparse_matrix_prot1 <- model.Matrix(ZoonoticStatus ~ 0+Phylum, data=tmp_prot, sparse=TRUE)
+sparse_matrix_prot1@Dim
+
+sparse_matrix_prot2 <- model.Matrix(ZoonoticStatus ~ 0+Order, data=tmp_prot, sparse=TRUE)
+sparse_matrix_prot2@Dim
+
+sparse_matrix_prot3 <- model.Matrix(ZoonoticStatus ~ 0+EcoRealm, data=tmp_prot, sparse=TRUE)
+sparse_matrix_prot3@Dim
+
+# tmp_prot[, c(1:15, 18:24, 26:30)]
+
+sparse_matrix_prot4 <- model.Matrix(ZoonoticStatus ~ ., 
+                                          data=select_if(tmp_prot, is.numeric), sparse=TRUE)[, -1]
+sparse_matrix_prot4@Dim
+
+
+sparse_matrix_prot <- cbind(sparse_matrix_prot4, sparse_matrix_prot1,
+                                  sparse_matrix_prot2, sparse_matrix_prot3)
+sparse_matrix_prot@Dim
+sparse_matrix_prot@Dimnames[[2]] %>% sort()
+
+dprotraits <- xgb.DMatrix(data = sparse_matrix_prot, label = tmp_prot$ZoonoticStatus)
+dimnames(dprotraits)[[2]]
+
+#change na.action back to default
+options(na.action = previous_na_action$na.action)
+
+```
+
+
+
+# Final Results
+
+## Variable importance
+
+```{r vipfull, echo=F, comment=F, warning = F}
+# ful var imp
+
+importance_prot_full <- xgb.importance(feature_names = colnames(sparse_matrix_prot), model = BRT_prot)
+
+
+ggprot1 <- xgb.plot.importance(importance_prot_full, rel_to_first = TRUE,
+                               xlab = "Relative importance")
+# # Old
+# gg_prot <- xgb.ggplot.importance(importance_prot_full, measure = "Gain", rel_to_first = TRUE)
+# gg_prot
+
+# Create a list of the variable groups with their names
+group.list <- list("generalism" = generalism, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "regional" = regional, "sampling" = sampling)
+
+feature_grps <- unlist(group.list) %>% as.data.frame() %>% rownames_to_column()
+colnames(feature_grps) <- c("Group", "Feature")
+feature_grps$Group <- gsub('[[:digit:]]+', '', feature_grps$Group)
+
+importance_prot_full_grp <- left_join(ggprot1, feature_grps)
+importance_prot_full_grp$Feature <- factor(importance_prot_full_grp$Feature, 
+                                      levels = rev(importance_prot_full_grp$Feature))
+importance_prot_full_grp$Group[is.na(importance_prot_full_grp$Group)] <- "intrinsic"
+
+ggplot(importance_prot_full_grp, aes(x = Feature, y = Importance)) +
+  geom_bar(stat = "identity", aes(fill = Group), 
+           show.legend = T) +
+  coord_flip() + 
+  ylab("Relative importance") + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_fill_discrete(guide = guide_legend(reverse = T))
+
+
+
+```
+
+## Partial dependence plots
+
+Plotted for the eight most important features.
+
+```{r pdpsfinal, echo=F, warning=F, message=F}
+## partial dependence plots
+
+important_vars_full <- importance_prot_full$Feature
+
+v <- importance_prot_full$Feature
+length(v)
+
+# c-ICE curves and PDPs
+
+p1 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[1]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+p2 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[2]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p3 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[3]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+p4 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[4]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+p5 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[5]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2",
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p6 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[6]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p7 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[7]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+p8 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars_full[8]), ice = TRUE, center = F, 
+              plot = TRUE, rug = TRUE, alpha = 0.1, plot.engine = "ggplot2", 
+              train = sparse_matrix_prot_train, type = "classification", prob = T)
+
+
+# grid.arrange(p1, p2, p3, ncol = 3)
+# grid.arrange(p4, p5, p6, ncol = 3)
+# grid.arrange(p7, p8, ncol = 2)
+
+grid.arrange(p1, p2, ncol = 2)
+grid.arrange(p3, p4, ncol = 2)
+grid.arrange(p5, p6, ncol = 2)
+grid.arrange(p7, p8, ncol = 2)
+
+```
+
+
+```{r permutations, eval = F}
+#create a function that does the permutation for each group
+
+# in order for model matrix to work properly, need to set na.action to pass
+previous_na_action <- options('na.action')
+options(na.action='na.pass')
+
+permute_func_full <- function(group_vars, niter, start.seed){
+  #function to do permutation to look at group variable importance
+  #' @param group_vars vector of variable/column names in the group, ex. c("var1", "var2")
+  #' @param niter number of iterations to do
+  #' @param start.seed random seed to start with
+  #' 
+  #' @return AUC for each round of permutation in a vector
+  
+  perm_auc <- list()
+  for(i in 1:niter){
+    #set the seed for random permutation
+    set.seed(start.seed+i)
+    
+    #create one permuted dataset
+    perm_df <- tmp_prot %>%
+      mutate_at(.vars = group_vars, function(x) x[sample(nrow(tmp_prot), replace = F)])
+    #turn into sparseMatrix
+    
+    perm_sparse_matrix_prot1 <- model.Matrix(ZoonoticStatus ~ 0+Phylum, data=perm_df, sparse=TRUE)
+    perm_sparse_matrix_prot2 <- model.Matrix(ZoonoticStatus ~ 0+Order, data=perm_df, sparse=TRUE)
+    perm_sparse_matrix_prot3 <- model.Matrix(ZoonoticStatus ~ 0+EcoRealm, data=perm_df, sparse=TRUE)
+    perm_sparse_matrix_prot4 <- model.Matrix(ZoonoticStatus ~ ., 
+                                             data=select_if(perm_df, is.numeric), sparse=TRUE)[, -1]
+    
+    perm_sparse_matrix_prot <- cbind(perm_sparse_matrix_prot4, perm_sparse_matrix_prot1,
+                                     perm_sparse_matrix_prot2, perm_sparse_matrix_prot3)  
+    
+    dtrain <- xgb.DMatrix(data = perm_sparse_matrix_prot, label = tmp_prot$ZoonoticStatus)
+    
+    pred <- predict(BRT_prot, dtrain)
+    
+    pred.df <- data.frame(true.zoostat = tmp_prot$ZoonoticStatus,
+                          pred.zoostat = pred)
+    
+    # Create ROC object
+    roc.test <- pROC::roc(response = pred.df$true.zoostat, predictor = pred)
+    
+    #AUC
+    perm_auc[[i]] <- pROC::auc(roc.test)
+  }
+  
+  #turn into a vector & return
+  return(do.call(c, perm_auc))
+}
+
+# Get AUCs for each round of permutation
+
+# First create a list of the variable groups with their names
+group.list <- list("generalism" = generalism, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "environmental" = regional, "sampling" = sampling)
+group.list2 <- c("generalism" = generalism, "community" = community, "hosts" = hosts,
+                   "intrinsic"= intrinsic, "environmental" = regional, "sampling" = sampling)
+
+# # test on one group along
+# test_perm <- permute_func(group_vars = intrinsic, niter = 10, start.seed = 500)
+
+# Apply the permute_func over each variable group
+perm.list <- lapply(group.list, permute_func_full, niter = 128, start.seed = 500)
+skrrrahh("biggie") # play notification sound to alert when permutations are done
+
+#turn the list into a dataframe and turn it long so it works well with dplyr and ggplot
+perm.df.full <- bind_rows(perm.list) %>%
+  mutate(perm_id = 1:n()) %>%
+  pivot_longer(cols = generalism:sampling, names_to = "var_group", values_to = "AUC")
+
+#look at summary statistics and plot
+
+full.AUC = AUCtrain
+#plot
+relative.imp.grp <- 
+perm.df.full %>%
+  group_by(var_group) %>%
+  summarise(med_AUC = median(AUC),
+            sd_AUC = sd(AUC)) %>%
+  mutate(delta_AUC = full.AUC - med_AUC) %>% 
+  arrange(desc(delta_AUC))
+
+relative.imp.grp$var_group <- factor(relative.imp.grp$var_group, levels = relative.imp.grp$var_group)
+
+rel.imp.grp.plot1 <- 
+relative.imp.grp %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = F)) %>%
+ggplot(aes(y = var_group, x = med_AUC)) +
+geom_point(aes(color = var_group), , size = 2) +
+geom_errorbarh(aes(color = var_group, xmin = med_AUC-sd_AUC, xmax = med_AUC+sd_AUC), 
+               alpha = 0.8, width = 0, height = 0) + 
+  guides(colour = guide_legend(reverse=T, title = "Trait Category")) + 
+  xlab("Median AUC") + 
+  ylab("Permuted Category")
+
+
+rel.imp.grp.plot2 <- 
+relative.imp.grp %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = F)) %>%
+ggplot(aes(y = var_group, x = delta_AUC)) +
+geom_point(aes(color = var_group), size = 2) +
+geom_errorbarh(aes(color = var_group, xmin = delta_AUC-sd_AUC, xmax = delta_AUC+sd_AUC), 
+               alpha = 0.8, height = 0) + 
+  guides(colour = guide_legend(reverse=T, title = "Trait Category")) + 
+  xlab("delta AUC") + 
+  ylab("Permuted Category") 
+
+rel.imp.grp.plot1
+rel.imp.grp.plot2
+```
