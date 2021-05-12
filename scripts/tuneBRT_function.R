@@ -23,8 +23,8 @@ tune.brt <- function(dtrain, n.rounds = 512, n.threads = 4){
   colnames(eval.log) <- c("TSS", "AUC", "F1", "eta","gamma", "alpha")
   for(alpha in seq(0.35, 0.55, by = 0.05)) {
     output.BRT <- list()
-    for (eta in seq(0.01, 0.05, by = 0.01)) {
-      for (gamma in seq(0.10, 0.4, by = 0.075)) {
+    for (eta in seq(0.01, 0.04, by = 0.01)) {
+      for (gamma in seq(0.15, 0.4, by = 0.05)) {
         # 5-fold cross validation to determine best model parameters
         # set gamma > 0, lowered eta, to help with overfitting
         set.seed(2048)
