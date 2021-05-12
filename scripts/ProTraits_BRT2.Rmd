@@ -499,10 +499,12 @@ saveRDS(BRT_prot, "./final_model.rds")
 
 ```{r train data predictions}
 
+BRT_prot <- readRDS("C:/Rprojects/Protraits_Joy/final_model.rds")
+
 pred.train <- predict(BRT_prot, dtrain)
 
 pred.train.df <- data.frame(true.zoostat = tmp_prot_Train$ZoonoticStatus,
-                            pred.zoostat = pred.train)`
+                            pred.zoostat = pred.train)
 
 # Choose threshold at which gives the largest G-mean score - sqrt(TPR*TNR)
 roc.train <- pROC::roc(response = pred.train.df$true.zoostat, predictor = pred.train.df$pred.zoostat)
@@ -768,9 +770,10 @@ df4.test <- df3 %>% arrange(desc(parname))
 
 df4.full <- rbind(df4, df4.test)
 
+
 ggplot(data=df4.full, aes(x=reorder(parname, -pred.zoostat), y=pred.zoostat, 
                      color = true.zoostat, fill = true.zoostat, label = parname)) +
-  geom_bar(position="dodge",stat="identity") +
+  geom_bar(position="dodge",stat="identity", col = "white") +
   labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
   theme_classic() +
   theme(axis.text=element_text(size=15),
@@ -786,21 +789,22 @@ ggplot(data=df4.full, aes(x=reorder(parname, -pred.zoostat), y=pred.zoostat,
   # annotate("text", x =15.75, y = 0.98, label = "Hepatocystic kochi") +
   # annotate("text", x =17.5, y = 0.945, label = "Neospora caninum")
 
-# gmpd_zooscored <- read.csv("data/modified/gmpd_zooscored.csv", row.names = 1, stringsAsFactors = F)
-# 
-# # replace P. rodhaini zoostat with the correct one
-# rownames(gmpd_zooscored) <- 1:nrow(gmpd_zooscored)
-# rodhainirow <- gmpd_zooscored %>% rownames_to_column() %>% filter(parname == "Plasmodium rodhaini") %>%
-#   select(rowname, parname, zoostat) %>% mutate(rowname = as.numeric(rowname))
-# rownum <- rodhainirow$rowname %>% as.numeric()
-# # change from 1 to 0
-# gmpd_zooscored$zoostat[rownum]  <- 0
-# gmpd_zooscored$zscore[rownum]  <- 0
-# # check if it worked
-# gmpd_zooscored %>% rownames_to_column() %>% filter(parname == "Plasmodium rodhaini") %>%
-#   select(rowname, parname, zscore,zoostat)
-# 
-# rm(list = c("rodhainirow", "rownum"))
+gmpd_zooscored <- read.csv("data/modified/gmpd_zooscored.csv", row.names = 1, stringsAsFactors = F)
+
+# replace P. rodhaini zoostat with the correct one
+rownames(gmpd_zooscored) <- 1:nrow(gmpd_zooscored)
+rodhainirow <- gmpd_zooscored %>% rownames_to_column() %>% 
+  filter(parname == "Plasmodium rodhaini") %>%
+  select(rowname, parname, zoostat) %>% mutate(rowname = as.numeric(rowname))
+rownum <- rodhainirow$rowname %>% as.numeric()
+# change from 1 to 0
+gmpd_zooscored$zoostat[rownum]  <- 0
+gmpd_zooscored$zscore[rownum]  <- 0
+# check if it worked
+gmpd_zooscored %>% rownames_to_column() %>% filter(parname == "Plasmodium rodhaini") %>%
+  select(rowname, parname, zscore,zoostat)
+
+rm(list = c("rodhainirow", "rownum"))
 
 df5.full <- gmpd_zooscored %>% filter(partype == "Protozoa") %>% 
   select(parname = parname, zscore) %>% 
@@ -818,24 +822,41 @@ final_preds <- left_join(df4.full, df5.full) %>%
 
 df5.full$zscore <- as.factor(df5.full$zscore)
 
+save(df5.full, file = "./data/df5.full.Rdata")
+
 #write.csv(final_preds, "./data/modified/zoostat_preds.csv", row.names = F)
 
 ggplot(data=df5.full, aes(x=reorder(parname, -pred.zoostat), y=pred.zoostat, 
                      color = zscore, fill = zscore, label = parname)) +
-  geom_bar(position="dodge",stat="identity") +
-  labs(x = "Predicted probabilty rank", y = "Model predicted probability of being zoonotic") +
+  geom_bar(position="dodge",stat="identity", col = "white") +
+  labs(x = "Predicted probabilty rank", 
+       y = "Model predicted probability of being zoonotic") +
   theme_classic() +
   theme(axis.text=element_text(),
         axis.title.x = element_text(),
         axis.title.y = element_text(),
         legend.title = element_text(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
+        #axis.text.x=element_blank(),
+        axis.ticks.x=element_line(),
         axis.text.y = element_text()) +
   scale_fill_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA"))+
   scale_color_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA")) + 
-  scale_y_continuous(expand = c(0, 0))
+  scale_y_continuous(expand = c(0, 0)) 
 
+# Claire's version ---------
+
+load("./data/df5.full.Rdata")
+
+df5.full <- df5.full %>% arrange(desc(pred.zoostat)) %>% mutate(rank.order = 1:nrow(.))
+ggplot(data=df5.full, aes(x=rank.order, y=pred.zoostat, 
+                          color = zscore, fill = zscore, label = parname)) +
+  geom_bar(position="dodge",stat="identity",col="white") +
+  labs(y = "Model predicted probability of being zoonotic") +
+  scale_x_continuous("Predicted probabilty rank", breaks = seq(0,max(df5.full$rank.order),25))+
+  theme_classic() +
+  scale_fill_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA"))+
+  scale_color_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA")) + 
+  scale_y_continuous(expand = c(0, 0))
 
 ```
 
