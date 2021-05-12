@@ -200,7 +200,8 @@ rm(list = ls())
 allhosttraits <- read.csv("./data/modified/allhosttraits.csv") 
 
 hosttraits <- allhosttraits %>% 
-  select(hostname, HostDietBreadth = DietBreadth, 
+  select(hostname, HostDietBreadth = DietBreadth,
+         HostDietInvertebrate = Diet.Invertebrate,
          HostHabitatBreadth = HabitatBreadth,
          HostGeographicRange = GR_Area_Combined_IUCN_preferred, 
          HostInterbirthInterval = InterbirthInterval,
@@ -336,76 +337,23 @@ corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, num
 
 prothosttraits2 <- left_join(prothosttraits_agg, prothostcommtraits_agg)
 
-# Add host network properties -------
-
-prothostsnet <- read.csv("./data/modified/hostnet.csv")[-1] %>% 
-  select(-c(species.specificity.index, normalised.degree, proportional.generality))
-
-colnames(prothostsnet)[2:6] <- paste0("Host", colnames(prothostsnet)[2:10])
-
-setdiff(protpairs$hostname, prothostsnet$hostname) # no diff!
-
-prothostnettraits <- left_join(protpairs, prothostsnet)
-
-prothostnettraits_agg1 <- prothostnettraits %>% group_by(parname) %>% 
-  summarise_if(is.numeric, mean, na.rm = TRUE)
-prothostnettraits_agg2 <- prothostnettraits %>% group_by(parname) %>% 
-  summarise_if(is.numeric, median, na.rm = TRUE)
-# compare mean vs median
-plot(prothostnettraits_agg1$Hostweighted.betweenness, prothostnettraits_agg2$Hostweighted.betweenness)
-
-# choose median for consistency
-prothostnettraits_agg <- prothostnettraits_agg2
-
-# Hostdegree and HostNumPars should be the same, right?
-plot(prothostnettraits_agg$Hostdegree, prothostcommtraits_agg$HostNumPars) # nope. ok, idk. can choose after final corr plot
-
-# Correlation analysis
-
-# Create correlation matrix
-data <- select_if(prothostnettraits_agg, is.numeric)
-correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-#Plot
-corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
-         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 3)
-# idk, choose later? haven't chosen protnet ones either. keep all for now.
-
-hostprotraits_tmp <- left_join(prothosttraits2, prothostnettraits_agg)
-
 # Full correlation analysis
 
 # Create correlation matrix
-
-data <- select_if(hostprotraits_tmp, is.numeric)
-
+data <- select_if(prothosttraits2, is.numeric)
 correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-
-correlation.df <- correlationMatrix %>% as.data.frame() %>% mutate(rowID = rownames(correlationMatrix))
-corrPairs <- melt(correlation.df) %>% rename(feature1 = rowID, feature2 = variable, PCC = value)
-corrPairs <- corrPairs[!duplicated(data.frame(t(apply(corrPairs[, 1:2],1,sort)))),]
-
-highlyCorrelated <- filter(corrPairs, PCC > 0.7 | PCC < (-0.7))
-
 #Plot
-
 corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
          na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
 
-# take out hostnumpars. the last 5 network ones have correlation problems, but need to decide which ones to include
+# remove numpars
 
-hosttraits <- allhosttraits %>% select(-c(HostNumPars, Hostbetweenness, Hostcloseness)) %>% 
-  rename(HostBetweenness = Hostweighted.betweenness, HostCloseness = Hostweighted.closeness)
-
-data <- select_if(hosttraits, is.numeric)
-correlationMatrix <- cor(data, use = "pairwise.complete.obs")
-corrplot(correlationMatrix, method="color", tl.col = "black", tl.cex = 0.75, number.cex = 1, 
-         na.label = "NA", na.label.col = "darkgray", addCoef.col = "darkgray", number.digits = 2)
-
+hostprotraits <- prothosttraits2 %>% select(-HostNumPars)
 
 
 # Save CSV
 
-# write.csv(hosttraits, "./data/modified/protraits/hostprotraits.csv")
+write.csv(hostprotraits, "./data/modified/protraits/hostprotraits.csv")
 
 
 
