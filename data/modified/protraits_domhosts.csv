@@ -1,11 +1,11 @@
-protname,dom_hostname,cattle,sheep,goat,dog,cat,pig,horse,chicken,numdomhosts
+parname,dom_hostname,cattle,sheep,goat,dog,cat,pig,horse,chicken,numdomhosts
 Babesia bicornis,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
 Babesia bigemina,"cattle, sheep, goats, horses; cattle, ox, water buffalo",1,1,1,0,1,0,1,0,5
 Babesia bovis,cattle,1,0,0,0,1,0,0,0,2
 Babesia cellii,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
 Babesia cynicti,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
 Babesia divergens,cattle,1,0,0,0,1,0,0,0,2
-Babesia equi,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
+Theileria equi,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
 Babesia lotori,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
 Babesia microti,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6
 Babesia missirolii,"cattle, sheep, goats, horses, dogs, rodents",1,1,1,1,1,0,1,0,6

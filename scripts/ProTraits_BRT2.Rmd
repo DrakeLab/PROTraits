@@ -493,7 +493,7 @@ BRT_prot <- xgboost(dtrain,
 
 # Save the model to disk
 
-saveRDS(BRT_prot, "./final_model.rds")
+# saveRDS(BRT_prot, "./final_model.rds")
 
 ```
 
