@@ -778,7 +778,11 @@ Same shit I guess but with tmp_prot instead of tmp_prot_Train
 
 ```{r}
 
+# make a dtest with all the rows
 
+# run xgboost with the fitted model
+
+# make the plots again. you can just copy all the code and change the model name from BRT_prot to whatever the new thing is
 
 
 ```
