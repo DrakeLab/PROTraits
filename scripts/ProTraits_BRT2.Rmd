@@ -540,14 +540,16 @@ TSStrain <- TPRtrain + TNRtrain - 1
 
 ```{r vip, echo=F, comment=F, warning = F}
 
+BRT_prot_col_pal <- c("#B40F20", "#E49100", "#E1C408", "#84BB78", "#6BB1C1", "#E6A0C4")
+
 importance_prot <- xgb.importance(feature_names = colnames(sparse_matrix_prot_train), model = BRT_prot)
 
 
 ggprot1 <- xgb.plot.importance(importance_prot, rel_to_first = TRUE,
                                xlab = "Relative importance")
-# # Old
-# gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
-# gg_prot
+# Old
+gg_prot <- xgb.ggplot.importance(importance_prot, measure = "Gain", rel_to_first = TRUE)
+gg_prot
 
 # Create a list of the variable groups with their names
 group.list <- list("generalism" = generalism, "community" = community, "hosts" = hosts,
@@ -562,13 +564,15 @@ importance_prot_grp$Feature <- factor(importance_prot_grp$Feature,
                                       levels = rev(importance_prot_grp$Feature))
 importance_prot_grp$Group[is.na(importance_prot_grp$Group)] <- "intrinsic"
 
-ggplot(importance_prot_grp, aes(x = Feature, y = Importance)) +
-  geom_bar(stat = "identity", aes(fill = Group), 
-           show.legend = T) +
+imp_prot_pal <- c("#6BB1C1","#E6A0C4", "#E1C408", "#E1C408", "#E1C408", "#84BB78","#E49100","#E1C408","#B40F20","#6BB1C1","#E1C408")
+
+ggplot(importance_prot_grp, aes(x = Feature, y = Importance, fill = Group)) +
+  geom_bar(stat = "Identity") +
   coord_flip() + 
   ylab("Relative importance") + 
-  scale_y_continuous(expand = c(0, 0)) + 
-  scale_fill_discrete(guide = guide_legend(reverse = T))
+  scale_y_continuous(expand = c(0, 0)) +
+  scale_fill_manual(values = rev(BRT_prot_col_pal), guide = guide_legend(reverse = T))
+  #scale_fill_discrete(guide = guide_legend(reverse = T))
 
 ```
 
@@ -627,6 +631,25 @@ grid.arrange(p1, p2, ncol = 2)
 grid.arrange(p3, p4, ncol = 2)
 grid.arrange(p5, p6, ncol = 2)
 grid.arrange(p7, p8, ncol = 2)
+
+# plot OrderAmoebida and transmission modes seperately
+
+p1 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[1]), ice = TRUE, center = F, 
+                    plot = F, train = sparse_matrix_prot_train, type = "classification", prob = T)
+p2 <- pdp::partial(BRT_prot, pred.var = as.character(important_vars[1]), ice = F, 
+                           center = F, plot = F, train = sparse_matrix_prot_train, 
+                           type = "classification", prob = T)
+ggplot() +
+  geom_crossbar(p1, mapping = aes(x=OrderAmoebida, y=yhat, ymin = 0.15, ymax = 0.7,
+                                  fatten = 0.01),
+                stat="identity", size=0, colour = "gray") +
+  geom_crossbar(p2, mapping = aes(x=OrderAmoebida, y=yhat, ymin = 0.15, ymax = 0.7, 
+                                    colour = "red", fatten = 4, show.legend = F),
+                stat="identity",colour= "red",size=0.3) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  scale_x_continuous(expand = c(0, 0)) +
+  theme_minimal()
+
 
 ```
 
@@ -736,6 +759,19 @@ geom_point(aes(color = var_group), size = 2) +
 geom_errorbarh(aes(color = var_group, xmin = delta_AUC-sd_AUC, xmax = delta_AUC+sd_AUC), 
                alpha = 1, height = 0) + 
   #guides(colour = guide_legend(reverse=T, title = "Variable Group")) + 
+  xlab("delta AUC") + 
+  ylab("Variable Group") +
+  theme(legend.position = "none")
+
+# new colours
+
+relative.imp.grp %>%
+mutate(var_group = fct_reorder(var_group, delta_AUC, .desc = F)) %>%
+ggplot(aes(y = var_group, x = delta_AUC)) +
+geom_point(aes(color = var_group), size = 2) +
+geom_errorbarh(aes(color = var_group, xmin = delta_AUC-sd_AUC, xmax = delta_AUC+sd_AUC), 
+               alpha = 1, height = 0) + 
+  guides(colour = guide_legend(reverse=T, title = "Variable Group")) + 
   xlab("delta AUC") + 
   ylab("Variable Group") +
   theme(legend.position = "none")
@@ -852,7 +888,9 @@ ggplot(data=df5.full, aes(x=rank.order, y=pred.zoostat,
                           color = zscore, fill = zscore, label = parname)) +
   geom_bar(position="dodge",stat="identity",col="white") +
   labs(y = "Model predicted probability of being zoonotic") +
-  scale_x_continuous("Predicted probabilty rank", breaks = seq(0,max(df5.full$rank.order),25))+
+  scale_x_continuous("Predicted probabilty rank", 
+                     breaks = seq(0,max(df5.full$rank.order),25),
+                     expand = c(0, 0))+
   theme_classic() +
   scale_fill_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA"))+
   scale_color_manual(values = c("#009B9F", "#7DC5C7", "#DEA9CC", "#D385BB", "#C75DAA")) + 
