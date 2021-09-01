@@ -8,7 +8,7 @@ library(corrplot)
 library(here)
 
 
-rm(list = ls())
+# rm(list = ls())
 
 # assign a ecoregion data  -------
 gmpd_zooscored_prot <- read.csv("C:/Rprojects/Protraits_Joy/data/modified/gmpd_zooscored_prot.csv")
@@ -152,10 +152,48 @@ biome_map +
   geom_point(data = gmpd_zooscored_prot, aes(x = long, y = lat, 
                                              color = factor(zoostat)), alpha = 0.5, size = 1) +
   scale_colour_manual(values=c("white", "red")) +
-  theme(panel.background = element_rect(fill = "azure")) +
+  #theme(panel.background = element_rect(fill = "azure")) +
   coord_sf(crs = 4326)
 
 # I used realm for the model though. Realm map: https://commons.wikimedia.org/wiki/File:Ecozones.svg
+
+
+# plot global distribution of GMPD protozoa records across TEOW realms ------
+
+realm_names <- c("Austalasia", 
+                 "Antarctic", 
+                 "Afrotropics", 
+                 "Indomalaya", 
+                 "Nearctic", 
+                 "Neotropics", 
+                 "Oceania", 
+                 "Palearctic", 
+                 "Rock & Ice")
+
+realm_colors <- c("#a68052", # beige-y
+                  "#008fac", # sky blue-ish
+                  "#707d37", # olive green
+                  "#7b6f29", # khaki green?
+                  "#015281", 
+                  "#437c44", 
+                  "#6e480e", 
+                  "#5c2f00", 
+                  "#00325f")
+# view colours
+pie(rep(1,9), col = realm_colors, labels = realm_names)
+
+realm_map <- ggplot(teow_sf) +
+  geom_sf(aes(fill = REALM)) +
+  scale_fill_manual(values = realm_colors, name = "Terrestrial Realm", labels = realm_names)
+
+realm_map +
+  xlab("Longitude") + ylab("Latitude") +
+  ggtitle("Global distribution of protozoa records in GMPD") +
+  geom_point(data = gmpd_zooscored_prot, aes(x = long, y = lat, 
+                                             color = factor(zoostat)), alpha = 0.5, size = 1) +
+  scale_colour_manual(values=c("white", "red")) +
+  #theme(panel.background = element_rect(fill = "azure")) +
+  coord_sf(crs = 4326)
 
 # plot global distribution of GMPD protozoa records by country -----
 
