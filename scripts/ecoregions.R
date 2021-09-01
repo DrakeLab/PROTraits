@@ -11,7 +11,7 @@ library(here)
 rm(list = ls())
 
 # assign a ecoregion data  -------
-gmpd_zooscored_prot <- read.csv("./data/modified/gmpd_zooscored_prot.csv")
+gmpd_zooscored_prot <- read.csv("C:/Rprojects/Protraits_Joy/data/modified/gmpd_zooscored_prot.csv")
 
 
 host_par_points_df <- gmpd_zooscored_prot %>%
@@ -28,7 +28,7 @@ setdiff(protnames$parname, host_par_points_df$parname)
 host_par_points_sf <- host_par_points_df %>% st_as_sf(coords = c("long","lat"), crs=4326) 
 
 # load wwf terrestrial ecoregion data
-teow_sf <- st_read("./data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
+teow_sf <- st_read("C:/Rprojects/Protraits_Joy/data/original/WWF_ecoregions_datafiles/wwf_terr_ecos.shp") # downloaded from https://www.worldwildlife.org/publications/terrestrial-ecoregions-of-the-world on 
 
 # replace NAs in realm with "RL" for "Rock and ice or Lake area" (see metadata)
 teow_sf$REALM <- factor(teow_sf$REALM, levels = c(levels(teow_sf$REALM), "RL"))
